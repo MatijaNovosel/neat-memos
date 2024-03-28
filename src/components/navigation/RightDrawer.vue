@@ -10,7 +10,7 @@
   >
     <template #prepend>
       <v-text-field
-        label="Search memos"
+        placeholder="Search memos"
         density="compact"
         hide-details
         variant="filled"
@@ -22,8 +22,10 @@
       border
       flat
     >
-      <v-card-title class="text-subtitle-1 font-weight-bold text-grey"> Statistics </v-card-title>
-      <v-card-text>
+      <v-card-title class="text-subtitle-1 font-weight-bold text-grey pb-1">
+        Statistics
+      </v-card-title>
+      <v-card-text class="px-0 pb-3">
         <v-list-item density="compact">
           <template #prepend>
             <v-icon> mdi-calendar </v-icon>
@@ -49,7 +51,7 @@
     </v-card>
     <div class="mt-4 ml-2">
       <div class="d-flex items-center align-center">
-        <span class="text-subtitle-1 font-weight-bold text-grey"> Tags </span>
+        <span class="text-subtitle-1 text-grey"> Tags </span>
         <v-btn
           class="ml-2"
           variant="text"
