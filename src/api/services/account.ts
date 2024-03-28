@@ -5,8 +5,8 @@ export class AccountService implements IAccountService {
   async getUserData(): Promise<IUserAccount> {
     return {
       id: 1,
-      email: "",
-      userName: ""
+      email: "matija@matija.com",
+      userName: "matija"
     };
   }
 }

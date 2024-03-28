@@ -117,9 +117,14 @@
 </template>
 
 <script setup lang="ts">
+import { useNotifications } from "@/composables/useNotifications";
 import { IVuetifyForm } from "@/models/common";
+import ROUTE_NAMES from "@/router/routeNames";
+import { useAppStore } from "@/store/app";
+import { useUserStore } from "@/store/user";
 import { reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
 
 interface State {
   showPassword: boolean;
@@ -128,8 +133,11 @@ interface State {
 }
 
 const loginForm = ref<IVuetifyForm>();
-
+const userStore = useUserStore();
+const appStore = useAppStore();
 const i18n = useI18n();
+const router = useRouter();
+const { alert } = useNotifications();
 
 const state: State = reactive({
   userName: null,
@@ -137,8 +145,30 @@ const state: State = reactive({
   showPassword: false
 });
 
-const login = () => {
-  //
+const resetForm = () => {
+  state.userName = null;
+  state.password = null;
+  if (loginForm.value) {
+    loginForm.value?.resetForm();
+  }
+};
+
+const login = async () => {
+  if (!loginForm.value || !(await loginForm.value.validate()).valid) {
+    return;
+  }
+  appStore.setLoading(true);
+  userStore.login(state.userName as string, state.password as string);
+  setTimeout(() => {
+    resetForm();
+    appStore.setLoading(false);
+    router.push({
+      name: ROUTE_NAMES.HOME
+    });
+    alert({
+      text: "Welcome!"
+    });
+  }, 1000);
 };
 </script>
 

@@ -1,0 +1,107 @@
+<template>
+  <v-navigation-drawer
+    location="right"
+    :order="1"
+    v-model="state.drawer"
+    :rail="state.rail"
+    permanen
+    @click="state.rail = false"
+    class="pa-5"
+  >
+    <template #prepend>
+      <v-text-field
+        label="Search memos"
+        density="compact"
+        hide-details
+        variant="filled"
+        prepend-inner-icon="mdi-magnify"
+      />
+    </template>
+    <v-card
+      class="mt-4"
+      border
+      flat
+    >
+      <v-card-title class="text-subtitle-1 font-weight-bold text-grey"> Statistics </v-card-title>
+      <v-card-text>
+        <v-list-item density="compact">
+          <template #prepend>
+            <v-icon> mdi-calendar </v-icon>
+          </template>
+          Days
+          <template #append> 3 </template>
+        </v-list-item>
+        <v-list-item density="compact">
+          <template #prepend>
+            <v-icon> mdi-note </v-icon>
+          </template>
+          Memos
+          <template #append> 2 </template>
+        </v-list-item>
+        <v-list-item density="compact">
+          <template #prepend>
+            <v-icon> mdi-tag </v-icon>
+          </template>
+          Tags
+          <template #append> 3 </template>
+        </v-list-item>
+      </v-card-text>
+    </v-card>
+    <div class="mt-4 ml-2">
+      <div class="d-flex items-center align-center">
+        <span class="text-subtitle-1 font-weight-bold text-grey"> Tags </span>
+        <v-btn
+          class="ml-2"
+          variant="text"
+          icon="mdi-plus-box"
+          density="compact"
+          color="grey"
+        />
+      </div>
+      <div class="mt-2">
+        <div class="d-flex align-center">
+          <v-icon
+            class="mr-2"
+            size="15"
+            color="grey"
+          >
+            mdi-pound
+          </v-icon>
+          <span> todo </span>
+        </div>
+        <div class="d-flex align-center">
+          <v-icon
+            class="mr-2"
+            size="15"
+            color="grey"
+          >
+            mdi-pound
+          </v-icon>
+          <span> diy </span>
+        </div>
+      </div>
+    </div>
+  </v-navigation-drawer>
+</template>
+
+<script lang="ts" setup>
+import ROUTE_NAMES from "@/router/routeNames";
+import { useUserStore } from "@/store/user";
+import { reactive } from "vue";
+import { useRouter } from "vue-router";
+
+const userStore = useUserStore();
+const router = useRouter();
+
+const state = reactive({
+  drawer: true,
+  rail: false
+});
+
+const logOut = () => {
+  userStore.logOut();
+  router.push({
+    name: ROUTE_NAMES.LOGIN
+  });
+};
+</script>

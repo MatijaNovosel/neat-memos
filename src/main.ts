@@ -10,6 +10,8 @@ import "./plugins/validation";
 
 import "@fortawesome/fontawesome-free/css/all.css";
 import "./style/site.scss";
+import "./style/githubMarkdown.css";
+import "./style/oneDarkHighlight.css";
 
 loadFonts();
 

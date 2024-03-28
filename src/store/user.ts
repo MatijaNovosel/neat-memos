@@ -27,20 +27,19 @@ export const useUserStore = defineStore(
       token.value = tokenModel;
     };
 
-    const clearToken = () => {
-      token.value = null;
-    };
-
     const getUserData = async () => {
       const userData = await accountService.getUserData();
-
       user.value = {
         id: userData.id,
         userName: userData.userName,
         email: userData.email
       };
-
       permissions.value = [];
+    };
+
+    const logOut = () => {
+      user.value = null;
+      token.value = null;
     };
 
     const clearUserData = () => {
@@ -57,9 +56,9 @@ export const useUserStore = defineStore(
       isAuthenticated,
       login,
       setToken,
-      clearToken,
       getUserData,
-      clearUserData
+      clearUserData,
+      logOut
     };
   },
   {

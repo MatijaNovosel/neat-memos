@@ -15,6 +15,9 @@
     "@vee-validate/rules": "^4.12.6",
     "axios": "^1.6.8",
     "date-fns": "^3.6.0",
+    "markdown-it": "^14.1.0",
+    "markdown-it-highlightjs": "^4.0.1",
+    "markdown-it-task-lists": "^2.1.1",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "roboto-fontface": "^0.10.0",
@@ -23,8 +26,8 @@
     "vue": "^3.4.21",
     "vue-i18n": "^9.10.2",
     "vue-router": "^4.3.0",
-    "webfontloader": "^1.6.28",
-    "vuetify": "^3.5.13"
+    "vuetify": "^3.5.13",
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "@types/node": "^20.11.30",

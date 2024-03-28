@@ -31,7 +31,7 @@ const removeAlert = (alert: AlertModel) => {
 <style scoped lang="scss">
 .alerts {
   position: fixed;
-  top: 85px;
+  top: 15px;
   transform: translateX(calc(50vw - 50%));
   margin: 5px;
   text-align: center;
