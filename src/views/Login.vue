@@ -4,6 +4,7 @@
     <v-card
       width="400"
       flat
+      color="white"
       class="pa-5 mx-auto"
     >
       <div class="text-center text-h1 text-orange mb-5">🐈</div>
@@ -64,6 +65,7 @@
           </v-col>
           <v-col cols="12">
             <v-checkbox
+              color="orange"
               hide-details
               label="Remember me"
             />
@@ -73,8 +75,9 @@
             class="text-center mb-4"
           >
             <v-btn
+              variant="flat"
               type="submit"
-              color="success"
+              color="orange-darken-1"
               rounded="md"
             >
               {{ i18n.t("login") }}
@@ -82,17 +85,15 @@
           </v-col>
           <v-col
             cols="12"
-            class="text-center"
+            class="text-center text-caption"
           >
             Don't have an account?
-            <v-btn
-              class="ml-2"
-              variant="text"
-              color="error"
-              size="x-small"
+            <router-link
+              class="text-orange text-decoration-none font-weight-bold"
+              :to="{}"
             >
               Sign up
-            </v-btn>
+            </router-link>
           </v-col>
         </v-row>
       </vv-form>
