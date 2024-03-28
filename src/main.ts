@@ -1,4 +1,5 @@
 import i18n from "@/i18n";
+import ComponentsPlugin from "@/plugins/components";
 import { loadFonts } from "@/plugins/fontLoader";
 import vuetify from "@/plugins/vuetify";
 import router from "@/router";
@@ -6,6 +7,7 @@ import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import { createApp } from "vue";
 import App from "./App.vue";
+import "./plugins/validation";
 
 import "@fortawesome/fontawesome-free/css/all.css";
 import "@mdi/font/css/materialdesignicons.css";
@@ -22,5 +24,6 @@ app.use(pinia);
 app.use(router);
 app.use(vuetify);
 app.use(i18n);
+app.use(ComponentsPlugin);
 
 app.mount("#app");

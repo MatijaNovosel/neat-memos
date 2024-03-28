@@ -4,7 +4,7 @@ import hr from "./hr";
 
 export default createI18n({
   legacy: false,
-  locale: "hr",
+  locale: "en",
   messages: {
     hr: {
       ...hr
@@ -13,6 +13,6 @@ export default createI18n({
       ...en
     }
   },
-  fallbackLocale: "hr",
+  fallbackLocale: "en",
   silentFallbackWarn: true
 });
