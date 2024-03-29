@@ -26,9 +26,28 @@ export const useMemoStore = defineStore("memos", () => {
     setMemos(data);
   };
 
+  const saveMemo = async (content: string) => {
+    const userId = userStore.user?.id as string;
+    const id = await memoService.saveMemo({
+      content,
+      userId
+    });
+    setMemos([
+      {
+        content,
+        id,
+        createdAt: new Date().toString(),
+        userId,
+        pinned: false
+      },
+      ...memos.value
+    ]);
+  };
+
   return {
     memos,
     setMemos,
-    loadMemos
+    loadMemos,
+    saveMemo
   };
 });

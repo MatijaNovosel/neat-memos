@@ -1,13 +1,20 @@
 <template>
-  <v-container class="main-ctr py-6">
+  <v-container class="main-ctr">
     <memo-entry />
-    <v-row v-if="memos.length">
+    <v-row
+      v-if="memos.length"
+      class="pb-6"
+    >
       <v-col
+        class="py-1"
         cols="12"
         v-for="memo in memos"
         :key="memo.id"
       >
-        <memo />
+        <memo
+          :pinned="memo.pinned"
+          :content="memo.content"
+        />
       </v-col>
     </v-row>
     <div

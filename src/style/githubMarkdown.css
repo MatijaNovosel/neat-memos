@@ -698,10 +698,13 @@
   border-bottom: 0;
 }
 
+/*
+TODO: Odkomentiraj poslije ako pravi probleme
 .markdown-body ol,
 .markdown-body ul {
   padding-left: 2em;
 }
+*/
 
 .markdown-body ol.no-list,
 .markdown-body ul.no-list {
@@ -728,6 +731,10 @@
 .markdown-body div > ol:not([type]),
 .markdown-body ol[type="1"] {
   list-style-type: decimal;
+}
+
+.contains-task-list {
+  list-style-type: none;
 }
 
 .markdown-body ol ol,

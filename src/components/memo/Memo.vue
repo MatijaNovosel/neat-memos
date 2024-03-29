@@ -1,7 +1,6 @@
 <template>
   <v-card
     flat
-    border
     color="white"
   >
     <div
@@ -23,7 +22,7 @@
       />
     </div>
     <v-card-text class="pt-2">
-      <markdown-renderer :source="content" />
+      <markdown-renderer :source="props.content" />
     </v-card-text>
   </v-card>
 </template>
@@ -36,50 +35,12 @@ import { computed } from "vue";
 
 interface Props {
   pinned?: boolean;
+  content: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   pinned: true
 });
 
-const content = `
-TO DO
----
-- [ ] Presaditi bijeli ljiljan, treba nova tegla i zemlja
-- [x] Kupiti stvari kod Rockmarka - akordi, majice bendova
-- [ ] Prebrisati laminat u stanu
-- [ ] Zapisati stanje struje \`do 5.4.2024.\`
-- [ ] Popraviti ogrebotine na autu
-- [ ] Provjeriti ulje u autu nakon mjesec dana ~26.4.2024.
-- [ ] Naučiti svirati Little Lies od Fleetwood Maca
-
-\`\`\`javascript
-const x = 1;
-
-interface IKurcina {
-  doSomething();
-}
-
-class Kurcina {
-  constructor() {
-    console.log("kurcina");
-  }
-
-  doSomething() {
-    // Lol
-  }
-}
-
-const kurcina = new Kurcina();
-kurcina.doSomething();
-\`\`\`
-
-#todo
-`;
-
 const markdown = new MarkdownIt().use(MarkdownItTasklists);
-
-const renderedContent = computed(() => {
-  return markdown.render(content);
-});
 </script>

@@ -30,7 +30,7 @@ export const useUserStore = defineStore(
     const getUserData = async () => {
       const userData = await accountService.getUserData();
       user.value = {
-        id: userData.id,
+        id: "3ff413cc-c9c2-4723-8d8b-7cb7e0295463",
         userName: userData.userName,
         email: userData.email
       };
