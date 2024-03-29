@@ -4,7 +4,7 @@ export interface TokenModel {
 }
 
 export interface IUserAccount {
-  id: number;
+  id: string;
   userName?: string | null;
   email?: string | null;
 }

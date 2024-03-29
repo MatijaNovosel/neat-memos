@@ -3,7 +3,6 @@ import { ref } from "vue";
 
 export const useAppStore = defineStore("app", () => {
   const loading = ref(false);
-  const appVersion = ref("0.0.0");
 
   const setLoading = (data: boolean) => {
     loading.value = data;
@@ -11,7 +10,6 @@ export const useAppStore = defineStore("app", () => {
 
   return {
     loading,
-    appVersion,
     setLoading
   };
 });

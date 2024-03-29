@@ -54,6 +54,8 @@
           density="compact"
           hide-details
           placeholder="Visibility"
+          :items="memoVisibilityItems"
+          v-model="state.memoVisibility"
           class="mr-5 flex-shrink"
         />
       </v-col>
@@ -93,14 +95,17 @@
 </template>
 
 <script lang="ts" setup>
+import { MEMO_VISIBILITY, memoVisibilityItems } from "@/constants/memo";
 import { reactive } from "vue";
 
 interface State {
   content: string | null;
+  memoVisibility: number;
 }
 
 const state: State = reactive({
-  content: null
+  content: null,
+  memoVisibility: MEMO_VISIBILITY.PRIVATE
 });
 
 const preview = () => {

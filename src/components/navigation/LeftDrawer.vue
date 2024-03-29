@@ -7,11 +7,12 @@
   >
     <template #append>
       <v-list-item
-        prepend-icon="mdi-logout"
-        title="Log out"
-        nav
+        class="text-subtitle-2 rounded-lg px-4"
         @click="logOut"
-      />
+      >
+        <v-icon class="mr-3"> mdi-logout </v-icon>
+        Log out
+      </v-list-item>
     </template>
     <template #prepend>
       <v-list-item

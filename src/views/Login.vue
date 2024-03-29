@@ -4,7 +4,7 @@
     <v-card
       width="400"
       flat
-      color="white"
+      color="grey-lighten-4"
       class="pa-5 mx-auto"
     >
       <div class="text-center text-h1 text-orange mb-5">🐈</div>
@@ -158,7 +158,7 @@ const login = async () => {
     return;
   }
   appStore.setLoading(true);
-  userStore.login(state.userName as string, state.password as string);
+  await userStore.login(state.userName as string, state.password as string);
   setTimeout(() => {
     resetForm();
     appStore.setLoading(false);
