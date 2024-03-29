@@ -2,7 +2,7 @@
   <div class="d-flex flex-column justify-space-between items-center h-100 pb-10">
     <div />
     <v-card
-      width="400"
+      :width="smAndDown ? '100%' : '400'"
       flat
       color="grey-lighten-4"
       class="pa-5 mx-auto"
@@ -98,13 +98,13 @@
         </v-row>
       </vv-form>
     </v-card>
-    <div class="d-flex bottom-box mx-auto flex-gap-2">
+    <div class="d-flex flex-column flex-md-row md:flex-row bottom-box mx-auto">
       <v-select
         density="compact"
         hide-details
         prepend-inner-icon="mdi-earth"
         label="Language"
-        class="mr-3"
+        class="mr-md-3 mb-3 mb-md-0"
       />
       <v-select
         hide-details
@@ -125,6 +125,7 @@ import { useUserStore } from "@/store/user";
 import { reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
+import { useDisplay } from "vuetify";
 
 interface State {
   showPassword: boolean;
@@ -137,6 +138,7 @@ const userStore = useUserStore();
 const appStore = useAppStore();
 const i18n = useI18n();
 const router = useRouter();
+const { smAndDown } = useDisplay();
 const { alert } = useNotifications();
 
 const state: State = reactive({
@@ -173,6 +175,12 @@ const login = async () => {
 </script>
 
 <style scoped>
+@media only screen and (max-width: 600px) {
+  .bottom-box {
+    width: 65% !important;
+  }
+}
+
 .bottom-box {
   width: 400px;
 }

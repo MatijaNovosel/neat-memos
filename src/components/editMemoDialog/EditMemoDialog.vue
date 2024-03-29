@@ -1,5 +1,6 @@
 <template>
   <v-dialog
+    :fullscreen="smAndDown"
     width="700"
     persistent
     :model-value="memoStore.editDialog"
@@ -26,9 +27,11 @@
 import MemoEntry from "@/components/memoEntry/MemoEntry.vue";
 import { useMemoStore } from "@/store/memos";
 import { ref, watch } from "vue";
+import { useDisplay } from "vuetify";
 
 const memoStore = useMemoStore();
 const initialContent = ref<string | null | undefined>(null);
+const { smAndDown } = useDisplay();
 
 const close = () => {
   memoStore.closeEditDialog();
