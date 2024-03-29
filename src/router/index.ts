@@ -21,7 +21,8 @@ const routes: RouteRecordRaw[] = [
         name: ROUTE_NAMES.HOME,
         component: () => import("../views/Home.vue"),
         meta: {
-          title: "home.title"
+          title: "home.title",
+          auth: true
         }
       },
       {
