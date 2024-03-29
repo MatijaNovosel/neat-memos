@@ -1,5 +1,19 @@
 <template>
   <v-container class="main-ctr">
+    <div
+      v-if="smAndDown"
+      class="d-flex align-center mb-4"
+    >
+      <v-btn
+        icon="mdi-menu"
+        variant="text"
+        color="grey"
+        density="comfortable"
+        class="mr-2"
+        @click="appStore.triggerLeftDrawer"
+      />
+      <span class="text-subtitle-1 font-weight-bold"> Neat memos </span>
+    </div>
     <memo-entry />
     <v-row v-if="state.loading">
       <v-progress-circular
@@ -35,16 +49,20 @@
 <script setup lang="ts">
 import Memo from "@/components/memo/Memo.vue";
 import MemoEntry from "@/components/memoEntry/MemoEntry.vue";
+import { useAppStore } from "@/store/app";
 import { useMemoStore } from "@/store/memos";
 import { storeToRefs } from "pinia";
 import { onMounted, reactive } from "vue";
+import { useDisplay } from "vuetify";
 
 interface State {
   loading: boolean;
 }
 
 const memoStore = useMemoStore();
+const appStore = useAppStore();
 const { memos } = storeToRefs(memoStore);
+const { smAndDown } = useDisplay();
 
 const state: State = reactive({
   loading: false

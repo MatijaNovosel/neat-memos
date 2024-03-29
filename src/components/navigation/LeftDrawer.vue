@@ -48,17 +48,19 @@
 
 <script lang="ts" setup>
 import ROUTE_NAMES from "@/router/routeNames";
+import { useAppStore } from "@/store/app";
 import { useUserStore } from "@/store/user";
-import { reactive } from "vue";
+import { reactive, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
 
 const userStore = useUserStore();
+const appStore = useAppStore();
 const router = useRouter();
 const { mdAndUp } = useDisplay();
 
 const state = reactive({
-  drawer: true,
+  drawer: mdAndUp.value ? true : false,
   rail: false
 });
 
@@ -106,4 +108,11 @@ const logOut = () => {
     name: ROUTE_NAMES.LOGIN
   });
 };
+
+watch(
+  () => appStore.leftDrawer,
+  () => {
+    state.drawer = !state.drawer;
+  }
+);
 </script>

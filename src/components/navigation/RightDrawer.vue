@@ -101,7 +101,7 @@ import { useDisplay } from "vuetify";
 const { mdAndUp } = useDisplay();
 
 const state = reactive({
-  drawer: true
+  drawer: mdAndUp.value ? true : false
 });
 </script>
 
