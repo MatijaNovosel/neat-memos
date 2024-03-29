@@ -1,26 +1,6 @@
 <template>
-  <v-container class="main-ctr">
-    <v-card
-      class="mb-4 pa-4 d-flex flex-column"
-      border
-      flat
-    >
-      <v-textarea
-        hide-details
-        variant="filled"
-        placeholder="Any thoughts..."
-      />
-      <div class="mt-4 d-flex justify-end">
-        <v-btn
-          rounded="8"
-          color="orange-darken-1"
-          class="text-capitalize"
-        >
-          Save
-          <v-icon class="ml-2"> mdi-send </v-icon>
-        </v-btn>
-      </div>
-    </v-card>
+  <v-container class="main-ctr py-6">
+    <memo-entry />
     <v-row>
       <v-col
         cols="12"
@@ -34,7 +14,8 @@
 </template>
 
 <script setup lang="ts">
-import Memo from "@/components/Memo.vue";
+import Memo from "@/components/memo/Memo.vue";
+import MemoEntry from "@/components/memoEntry/MemoEntry.vue";
 </script>
 
 <style scoped lang="scss">

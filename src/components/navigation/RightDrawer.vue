@@ -3,17 +3,17 @@
     location="right"
     :order="1"
     v-model="state.drawer"
-    :rail="state.rail"
-    permanen
-    @click="state.rail = false"
-    class="pa-5"
+    width="350"
+    permanent
+    class="pa-5 right-drawer bg-grey-lighten-4"
   >
     <template #prepend>
       <v-text-field
+        class="bg-white"
         placeholder="Search memos"
         density="compact"
         hide-details
-        variant="filled"
+        variant="outlined"
         prepend-inner-icon="mdi-magnify"
       />
     </template>
@@ -27,23 +27,32 @@
       </v-card-title>
       <v-card-text class="px-0 pb-3">
         <v-list-item density="compact">
-          <template #prepend>
-            <v-icon> mdi-calendar </v-icon>
-          </template>
+          <v-icon
+            color="grey"
+            class="mr-2"
+          >
+            mdi-calendar
+          </v-icon>
           Days
           <template #append> 3 </template>
         </v-list-item>
         <v-list-item density="compact">
-          <template #prepend>
-            <v-icon> mdi-note </v-icon>
-          </template>
+          <v-icon
+            color="grey"
+            class="mr-2"
+          >
+            mdi-bookshelf
+          </v-icon>
           Memos
           <template #append> 2 </template>
         </v-list-item>
         <v-list-item density="compact">
-          <template #prepend>
-            <v-icon> mdi-tag </v-icon>
-          </template>
+          <v-icon
+            color="grey"
+            class="mr-2"
+          >
+            mdi-tag-outline
+          </v-icon>
           Tags
           <template #append> 3 </template>
         </v-list-item>
@@ -87,7 +96,6 @@
 </template>
 
 <script lang="ts" setup>
-import ROUTE_NAMES from "@/router/routeNames";
 import { useUserStore } from "@/store/user";
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
@@ -96,14 +104,12 @@ const userStore = useUserStore();
 const router = useRouter();
 
 const state = reactive({
-  drawer: true,
-  rail: false
+  drawer: true
 });
-
-const logOut = () => {
-  userStore.logOut();
-  router.push({
-    name: ROUTE_NAMES.LOGIN
-  });
-};
 </script>
+
+<style scoped lang="scss">
+.right-drawer {
+  border: 0;
+}
+</style>

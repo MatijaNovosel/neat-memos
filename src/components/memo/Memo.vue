@@ -2,14 +2,17 @@
   <v-card
     flat
     border
+    color="white"
   >
     <div
       class="d-flex justify-space-between align-center px-5 pt-3 text-subtitle-2 text-grey font-weight-regular"
     >
       <div class="d-flex align-center">
         <span> 4 minutes ago </span>
-        <span class="ml-2 mr-1"> • </span>
-        <v-icon color="amber"> mdi-bookmark </v-icon>
+        <template v-if="props.pinned">
+          <span class="ml-2 mr-1"> • </span>
+          <v-icon color="amber"> mdi-bookmark </v-icon>
+        </template>
       </div>
       <v-btn
         variant="text"
@@ -26,10 +29,18 @@
 </template>
 
 <script setup lang="ts">
+import MarkdownRenderer from "@/components/markdownRenderer/MarkdownRenderer.vue";
 import MarkdownIt from "markdown-it";
 import MarkdownItTasklists from "markdown-it-task-lists";
 import { computed } from "vue";
-import MarkdownRenderer from "@/components/markdownRenderer/MarkdownRenderer.vue";
+
+interface Props {
+  pinned?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  pinned: true
+});
 
 const content = `
 TO DO

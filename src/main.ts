@@ -1,17 +1,16 @@
 import i18n from "@/i18n";
 import ComponentsPlugin from "@/plugins/components";
 import { loadFonts } from "@/plugins/fontLoader";
+import pinia from "@/plugins/pinia";
 import vuetify from "@/plugins/vuetify";
 import router from "@/router";
 import { createApp } from "vue";
 import App from "./App.vue";
-import pinia from "@/plugins/pinia";
 import "./plugins/validation";
 
-import "@fortawesome/fontawesome-free/css/all.css";
-import "./style/site.scss";
 import "./style/githubMarkdown.css";
 import "./style/oneDarkHighlight.css";
+import "./style/site.scss";
 
 loadFonts();
 
