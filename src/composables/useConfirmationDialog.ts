@@ -13,7 +13,7 @@ export interface CreateConfirmDialogOptions {
   icon?: string;
 }
 
-export type CreateConfirmDialog = (options: CreateConfirmDialogOptions) => Promise<boolean>;
+export type CreateConfirmDialog = (options?: CreateConfirmDialogOptions) => Promise<boolean>;
 
 export const CreateConfirmDialogKey: InjectionKey<CreateConfirmDialog> =
   Symbol("CreateConfirmDialogKey");

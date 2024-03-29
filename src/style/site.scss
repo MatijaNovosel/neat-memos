@@ -3,6 +3,11 @@
   src: url("/cascadia.ttf") format("truetype");
 }
 
+.v-input {
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Noto Sans, Helvetica, Arial, sans-serif,
+    Apple Color Emoji, Segoe UI Emoji !important;
+}
+
 .pos-rel {
   position: relative;
 }

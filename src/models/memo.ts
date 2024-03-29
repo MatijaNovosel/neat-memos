@@ -6,6 +6,12 @@ export interface MemoModel {
   pinned: boolean;
 }
 
+export interface UpdateMemoModel {
+  id: number;
+  userId: string;
+  content: string;
+}
+
 export interface CreateMemoModel {
   content: string;
   userId: string;

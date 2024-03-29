@@ -14,7 +14,7 @@
         v-slot="{ field, errors }"
         v-model="state.content"
         name="username"
-        rules="required"
+        rules="required|max:2048"
         label="Content"
       >
         <v-textarea
@@ -39,17 +39,26 @@
           <v-icon> mdi-list-box-outline </v-icon>
           <v-menu activator="parent">
             <v-list
+              border
+              elevation="0"
               density="compact"
               class="py-0"
             >
               <v-list-item
-                @click="handleAdditionalAction(item)"
-                v-for="(item, i) in additionalActions"
+                class="text-caption py-0"
+                @click="handleAction(item.type)"
+                v-for="(item, i) in memoAdditionalActionItems"
                 :key="i"
               >
-                <v-list-item-title>
-                  {{ item }}
-                </v-list-item-title>
+                <v-icon
+                  :color="item.color"
+                  class="mr-3"
+                >
+                  {{ item.icon }}
+                </v-icon>
+                <span>
+                  {{ item.text }}
+                </span>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -147,24 +156,33 @@
 </template>
 
 <script lang="ts" setup>
-import { MEMO_VISIBILITY, memoVisibilityItems } from "@/constants/memo";
+import {
+  MEMO_VISIBILITY,
+  memoVisibilityItems,
+  MEMO_ADDITIONAL_ACTIONS,
+  memoAdditionalActionItems
+} from "@/constants/memo";
 import { IVuetifyForm } from "@/models/common";
 import { useMemoStore } from "@/store/memos";
 import { reactive, ref } from "vue";
+
+interface Props {
+  initialContent?: string | null;
+}
+
+const props = defineProps<Props>();
 
 interface State {
   content: string | null;
   memoVisibility: number;
 }
 
-const additionalActions = ["preview", "addCodeBlock", "addChecklist"];
-
 const memoForm = ref<IVuetifyForm>();
 
 const memoStore = useMemoStore();
 
 const state: State = reactive({
-  content: null,
+  content: props.initialContent || null,
   memoVisibility: MEMO_VISIBILITY.PRIVATE
 });
 
@@ -179,11 +197,27 @@ const resetMemoForm = () => {
   }
 };
 
+const handleAction = (action: string) => {
+  switch (action) {
+    case MEMO_ADDITIONAL_ACTIONS.PREVIEW:
+      break;
+    case MEMO_ADDITIONAL_ACTIONS.ADD_CODE_BLOCK:
+      break;
+    case MEMO_ADDITIONAL_ACTIONS.ADD_CHECKLIST:
+      break;
+  }
+};
+
 const saveMemo = async () => {
   if (!memoForm.value || !(await memoForm.value.validate()).valid) {
     return;
   }
-  await memoStore.saveMemo(state.content as string);
+  const content = state.content || "No content";
+  if (memoStore.activeMemo) {
+    await memoStore.editMemo(content);
+  } else {
+    await memoStore.saveMemo(content);
+  }
   resetMemoForm();
 };
 

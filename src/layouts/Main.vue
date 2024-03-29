@@ -6,6 +6,7 @@
     <v-main class="main bg-grey-lighten-4">
       <router-view />
     </v-main>
+    <edit-memo-dialog />
   </v-layout>
 </template>
 
@@ -15,6 +16,7 @@ import { storeToRefs } from "pinia";
 import LeftDrawer from "../components/navigation/LeftDrawer.vue";
 import RightDrawer from "../components/navigation/RightDrawer.vue";
 import Alerts from "../components/notifications/Alerts.vue";
+import EditMemoDialog from "../components/editMemoDialog/EditMemoDialog.vue";
 
 const userStore = useUserStore();
 const { isAuthenticated } = storeToRefs(userStore);

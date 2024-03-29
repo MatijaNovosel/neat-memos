@@ -1,5 +1,5 @@
 import { useSupabase } from "@/composables/useSupabase";
-import { CreateMemoModel, MemoModel } from "@/models/memo";
+import { CreateMemoModel, MemoModel, UpdateMemoModel } from "@/models/memo";
 import { IMemoService } from "../interfaces/memos";
 import { SupabaseClient } from "@supabase/supabase-js";
 
@@ -9,6 +9,38 @@ export class MemoService implements IMemoService {
   constructor() {
     const { supabase } = useSupabase();
     this.supabase = supabase;
+  }
+
+  async editMemo(data: UpdateMemoModel): Promise<void> {
+    const { error } = await this.supabase
+      .from("memos")
+      .update([
+        {
+          content: data.content
+        }
+      ])
+      .eq("id", data.id)
+      .select();
+
+    if (error) {
+      throw error;
+    }
+  }
+
+  async pinMemo(id: number, pinStatus: boolean): Promise<void> {
+    const { error } = await this.supabase
+      .from("memos")
+      .update([
+        {
+          pinned: !pinStatus
+        }
+      ])
+      .eq("id", id)
+      .select();
+
+    if (error) {
+      throw error;
+    }
   }
 
   async saveMemo(data: CreateMemoModel): Promise<number> {
@@ -21,12 +53,20 @@ export class MemoService implements IMemoService {
         }
       ])
       .select();
+
+    if (error) {
+      throw error;
+    }
+
     const id = response![0].id;
     return id;
   }
 
-  async deleteMemo(id: string): Promise<void> {
-    throw new Error("Method not implemented.");
+  async deleteMemo(id: number): Promise<void> {
+    const { error } = await this.supabase.from("memos").delete().eq("id", id);
+    if (error) {
+      throw error;
+    }
   }
 
   async getMemos(userId: string): Promise<MemoModel[]> {
@@ -36,6 +76,10 @@ export class MemoService implements IMemoService {
       .order("createdAt", {
         ascending: false
       });
+
+    if (error) {
+      throw error;
+    }
 
     if (!data) {
       return [];

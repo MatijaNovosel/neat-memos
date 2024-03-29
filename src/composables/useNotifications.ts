@@ -22,7 +22,7 @@ export const useNotifications = () => {
         color: undefined,
         icon: false,
         text: item.text,
-        type: item.type,
+        type: item.type || "success",
         value: true
       });
     }

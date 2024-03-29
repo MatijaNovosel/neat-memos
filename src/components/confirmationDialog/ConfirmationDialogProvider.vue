@@ -6,17 +6,12 @@
       :max-width="state.options.width"
       :persistent="state.options.persistent"
     >
-      <v-system-bar
-        class="rounded-t-lg"
-        height="15"
-        :color="state.options.type"
-      />
       <v-card class="pt-3">
         <div
-          class="d-flex align-center px-10"
+          class="d-flex align-center px-4"
           :class="{
-            'py-8': !state.options.content,
-            'pt-8': !!state.options.content
+            'py-4': !state.options.content,
+            'pt-4': !!state.options.content
           }"
         >
           <div>
@@ -29,8 +24,8 @@
               }}
             </v-icon>
           </div>
-          <div class="pl-8">
-            <div class="text-h3 font-weight-bold">
+          <div class="pl-4">
+            <div class="text-h6 font-weight-bold">
               {{ state.options.title }}
             </div>
             <div
@@ -42,13 +37,12 @@
           </div>
         </div>
         <v-divider />
-        <v-card-actions class="py-5 justify-end pr-5">
+        <v-card-actions class="py-3 justify-end pr-5">
           <v-btn
             v-show="!!state.options.showCancel"
             color="error"
             variant="flat"
             rounded="lg"
-            size="x-large"
             @click="cancel"
           >
             {{ i18n.t("no") }}
@@ -57,7 +51,6 @@
             color="success"
             variant="flat"
             rounded="lg"
-            size="x-large"
             @click="agree"
           >
             {{ i18n.t("yes") }}
@@ -95,7 +88,7 @@ const state: State = reactive({
     //
   },
   options: {
-    width: 800,
+    width: 400,
     showCancel: true,
     persistent: false,
     centerContent: true,

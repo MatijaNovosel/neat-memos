@@ -698,13 +698,14 @@
   border-bottom: 0;
 }
 
-/*
-TODO: Odkomentiraj poslije ako pravi probleme
+.contains-task-list {
+  padding-left: 0 !important;
+}
+
 .markdown-body ol,
 .markdown-body ul {
   padding-left: 2em;
 }
-*/
 
 .markdown-body ol.no-list,
 .markdown-body ul.no-list {

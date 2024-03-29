@@ -1,8 +1,23 @@
 <template>
   <v-container class="main-ctr">
     <memo-entry />
+    <v-row v-if="state.loading">
+      <v-progress-circular
+        class="mt-6 mx-auto"
+        color="orange"
+        size="50"
+        indeterminate
+      />
+    </v-row>
+    <div
+      class="d-flex flex-column align-center mt-10"
+      v-if="!memos.length && !state.loading"
+    >
+      <span class="text-h1 mb-5"> 😿 </span>
+      <span class="text-h6"> No data found. </span>
+    </div>
     <v-row
-      v-if="memos.length"
+      v-else
       class="pb-6"
     >
       <v-col
@@ -11,19 +26,9 @@
         v-for="memo in memos"
         :key="memo.id"
       >
-        <memo
-          :pinned="memo.pinned"
-          :content="memo.content"
-        />
+        <memo :data="memo" />
       </v-col>
     </v-row>
-    <div
-      class="d-flex flex-column align-center mt-10"
-      v-else
-    >
-      <span class="text-h1 mb-5"> 😿 </span>
-      <span class="text-h6"> No data found. </span>
-    </div>
   </v-container>
 </template>
 
@@ -54,7 +59,7 @@ onMounted(async () => {
 
 <style scoped lang="scss">
 .main-ctr {
-  max-width: 80%;
+  max-width: 60%;
   height: 100vh;
 }
 </style>

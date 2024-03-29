@@ -34,7 +34,12 @@
         class="text-subtitle-2 rounded-lg px-4"
         :to="navItem.to"
       >
-        <v-icon class="mr-3"> {{ navItem.icon }} </v-icon>
+        <v-icon
+          color="grey"
+          class="mr-3"
+        >
+          {{ navItem.icon }}
+        </v-icon>
         {{ navItem.title }}
       </v-list-item>
     </v-list>
@@ -65,52 +70,31 @@ const navItems = [
   },
   {
     title: "Timeline",
-    icon: "mdi-clock-outline",
-    to: {
-      name: ROUTE_NAMES.LOGIN
-    }
+    icon: "mdi-clock-outline"
   },
   {
     title: "Resources",
-    icon: "mdi-paperclip",
-    to: {
-      name: ROUTE_NAMES.LOGIN
-    }
+    icon: "mdi-paperclip"
   },
   {
     title: "Explore",
-    icon: "mdi-earth",
-    to: {
-      name: ROUTE_NAMES.LOGIN
-    }
+    icon: "mdi-earth"
   },
   {
     title: "Profile",
-    icon: "mdi-account-outline",
-    to: {
-      name: ROUTE_NAMES.LOGIN
-    }
+    icon: "mdi-account-outline"
   },
   {
     title: "Inbox",
-    icon: "mdi-bell-outline",
-    to: {
-      name: ROUTE_NAMES.LOGIN
-    }
+    icon: "mdi-bell-outline"
   },
   {
     title: "Archived",
-    icon: "mdi-archive-outline",
-    to: {
-      name: ROUTE_NAMES.LOGIN
-    }
+    icon: "mdi-archive-outline"
   },
   {
     title: "Settings",
-    icon: "mdi-cogs",
-    to: {
-      name: ROUTE_NAMES.LOGIN
-    }
+    icon: "mdi-cogs"
   }
 ];
 

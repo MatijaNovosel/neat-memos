@@ -3,7 +3,6 @@
     location="right"
     :order="1"
     v-model="state.drawer"
-    width="350"
     permanent
     class="pa-5 right-drawer bg-grey-lighten-4"
   >
