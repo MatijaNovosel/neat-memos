@@ -95,14 +95,23 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from "vue";
+import { useAppStore } from "@/store/app";
+import { reactive, watch } from "vue";
 import { useDisplay } from "vuetify";
 
 const { mdAndUp } = useDisplay();
+const appStore = useAppStore();
 
 const state = reactive({
   drawer: mdAndUp.value ? true : false
 });
+
+watch(
+  () => appStore.rightDrawer,
+  () => {
+    state.drawer = !state.drawer;
+  }
+);
 </script>
 
 <style scoped lang="scss">

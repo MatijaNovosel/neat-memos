@@ -4,6 +4,7 @@ import { ref } from "vue";
 export const useAppStore = defineStore("app", () => {
   const loading = ref(false);
   const leftDrawer = ref(false);
+  const rightDrawer = ref(false);
 
   const setLoading = (data: boolean) => {
     loading.value = data;
@@ -13,10 +14,16 @@ export const useAppStore = defineStore("app", () => {
     leftDrawer.value = !leftDrawer.value;
   };
 
+  const triggerRightDrawer = () => {
+    rightDrawer.value = !rightDrawer.value;
+  };
+
   return {
     loading,
     setLoading,
     triggerLeftDrawer,
-    leftDrawer
+    triggerRightDrawer,
+    leftDrawer,
+    rightDrawer
   };
 });

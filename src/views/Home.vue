@@ -13,6 +13,14 @@
         @click="appStore.triggerLeftDrawer"
       />
       <span class="text-subtitle-1 font-weight-bold"> Neat memos </span>
+      <v-spacer />
+      <v-btn
+        icon="mdi-magnify"
+        variant="text"
+        color="grey"
+        density="comfortable"
+        @click="appStore.triggerRightDrawer"
+      />
     </div>
     <memo-entry />
     <v-row v-if="state.loading">
