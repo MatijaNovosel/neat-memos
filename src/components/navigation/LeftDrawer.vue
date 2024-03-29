@@ -2,7 +2,7 @@
   <v-navigation-drawer
     :order="1"
     v-model="state.drawer"
-    permanent
+    :permanent="mdAndUp"
     class="pa-5 bg-grey-lighten-5"
   >
     <template #append>
@@ -51,9 +51,11 @@ import ROUTE_NAMES from "@/router/routeNames";
 import { useUserStore } from "@/store/user";
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
+import { useDisplay } from "vuetify";
 
 const userStore = useUserStore();
 const router = useRouter();
+const { mdAndUp } = useDisplay();
 
 const state = reactive({
   drawer: true,

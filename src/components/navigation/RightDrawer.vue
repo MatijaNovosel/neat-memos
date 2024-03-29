@@ -3,7 +3,7 @@
     location="right"
     :order="1"
     v-model="state.drawer"
-    permanent
+    :permanent="mdAndUp"
     class="pa-5 right-drawer bg-grey-lighten-4"
   >
     <template #prepend>
@@ -95,12 +95,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useUserStore } from "@/store/user";
 import { reactive } from "vue";
-import { useRouter } from "vue-router";
+import { useDisplay } from "vuetify";
 
-const userStore = useUserStore();
-const router = useRouter();
+const { mdAndUp } = useDisplay();
 
 const state = reactive({
   drawer: true
