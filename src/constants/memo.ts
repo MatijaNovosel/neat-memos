@@ -63,21 +63,29 @@ export const MEMO_ADDITIONAL_ACTIONS = {
 
 export const memoAdditionalActionItems = [
   {
-    icon: "mdi-pin",
+    icon: "mdi-view-module",
     text: "Preview",
     type: MEMO_ADDITIONAL_ACTIONS.PREVIEW,
     color: "grey"
   },
   {
-    icon: "mdi-delete-outline",
+    icon: "mdi-code-braces",
     text: "Add code block",
     type: MEMO_ADDITIONAL_ACTIONS.ADD_CODE_BLOCK,
-    color: "red"
+    color: "grey"
   },
   {
-    icon: "mdi-archive-outline",
+    icon: "mdi-checkbox-marked",
     text: "Add checklist",
     type: MEMO_ADDITIONAL_ACTIONS.ADD_CHECKLIST,
-    color: "orange"
+    color: "grey"
   }
 ];
+
+export const DEFAULT_CODE_BLOCK = `\`\`\`javascript
+const x = 1;
+\`\`\``;
+
+export const DEFAULT_CHECK_LIST = `- [ ] 1
+- [ ] 2
+- [ ] 3`;
