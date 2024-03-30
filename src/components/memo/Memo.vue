@@ -99,7 +99,6 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const memoStore = useMemoStore();
-const { alert } = useNotifications();
 const createConfirmationDialog = useConfirmationDialog();
 
 const handleAction = async (action: string) => {
@@ -108,9 +107,6 @@ const handleAction = async (action: string) => {
       const answer = await createConfirmationDialog();
       if (answer) {
         await memoStore.deleteMemo(props.data.id);
-        alert({
-          text: "Memo deleted!"
-        });
       }
       break;
     case MEMO_ACTIONS.PIN:

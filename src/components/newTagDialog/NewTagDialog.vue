@@ -135,7 +135,7 @@ const saveTag = async () => {
   resetTagForm();
 };
 
-const deleteTag = (id: number) => {
-  //
+const deleteTag = async (id: number) => {
+  await memoStore.deleteTag(id);
 };
 </script>

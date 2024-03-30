@@ -96,6 +96,22 @@ export const useMemoStore = defineStore("memos", () => {
   const deleteMemo = async (id: number) => {
     await memoService.deleteMemo(id);
     memos.value = memos.value.filter((m) => m.id !== id);
+    alert({
+      text: "Memo deleted!"
+    });
+  };
+
+  const deleteTag = async (id: number) => {
+    await tagService.deleteTag(id);
+    tags.value = tags.value.filter((t) => t.id !== id);
+    memos.value.forEach((m) => {
+      if (m.tags) {
+        m.tags = m.tags.filter((t) => t.id !== id);
+      }
+    });
+    alert({
+      text: "Tag deleted!"
+    });
   };
 
   const pinMemo = async (id: number) => {
@@ -240,6 +256,7 @@ export const useMemoStore = defineStore("memos", () => {
     loadTags,
     filterTags,
     addToTagFilter,
-    saveTag
+    saveTag,
+    deleteTag
   };
 });
