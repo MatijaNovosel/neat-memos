@@ -89,3 +89,8 @@ const x = 1;
 export const DEFAULT_CHECK_LIST = `- [ ] 1
 - [ ] 2
 - [ ] 3`;
+
+export const MEMO_FILTERS = {
+  SEARCH_TEXT: 1,
+  TAG: 2
+};

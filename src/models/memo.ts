@@ -1,9 +1,12 @@
+import { TagModel } from "./tag";
+
 export interface MemoModel {
   id: number;
   createdAt: string;
   userId: string;
   content: string;
   pinned: boolean;
+  tags?: TagModel[];
 }
 
 export interface UpdateMemoModel {

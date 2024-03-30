@@ -23,6 +23,27 @@
       />
     </div>
     <memo-entry />
+    <v-row
+      v-if="memoStore.filterActive"
+      class="ml-1 my-3 d-flex align-center"
+    >
+      <v-icon color="grey"> mdi-filter-outline </v-icon>
+      <span class="text-subtitle-2 ml-1 text-grey"> Filter: </span>
+      <v-chip
+        color="orange"
+        density="compact"
+        class="ml-2"
+        label
+        closable
+        @click:close="memoStore.removeFilter(MEMO_FILTERS.SEARCH_TEXT)"
+      >
+        <v-icon
+          icon="mdi-magnify"
+          start
+        />
+        {{ memoStore.searchText }}
+      </v-chip>
+    </v-row>
     <v-row v-if="state.loading">
       <v-progress-circular
         class="mt-6 mx-auto"
@@ -33,7 +54,7 @@
     </v-row>
     <div
       class="d-flex flex-column align-center mt-10"
-      v-if="!memos.length && !state.loading"
+      v-if="!memoStore.filteredMemos.length && !state.loading"
     >
       <span class="text-h1 mb-5"> 😿 </span>
       <span class="text-h6"> No data found. </span>
@@ -45,7 +66,7 @@
       <v-col
         class="py-1"
         cols="12"
-        v-for="memo in memos"
+        v-for="memo in memoStore.filteredMemos"
         :key="memo.id"
       >
         <memo :data="memo" />
@@ -59,9 +80,9 @@ import Memo from "@/components/memo/Memo.vue";
 import MemoEntry from "@/components/memoEntry/MemoEntry.vue";
 import { useAppStore } from "@/store/app";
 import { useMemoStore } from "@/store/memos";
-import { storeToRefs } from "pinia";
 import { onMounted, reactive } from "vue";
 import { useDisplay } from "vuetify";
+import { MEMO_FILTERS } from "@/constants/memo";
 
 interface State {
   loading: boolean;
@@ -69,7 +90,6 @@ interface State {
 
 const memoStore = useMemoStore();
 const appStore = useAppStore();
-const { memos } = storeToRefs(memoStore);
 const { smAndDown } = useDisplay();
 
 const state: State = reactive({

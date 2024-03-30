@@ -1,16 +1,22 @@
 import { MemoService } from "@/api/services/memos";
-import { MemoModel, UpdateMemoModel } from "@/models/memo";
+import { MemoModel } from "@/models/memo";
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useUserStore } from "./user";
 import { useNotifications } from "@/composables/useNotifications";
+import { TagModel } from "@/models/tag";
+import { MEMO_FILTERS } from "@/constants/memo";
 
 export const useMemoStore = defineStore("memos", () => {
   // Data
+  // Memos
   const memos = ref<MemoModel[]>([]);
   const editDialog = ref(false);
   const activeMemo = ref<MemoModel | null>(null);
   const searchText = ref<string | null>(null);
+
+  // Tags
+  const tags = ref<TagModel[]>([]);
 
   // Services
   const memoService = new MemoService();
@@ -111,6 +117,28 @@ export const useMemoStore = defineStore("memos", () => {
     searchText.value = data;
   };
 
+  const removeFilter = (filterType: number) => {
+    switch (filterType) {
+      case MEMO_FILTERS.SEARCH_TEXT:
+        searchText.value = null;
+        break;
+    }
+  };
+
+  // Computed values
+  const memoCount = computed(() => memos.value.length);
+
+  const filteredMemos = computed(() => {
+    const searchTextContent = (searchText.value || "").toLowerCase();
+    return memos.value.filter((m) => m.content.toLowerCase().includes(searchTextContent));
+  });
+
+  const tagCount = computed(() => tags.value.length);
+
+  const filterActive = computed(() => {
+    return searchText.value;
+  });
+
   return {
     memos,
     setMemos,
@@ -125,6 +153,12 @@ export const useMemoStore = defineStore("memos", () => {
     activeMemo,
     setActiveMemo,
     searchText,
-    setSearchText
+    setSearchText,
+    memoCount,
+    filteredMemos,
+    tags,
+    tagCount,
+    filterActive,
+    removeFilter
   };
 });

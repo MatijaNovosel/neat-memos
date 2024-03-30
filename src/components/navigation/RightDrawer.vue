@@ -14,6 +14,9 @@
         hide-details
         variant="outlined"
         prepend-inner-icon="mdi-magnify"
+        clearable
+        color="grey"
+        v-model="memoStore.searchText"
       />
     </template>
     <v-card
@@ -43,7 +46,7 @@
             mdi-bookshelf
           </v-icon>
           Memos
-          <template #append> 2 </template>
+          <template #append> {{ memoStore.memoCount }} </template>
         </v-list-item>
         <v-list-item density="compact">
           <v-icon
@@ -53,7 +56,7 @@
             mdi-tag-outline
           </v-icon>
           Tags
-          <template #append> 3 </template>
+          <template #append> {{ memoStore.tagCount }} </template>
         </v-list-item>
       </v-card-text>
     </v-card>
@@ -96,11 +99,13 @@
 
 <script lang="ts" setup>
 import { useAppStore } from "@/store/app";
+import { useMemoStore } from "@/store/memos";
 import { reactive, watch } from "vue";
 import { useDisplay } from "vuetify";
 
 const { mdAndUp } = useDisplay();
 const appStore = useAppStore();
+const memoStore = useMemoStore();
 
 const state = reactive({
   drawer: mdAndUp.value ? true : false
@@ -108,9 +113,7 @@ const state = reactive({
 
 watch(
   () => appStore.rightDrawer,
-  () => {
-    state.drawer = !state.drawer;
-  }
+  () => (state.drawer = !state.drawer)
 );
 </script>
 

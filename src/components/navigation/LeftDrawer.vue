@@ -111,8 +111,6 @@ const logOut = () => {
 
 watch(
   () => appStore.leftDrawer,
-  () => {
-    state.drawer = !state.drawer;
-  }
+  () => (state.drawer = !state.drawer)
 );
 </script>
