@@ -34,6 +34,7 @@
             v-for="tag in memoStore.tags"
             :key="tag.id"
             closable
+            @click:close="deleteTag(tag.id)"
           >
             <v-icon
               class="mr-2"
@@ -62,6 +63,10 @@ const close = () => {
 };
 
 const saveTag = () => {
+  //
+};
+
+const deleteTag = (id: number) => {
   //
 };
 </script>

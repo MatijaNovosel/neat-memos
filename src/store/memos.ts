@@ -146,10 +146,13 @@ export const useMemoStore = defineStore("memos", () => {
     searchText.value = data;
   };
 
-  const removeFilter = (filterType: number) => {
+  const removeFilter = (filterType: number, tagId?: number) => {
     switch (filterType) {
       case MEMO_FILTERS.SEARCH_TEXT:
         searchText.value = null;
+        break;
+      case MEMO_FILTERS.TAG:
+        filterTags.value = filterTags.value.filter((t) => t.id !== tagId);
         break;
     }
   };
@@ -159,6 +162,11 @@ export const useMemoStore = defineStore("memos", () => {
   };
 
   const addToTagFilter = (tag: TagModel) => {
+    const t = filterTags.value.find((t) => t.id === tag.id);
+    if (!!t) {
+      filterTags.value = filterTags.value.filter((ft) => ft.id !== tag.id);
+      return;
+    }
     filterTags.value.push(tag);
   };
 
@@ -167,13 +175,18 @@ export const useMemoStore = defineStore("memos", () => {
 
   const filteredMemos = computed(() => {
     const searchTextContent = (searchText.value || "").toLowerCase();
-    return memos.value.filter((m) => m.content.toLowerCase().includes(searchTextContent));
+    const tagIds = filterTags.value.map((t) => t.id);
+    return memos.value.filter(
+      (m) =>
+        m.content.toLowerCase().includes(searchTextContent) &&
+        (m.tags && tagIds.length ? m.tags.map((x) => x.id).some((x) => tagIds.includes(x)) : true)
+    );
   });
 
   const tagCount = computed(() => tags.value.length);
 
   const filterActive = computed(() => {
-    return searchText.value;
+    return searchText.value || filterTags.value.length;
   });
 
   return {

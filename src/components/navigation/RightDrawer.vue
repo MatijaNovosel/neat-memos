@@ -75,14 +75,14 @@
       <div class="mt-2 d-flex flex-column flex-gap">
         <v-chip
           @click="addToFilter(tag)"
-          :color="tag.color"
+          :color="isInTagFilter(tag) ? tag.color : 'grey'"
           v-for="tag in memoStore.tags"
           :key="tag.id"
         >
           <v-icon
             class="mr-2"
             size="15"
-            :color="tag.color"
+            :color="isInTagFilter(tag) ? tag.color : 'grey'"
           >
             mdi-pound
           </v-icon>
@@ -110,6 +110,10 @@ const state = reactive({
 
 const addToFilter = (tag: TagModel) => {
   memoStore.addToTagFilter(tag);
+};
+
+const isInTagFilter = (tag: TagModel) => {
+  return !!memoStore.filterTags.find((t) => t.id === tag.id);
 };
 
 watch(
