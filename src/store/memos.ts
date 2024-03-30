@@ -217,11 +217,14 @@ export const useMemoStore = defineStore("memos", () => {
   const filteredMemos = computed(() => {
     const searchTextContent = (searchText.value || "").toLowerCase();
     const tagIds = filterTags.value.map((t) => t.id);
-    return memos.value.filter(
-      (m) =>
-        m.content.toLowerCase().includes(searchTextContent) &&
-        (m.tags && tagIds.length ? m.tags.map((x) => x.id).some((x) => tagIds.includes(x)) : true)
-    );
+    return memos.value
+      .filter(
+        (m) =>
+          m.content.toLowerCase().includes(searchTextContent) &&
+          (m.tags && tagIds.length ? m.tags.map((x) => x.id).some((x) => tagIds.includes(x)) : true)
+      )
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .sort((a, b) => Number(b.pinned) - Number(a.pinned));
   });
 
   const tagCount = computed(() => tags.value.length);

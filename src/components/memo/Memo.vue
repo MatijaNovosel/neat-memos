@@ -6,11 +6,11 @@
     <div
       class="d-flex justify-space-between align-center px-5 pt-3 text-subtitle-2 text-grey font-weight-regular"
     >
-      <div class="d-flex align-center">
+      <div class="d-flex align-center ml-n1">
         <span> {{ createdAtFormatted }} </span>
         <template v-if="props.data.pinned">
           <span class="ml-2 mr-1"> • </span>
-          <v-icon color="amber"> mdi-bookmark </v-icon>
+          <v-icon color="amber"> mdi-bookmark-outline </v-icon>
         </template>
       </div>
       <v-btn

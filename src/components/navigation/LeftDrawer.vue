@@ -93,10 +93,6 @@ const navItems = [
     icon: "mdi-bell-outline"
   },
   {
-    title: "Archived",
-    icon: "mdi-archive-outline"
-  },
-  {
     title: "Settings",
     icon: "mdi-cogs"
   }

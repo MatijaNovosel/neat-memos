@@ -810,6 +810,9 @@
   max-width: 100%;
   box-sizing: content-box;
   background-color: var(--bgColor-default, var(--color-canvas-default));
+  margin: 10px auto;
+  display: block;
+  border-radius: 8px;
 }
 
 .markdown-body img[align="right"] {
