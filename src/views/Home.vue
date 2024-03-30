@@ -74,10 +74,8 @@
 import Memo from "@/components/memo/Memo.vue";
 import MemoEntry from "@/components/memoEntry/MemoEntry.vue";
 import MobileDrawerControls from "@/components/mobileDrawerControls/MobileDrawerControls.vue";
-import { useAppStore } from "@/store/app";
 import { useMemoStore } from "@/store/memos";
 import { onMounted, reactive } from "vue";
-import { useDisplay } from "vuetify";
 import { MEMO_FILTERS } from "@/constants/memo";
 
 interface State {
@@ -85,8 +83,6 @@ interface State {
 }
 
 const memoStore = useMemoStore();
-const appStore = useAppStore();
-const { smAndDown } = useDisplay();
 
 const state: State = reactive({
   loading: false
