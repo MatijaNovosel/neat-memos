@@ -113,9 +113,7 @@ export class MemoService implements IMemoService {
     const { data, error } = await this.supabase
       .from("memos")
       .select("id, createdAt, content, userId, pinned, tags ( id, content, color)")
-      .order("createdAt", {
-        ascending: false
-      });
+      .eq("userId", userId);
 
     if (error) {
       throw error;
