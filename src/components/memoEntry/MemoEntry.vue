@@ -77,7 +77,8 @@
           variant="text"
           class="mx-2"
           icon
-          color="grey"
+          @click="state.tagMenuExpanded = !state.tagMenuExpanded"
+          :color="state.tagMenuExpanded ? 'orange' : 'grey'"
         >
           <v-icon> mdi-pound </v-icon>
           <v-tooltip
@@ -118,6 +119,26 @@
             Add reference
           </v-tooltip>
         </v-btn>
+      </div>
+      <div
+        class="d-flex flex-wrap flex-gap mt-3"
+        v-if="state.tagMenuExpanded"
+      >
+        <v-chip
+          density="compact"
+          :color="isInSelectedTags(tag.id) ? tag.color : 'grey'"
+          v-for="tag in memoStore.tags"
+          :key="tag.id"
+          @click="addToSelectedTags(tag)"
+        >
+          <v-icon
+            class="mr-2"
+            size="15"
+          >
+            mdi-pound
+          </v-icon>
+          <span> {{ tag.content }} </span>
+        </v-chip>
       </div>
       <v-divider class="mt-3" />
       <v-row
@@ -172,6 +193,7 @@ import {
   DEFAULT_CHECK_LIST
 } from "@/constants/memo";
 import { IVuetifyForm } from "@/models/common";
+import { TagModel } from "@/models/tag";
 import { useMemoStore } from "@/store/memos";
 import { computed } from "vue";
 import { reactive, ref } from "vue";
@@ -190,6 +212,8 @@ const props = withDefaults(defineProps<Props>(), {
 interface State {
   content: string | null;
   memoVisibility: number;
+  selectedTags: TagModel[];
+  tagMenuExpanded: boolean;
 }
 
 const memoForm = ref<IVuetifyForm>();
@@ -198,12 +222,10 @@ const memoStore = useMemoStore();
 
 const state: State = reactive({
   content: props.initialContent || null,
-  memoVisibility: MEMO_VISIBILITY.PRIVATE
+  memoVisibility: MEMO_VISIBILITY.PRIVATE,
+  selectedTags: [],
+  tagMenuExpanded: false
 });
-
-const preview = () => {
-  //
-};
 
 const resetMemoForm = () => {
   state.content = null;
@@ -252,6 +274,18 @@ const saveMemo = async () => {
     await memoStore.saveMemo(content);
   }
   resetMemoForm();
+};
+
+const isInSelectedTags = (tagId: number) => {
+  return !!state.selectedTags.find((t) => t.id === tagId);
+};
+
+const addToSelectedTags = (tag: TagModel) => {
+  if (!!state.selectedTags.find((t) => t.id === tag.id)) {
+    state.selectedTags = state.selectedTags.filter((t) => t.id !== tag.id);
+    return;
+  }
+  state.selectedTags.push(tag);
 };
 
 const interactionDisabled = computed(() => {
