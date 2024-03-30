@@ -19,11 +19,36 @@ export class MemoService implements IMemoService {
           content: data.content
         }
       ])
-      .eq("id", data.id)
-      .select();
+      .eq("id", data.id);
 
     if (error) {
       throw error;
+    }
+
+    const idsToAdd = data.tagIds.filter((x) => !data.initialTagIds.includes(x));
+    const idsToRemove = data.initialTagIds.filter((x) => !data.tagIds.includes(x));
+
+    for (let i = 0; i < idsToRemove.length; i++) {
+      const { error } = await this.supabase
+        .from("memoTags")
+        .delete()
+        .eq("tagId", idsToRemove[i])
+        .eq("memoId", data.id);
+      if (error) {
+        throw error;
+      }
+    }
+
+    for (let i = 0; i < idsToAdd.length; i++) {
+      const { error } = await this.supabase.from("memoTags").insert([
+        {
+          tagId: idsToAdd[i],
+          memoId: data.id
+        }
+      ]);
+      if (error) {
+        throw error;
+      }
     }
   }
 
@@ -35,8 +60,7 @@ export class MemoService implements IMemoService {
           pinned: !pinStatus
         }
       ])
-      .eq("id", id)
-      .select();
+      .eq("id", id);
 
     if (error) {
       throw error;
@@ -54,11 +78,27 @@ export class MemoService implements IMemoService {
       ])
       .select();
 
+    const id = response![0].id;
+
     if (error) {
       throw error;
     }
 
-    const id = response![0].id;
+    for (let i = 0; i < data.tagIds.length; i++) {
+      const { error } = await this.supabase
+        .from("memoTags")
+        .insert([
+          {
+            tagId: data.tagIds[i],
+            memoId: id
+          }
+        ])
+        .select();
+      if (error) {
+        throw error;
+      }
+    }
+
     return id;
   }
 

@@ -120,26 +120,28 @@
           </v-tooltip>
         </v-btn>
       </div>
-      <div
-        class="d-flex flex-wrap flex-gap mt-3"
-        v-if="state.tagMenuExpanded"
-      >
-        <v-chip
-          density="compact"
-          :color="isInSelectedTags(tag.id) ? tag.color : 'grey'"
-          v-for="tag in memoStore.tags"
-          :key="tag.id"
-          @click="addToSelectedTags(tag)"
+      <v-expand-transition>
+        <div
+          class="d-flex flex-wrap flex-gap mt-3"
+          v-if="state.tagMenuExpanded"
         >
-          <v-icon
-            class="mr-2"
-            size="15"
+          <v-chip
+            density="compact"
+            :color="isInSelectedTags(tag.id) ? tag.color : 'grey'"
+            v-for="tag in memoStore.tags"
+            :key="tag.id"
+            @click="addToSelectedTags(tag)"
           >
-            mdi-pound
-          </v-icon>
-          <span> {{ tag.content }} </span>
-        </v-chip>
-      </div>
+            <v-icon
+              class="mr-2"
+              size="15"
+            >
+              mdi-pound
+            </v-icon>
+            <span> {{ tag.content }} </span>
+          </v-chip>
+        </div>
+      </v-expand-transition>
       <v-divider class="mt-3" />
       <v-row
         no-gutters
@@ -200,6 +202,7 @@ import { reactive, ref } from "vue";
 
 interface Props {
   initialContent?: string | null;
+  initialTags?: TagModel[];
   readonly?: boolean;
   disabled?: boolean;
 }
@@ -223,8 +226,8 @@ const memoStore = useMemoStore();
 const state: State = reactive({
   content: props.initialContent || null,
   memoVisibility: MEMO_VISIBILITY.PRIVATE,
-  selectedTags: [],
-  tagMenuExpanded: false
+  selectedTags: [...(props.initialTags || [])],
+  tagMenuExpanded: true
 });
 
 const resetMemoForm = () => {
@@ -269,9 +272,9 @@ const saveMemo = async () => {
   }
   const content = state.content || "No content";
   if (memoStore.activeMemo) {
-    await memoStore.editMemo(content);
+    await memoStore.editMemo(content, state.selectedTags);
   } else {
-    await memoStore.saveMemo(content);
+    await memoStore.saveMemo(content, state.selectedTags);
   }
   resetMemoForm();
 };

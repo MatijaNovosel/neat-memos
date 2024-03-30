@@ -17,7 +17,10 @@
         />
       </v-card-title>
       <v-card-text class="pt-0">
-        <memo-entry :initial-content="initialContent" />
+        <memo-entry
+          :initial-tags="initialTags"
+          :initial-content="initialContent"
+        />
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -25,12 +28,14 @@
 
 <script setup lang="ts">
 import MemoEntry from "@/components/memoEntry/MemoEntry.vue";
+import { TagModel } from "@/models/tag";
 import { useMemoStore } from "@/store/memos";
 import { ref, watch } from "vue";
 import { useDisplay } from "vuetify";
 
 const memoStore = useMemoStore();
 const initialContent = ref<string | null | undefined>(null);
+const initialTags = ref<TagModel[]>([]);
 const { smAndDown } = useDisplay();
 
 const close = () => {
@@ -43,6 +48,7 @@ watch(
   (val) => {
     if (val) {
       initialContent.value = memoStore.activeMemo?.content;
+      initialTags.value = memoStore.activeMemo?.tags || [];
     }
   }
 );

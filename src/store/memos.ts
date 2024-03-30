@@ -72,11 +72,34 @@ export const useMemoStore = defineStore("memos", () => {
     });
   };
 
-  const saveMemo = async (content: string) => {
+  const editMemo = async (content: string, tags: TagModel[]) => {
+    const userId = userStore.user?.id as string;
+    const id = activeMemo.value!.id;
+    const memo = memos.value.find((m) => m.id === id);
+    await memoService.editMemo({
+      content,
+      id,
+      userId,
+      initialTagIds: memo?.tags?.map((x) => x.id) || [],
+      tagIds: tags.map((x) => x.id)
+    });
+    if (memo) {
+      memo.content = content;
+      memo.tags = tags;
+      alert({
+        text: "Memo saved!"
+      });
+      setActiveMemo(null);
+      closeEditDialog();
+    }
+  };
+
+  const saveMemo = async (content: string, tags: TagModel[]) => {
     const userId = userStore.user?.id as string;
     const id = await memoService.saveMemo({
       content,
-      userId
+      userId,
+      tagIds: tags.map((x) => x.id)
     });
     setMemos([
       {
@@ -84,6 +107,7 @@ export const useMemoStore = defineStore("memos", () => {
         id,
         createdAt: new Date().toString(),
         userId,
+        tags,
         pinned: false
       },
       ...memos.value
@@ -128,25 +152,6 @@ export const useMemoStore = defineStore("memos", () => {
           text: JSON.stringify(e)
         });
       }
-    }
-  };
-
-  const editMemo = async (content: string) => {
-    const userId = userStore.user?.id as string;
-    const id = activeMemo.value!.id;
-    await memoService.editMemo({
-      content,
-      id,
-      userId
-    });
-    const memo = memos.value.find((m) => m.id === id);
-    if (memo) {
-      memo.content = content;
-      alert({
-        text: "Memo saved!"
-      });
-      setActiveMemo(null);
-      closeEditDialog();
     }
   };
 

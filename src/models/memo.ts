@@ -13,9 +13,12 @@ export interface UpdateMemoModel {
   id: number;
   userId: string;
   content: string;
+  tagIds: number[];
+  initialTagIds: number[];
 }
 
 export interface CreateMemoModel {
   content: string;
   userId: string;
+  tagIds: number[];
 }

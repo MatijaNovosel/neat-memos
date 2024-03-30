@@ -86,7 +86,6 @@ import { formatRelative, format, isToday } from "date-fns";
 import { computed } from "vue";
 import { capitalize } from "@/helpers/string";
 import { memoActionItems, MEMO_ACTIONS } from "@/constants/memo";
-import { useNotifications } from "@/composables/useNotifications";
 import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
 
 interface Props {
