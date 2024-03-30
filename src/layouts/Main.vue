@@ -7,6 +7,7 @@
       <router-view />
     </v-main>
     <edit-memo-dialog />
+    <preview-memo-dialog />
   </v-layout>
 </template>
 
@@ -17,6 +18,7 @@ import LeftDrawer from "../components/navigation/LeftDrawer.vue";
 import RightDrawer from "../components/navigation/RightDrawer.vue";
 import Alerts from "../components/notifications/Alerts.vue";
 import EditMemoDialog from "../components/editMemoDialog/EditMemoDialog.vue";
+import PreviewMemoDialog from "../components/previewMemoDialog/PreviewMemoDialog.vue";
 
 const userStore = useUserStore();
 const { isAuthenticated } = storeToRefs(userStore);

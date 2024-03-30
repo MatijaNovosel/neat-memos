@@ -12,6 +12,7 @@ export const useMemoStore = defineStore("memos", () => {
   // Memos
   const memos = ref<MemoModel[]>([]);
   const editDialog = ref(false);
+  const previewDialog = ref(false);
   const activeMemo = ref<MemoModel | null>(null);
   const searchText = ref<string | null>(null);
 
@@ -109,6 +110,14 @@ export const useMemoStore = defineStore("memos", () => {
     editDialog.value = false;
   };
 
+  const openPreviewDialog = () => {
+    previewDialog.value = true;
+  };
+
+  const closePreviewDialog = () => {
+    previewDialog.value = false;
+  };
+
   const setActiveMemo = (data: MemoModel | null) => {
     activeMemo.value = data;
   };
@@ -159,6 +168,9 @@ export const useMemoStore = defineStore("memos", () => {
     tags,
     tagCount,
     filterActive,
-    removeFilter
+    removeFilter,
+    previewDialog,
+    openPreviewDialog,
+    closePreviewDialog
   };
 });

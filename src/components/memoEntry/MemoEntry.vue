@@ -18,6 +18,7 @@
         label="Content"
       >
         <v-textarea
+          :readonly="props.readonly"
           auto-grow
           v-bind="field"
           hide-details="auto"
@@ -31,6 +32,7 @@
       </vv-field>
       <div class="mt-4">
         <v-btn
+          :disabled="props.readonly"
           density="compact"
           variant="text"
           color="grey"
@@ -70,6 +72,7 @@
           </v-tooltip>
         </v-btn>
         <v-btn
+          :disabled="interactionDisabled"
           density="compact"
           variant="text"
           class="mx-2"
@@ -85,6 +88,7 @@
           </v-tooltip>
         </v-btn>
         <v-btn
+          :disabled="interactionDisabled"
           density="compact"
           variant="text"
           color="grey"
@@ -100,6 +104,7 @@
           </v-tooltip>
         </v-btn>
         <v-btn
+          :disabled="interactionDisabled"
           density="compact"
           variant="text"
           color="grey"
@@ -122,6 +127,7 @@
       >
         <v-col cols="4">
           <v-select
+            :disabled="interactionDisabled"
             prepend-inner-icon="mdi-lock-outline"
             density="compact"
             hide-details
@@ -137,8 +143,9 @@
           class="d-flex justify-end"
         >
           <v-btn
+            :disabled="interactionDisabled"
             rounded="lg"
-            color="orange"
+            :color="interactionDisabled ? 'grey' : 'orange'"
             type="submit"
             variant="flat"
             class="text-capitalize"
@@ -166,13 +173,19 @@ import {
 } from "@/constants/memo";
 import { IVuetifyForm } from "@/models/common";
 import { useMemoStore } from "@/store/memos";
+import { computed } from "vue";
 import { reactive, ref } from "vue";
 
 interface Props {
   initialContent?: string | null;
+  readonly?: boolean;
+  disabled?: boolean;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  readonly: false,
+  disabled: false
+});
 
 interface State {
   content: string | null;
@@ -201,8 +214,6 @@ const resetMemoForm = () => {
 
 const handleAction = (action: string) => {
   switch (action) {
-    case MEMO_ADDITIONAL_ACTIONS.PREVIEW:
-      break;
     case MEMO_ADDITIONAL_ACTIONS.ADD_CODE_BLOCK:
       if (state.content) {
         state.content += DEFAULT_CODE_BLOCK;
@@ -216,6 +227,16 @@ const handleAction = (action: string) => {
       } else {
         state.content = DEFAULT_CHECK_LIST;
       }
+      break;
+    case MEMO_ADDITIONAL_ACTIONS.PREVIEW:
+      memoStore.setActiveMemo({
+        content: state.content || "",
+        id: -1,
+        createdAt: new Date().toISOString(),
+        pinned: false,
+        userId: ""
+      });
+      memoStore.openPreviewDialog();
       break;
   }
 };
@@ -233,7 +254,7 @@ const saveMemo = async () => {
   resetMemoForm();
 };
 
-const handleAdditionalAction = (action: string) => {
-  //
-};
+const interactionDisabled = computed(() => {
+  return props.disabled || props.readonly;
+});
 </script>

@@ -17,6 +17,7 @@
         variant="text"
         density="compact"
         icon
+        :disabled="props.readonly"
         class="top-right"
         color="grey"
       >
@@ -70,9 +71,12 @@ import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
 
 interface Props {
   data: MemoModel;
+  readonly?: boolean;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  readonly: false
+});
 
 const memoStore = useMemoStore();
 const { alert } = useNotifications();
