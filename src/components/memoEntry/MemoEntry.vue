@@ -232,6 +232,7 @@ const state: State = reactive({
 
 const resetMemoForm = () => {
   state.content = null;
+  state.selectedTags = [];
   if (memoForm.value) {
     memoForm.value?.resetForm();
   }
