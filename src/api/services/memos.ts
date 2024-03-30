@@ -85,6 +85,8 @@ export class MemoService implements IMemoService {
       return [];
     }
 
-    return data.map<MemoModel>((memo) => ({ ...memo }));
+    return data.map<MemoModel>((memo) => ({
+      ...memo
+    }));
   }
 }

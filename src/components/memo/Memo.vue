@@ -55,6 +55,26 @@
     <v-card-text class="pt-2">
       <markdown-renderer :source="props.data.content" />
     </v-card-text>
+    <v-card-text
+      class="pt-0 d-flex flex-gap"
+      v-if="props.data.tags && props.data.tags.length"
+    >
+      <v-chip
+        density="compact"
+        :color="tag.color"
+        v-for="tag in props.data.tags"
+        :key="tag.id"
+      >
+        <v-icon
+          class="mr-2"
+          size="15"
+          :color="tag.color"
+        >
+          mdi-pound
+        </v-icon>
+        <span> {{ tag.content }} </span>
+      </v-chip>
+    </v-card-text>
   </v-card>
 </template>
 
@@ -108,7 +128,7 @@ const createdAtFormatted = computed(() => {
   if (isToday(date)) {
     return capitalize(formatRelative(date, new Date()));
   } else {
-    return format(date, "dd.MM.yyyy. hh:mm");
+    return format(date, "dd.MM.yyyy. HH:mm");
   }
 });
 </script>
