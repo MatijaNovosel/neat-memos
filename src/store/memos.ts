@@ -6,6 +6,7 @@ import { useUserStore } from "./user";
 import { useNotifications } from "@/composables/useNotifications";
 import { TagModel } from "@/models/tag";
 import { MEMO_FILTERS } from "@/constants/memo";
+import { TagService } from "@/api/services/tag";
 
 export const useMemoStore = defineStore("memos", () => {
   // Data
@@ -15,12 +16,15 @@ export const useMemoStore = defineStore("memos", () => {
   const previewDialog = ref(false);
   const activeMemo = ref<MemoModel | null>(null);
   const searchText = ref<string | null>(null);
+  const filterTags = ref<TagModel[]>([]);
 
   // Tags
   const tags = ref<TagModel[]>([]);
+  const tagDialog = ref(false);
 
   // Services
   const memoService = new MemoService();
+  const tagService = new TagService();
 
   // Stores
   const userStore = useUserStore();
@@ -38,6 +42,14 @@ export const useMemoStore = defineStore("memos", () => {
     }
     const data = await memoService.getMemos(userStore.user.id);
     setMemos(data);
+  };
+
+  const loadTags = async () => {
+    if (!userStore.user) {
+      return;
+    }
+    const data = await tagService.getTags(userStore.user.id);
+    setTags(data);
   };
 
   const saveMemo = async (content: string) => {
@@ -118,6 +130,14 @@ export const useMemoStore = defineStore("memos", () => {
     previewDialog.value = false;
   };
 
+  const openTagDialog = () => {
+    tagDialog.value = true;
+  };
+
+  const closeTagDialog = () => {
+    tagDialog.value = false;
+  };
+
   const setActiveMemo = (data: MemoModel | null) => {
     activeMemo.value = data;
   };
@@ -132,6 +152,14 @@ export const useMemoStore = defineStore("memos", () => {
         searchText.value = null;
         break;
     }
+  };
+
+  const setTags = (data: TagModel[]) => {
+    tags.value = data;
+  };
+
+  const addToTagFilter = (tag: TagModel) => {
+    filterTags.value.push(tag);
   };
 
   // Computed values
@@ -171,6 +199,13 @@ export const useMemoStore = defineStore("memos", () => {
     removeFilter,
     previewDialog,
     openPreviewDialog,
-    closePreviewDialog
+    closePreviewDialog,
+    tagDialog,
+    openTagDialog,
+    closeTagDialog,
+    setTags,
+    loadTags,
+    filterTags,
+    addToTagFilter
   };
 });

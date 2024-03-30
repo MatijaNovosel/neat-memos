@@ -8,6 +8,7 @@
     </v-main>
     <edit-memo-dialog />
     <preview-memo-dialog />
+    <new-tag-dialog />
   </v-layout>
 </template>
 
@@ -19,6 +20,7 @@ import RightDrawer from "../components/navigation/RightDrawer.vue";
 import Alerts from "../components/notifications/Alerts.vue";
 import EditMemoDialog from "../components/editMemoDialog/EditMemoDialog.vue";
 import PreviewMemoDialog from "../components/previewMemoDialog/PreviewMemoDialog.vue";
+import NewTagDialog from "../components/newTagDialog/NewTagDialog.vue";
 
 const userStore = useUserStore();
 const { isAuthenticated } = storeToRefs(userStore);

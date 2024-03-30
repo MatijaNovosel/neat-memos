@@ -7,6 +7,7 @@ export interface TagModel {
 export interface CreateTagModel {
   content: string;
   color: string;
+  userId: string;
 }
 
 export interface UpdateTagModel {

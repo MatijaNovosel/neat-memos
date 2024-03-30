@@ -99,6 +99,7 @@ const state: State = reactive({
 onMounted(async () => {
   state.loading = true;
   await memoStore.loadMemos();
+  await memoStore.loadTags();
   state.loading = false;
 });
 </script>

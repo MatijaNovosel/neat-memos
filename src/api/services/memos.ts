@@ -49,7 +49,7 @@ export class MemoService implements IMemoService {
       .insert([
         {
           content: data.content,
-          userId: "3ff413cc-c9c2-4723-8d8b-7cb7e0295463"
+          userId: data.userId
         }
       ])
       .select();
@@ -72,7 +72,7 @@ export class MemoService implements IMemoService {
   async getMemos(userId: string): Promise<MemoModel[]> {
     const { data, error } = await this.supabase
       .from("memos")
-      .select("id, createdAt, content, userId, pinned")
+      .select("id, createdAt, content, userId, pinned, tags ( id, content, color)")
       .order("createdAt", {
         ascending: false
       });

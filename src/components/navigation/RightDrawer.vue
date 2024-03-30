@@ -69,35 +69,32 @@
           icon="mdi-plus-box"
           density="compact"
           color="grey"
+          @click="memoStore.openTagDialog"
         />
       </div>
-      <div class="mt-2">
-        <div class="d-flex align-center">
+      <div class="mt-2 d-flex flex-column flex-gap">
+        <v-chip
+          @click="addToFilter(tag)"
+          :color="tag.color"
+          v-for="tag in memoStore.tags"
+          :key="tag.id"
+        >
           <v-icon
             class="mr-2"
             size="15"
-            color="grey"
+            :color="tag.color"
           >
             mdi-pound
           </v-icon>
-          <span> todo </span>
-        </div>
-        <div class="d-flex align-center">
-          <v-icon
-            class="mr-2"
-            size="15"
-            color="grey"
-          >
-            mdi-pound
-          </v-icon>
-          <span> diy </span>
-        </div>
+          <span> {{ tag.content }} </span>
+        </v-chip>
       </div>
     </div>
   </v-navigation-drawer>
 </template>
 
 <script lang="ts" setup>
+import { TagModel } from "@/models/tag";
 import { useAppStore } from "@/store/app";
 import { useMemoStore } from "@/store/memos";
 import { reactive, watch } from "vue";
@@ -110,6 +107,10 @@ const memoStore = useMemoStore();
 const state = reactive({
   drawer: mdAndUp.value ? true : false
 });
+
+const addToFilter = (tag: TagModel) => {
+  memoStore.addToTagFilter(tag);
+};
 
 watch(
   () => appStore.rightDrawer,
