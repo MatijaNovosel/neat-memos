@@ -18,9 +18,9 @@
       </v-card-title>
       <v-card-text class="pt-0 pb-5">
         <memo
-          v-if="memoStore.activeMemo"
+          v-if="memoStore.previewMemo"
           readonly
-          :data="memoStore.activeMemo"
+          :data="memoStore.previewMemo"
         />
       </v-card-text>
     </v-card>
@@ -37,6 +37,6 @@ const { smAndDown } = useDisplay();
 
 const close = () => {
   memoStore.closePreviewDialog();
-  memoStore.setActiveMemo(null);
+  memoStore.setPreviewMemo(null);
 };
 </script>

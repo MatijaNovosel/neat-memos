@@ -255,7 +255,7 @@ const handleAction = (action: string) => {
       }
       break;
     case MEMO_ADDITIONAL_ACTIONS.PREVIEW:
-      memoStore.setActiveMemo({
+      memoStore.setPreviewMemo({
         content: state.content || "",
         id: -1,
         createdAt: new Date().toISOString(),

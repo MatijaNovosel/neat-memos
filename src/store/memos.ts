@@ -15,6 +15,7 @@ export const useMemoStore = defineStore("memos", () => {
   const editDialog = ref(false);
   const previewDialog = ref(false);
   const activeMemo = ref<MemoModel | null>(null);
+  const previewMemo = ref<MemoModel | null>(null);
   const searchText = ref<string | null>(null);
   const filterTags = ref<TagModel[]>([]);
 
@@ -183,6 +184,10 @@ export const useMemoStore = defineStore("memos", () => {
     activeMemo.value = data;
   };
 
+  const setPreviewMemo = (data: MemoModel | null) => {
+    previewMemo.value = data;
+  };
+
   const setSearchText = (data: string | null) => {
     searchText.value = data;
   };
@@ -281,6 +286,8 @@ export const useMemoStore = defineStore("memos", () => {
     addToTagFilter,
     saveTag,
     deleteTag,
-    dayCount
+    dayCount,
+    setPreviewMemo,
+    previewMemo
   };
 });
