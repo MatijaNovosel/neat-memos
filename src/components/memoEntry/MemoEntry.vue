@@ -259,7 +259,8 @@ const handleAction = (action: string) => {
         id: -1,
         createdAt: new Date().toISOString(),
         pinned: false,
-        userId: ""
+        userId: "",
+        tags: state.selectedTags
       });
       memoStore.openPreviewDialog();
       break;
