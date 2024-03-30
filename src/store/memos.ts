@@ -52,6 +52,26 @@ export const useMemoStore = defineStore("memos", () => {
     setTags(data);
   };
 
+  const saveTag = async (content: string, color: string) => {
+    const userId = userStore.user?.id as string;
+    const id = await tagService.saveTag({
+      content,
+      userId,
+      color
+    });
+    setTags([
+      {
+        color,
+        content,
+        id
+      },
+      ...tags.value
+    ]);
+    alert({
+      text: "Tag saved!"
+    });
+  };
+
   const saveMemo = async (content: string) => {
     const userId = userStore.user?.id as string;
     const id = await memoService.saveMemo({
@@ -219,6 +239,7 @@ export const useMemoStore = defineStore("memos", () => {
     setTags,
     loadTags,
     filterTags,
-    addToTagFilter
+    addToTagFilter,
+    saveTag
   };
 });

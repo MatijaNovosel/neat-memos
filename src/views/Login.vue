@@ -11,7 +11,6 @@
       <div class="text-center text-h4 text-orange mb-5 font-weight-bold">Neat memos</div>
       <vv-form
         ref="loginForm"
-        class="login-form"
         as="v-form"
         @submit="login"
       >

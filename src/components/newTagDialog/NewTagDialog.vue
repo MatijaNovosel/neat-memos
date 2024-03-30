@@ -17,17 +17,60 @@
         />
       </v-card-title>
       <v-card-text class="pt-0">
-        <v-text-field
-          hide-details
-          density="compact"
-          placeholder="Tag name"
-          append-inner-icon="mdi-check-circle"
-          @click:append-inner="saveTag"
-        />
+        <vv-form
+          ref="tagForm"
+          as="v-form"
+          @submit="saveTag"
+        >
+          <vv-field
+            v-slot="{ field, errors }"
+            v-model="state.tagContent"
+            name="username"
+            rules="required"
+            label="Tag name"
+          >
+            <v-text-field
+              v-model="state.tagContent"
+              v-bind="field"
+              density="compact"
+              placeholder="Tag name"
+              hide-details="auto"
+              :error-messages="errors"
+            >
+              <template #prepend>
+                <v-btn
+                  icon
+                  density="compact"
+                  variant="text"
+                >
+                  <v-icon :color="state.tagColor || 'grey'"> mdi-circle </v-icon>
+                  <v-menu
+                    :close-on-content-click="false"
+                    activator="parent"
+                  >
+                    <v-color-picker
+                      v-model="state.tagColor"
+                      hide-inputs
+                    />
+                  </v-menu>
+                </v-btn>
+              </template>
+              <template #append>
+                <v-btn
+                  density="compact"
+                  variant="text"
+                  color="blue-lighten-1"
+                  icon="mdi-content-save"
+                  @click="saveTag"
+                />
+              </template>
+            </v-text-field>
+          </vv-field>
+        </vv-form>
       </v-card-text>
       <v-card-text class="pt-2 pb-4">
         <span class="text-grey text-subtitle-2"> All tags </span>
-        <div class="d-flex flex-gap mt-2">
+        <div class="d-flex flex-wrap flex-gap mt-2">
           <v-chip
             density="compact"
             :color="tag.color"
@@ -52,18 +95,44 @@
 </template>
 
 <script setup lang="ts">
+import { IVuetifyForm } from "@/models/common";
 import { useMemoStore } from "@/store/memos";
+import { reactive, ref } from "vue";
 import { useDisplay } from "vuetify";
+
+interface State {
+  tagContent: string | null;
+  tagColor: string | null;
+}
+
+const tagForm = ref<IVuetifyForm | null>(null);
 
 const memoStore = useMemoStore();
 const { smAndDown } = useDisplay();
+
+const state: State = reactive({
+  tagContent: null,
+  tagColor: null
+});
 
 const close = () => {
   memoStore.closeTagDialog();
 };
 
-const saveTag = () => {
-  //
+const resetTagForm = () => {
+  state.tagContent = null;
+  state.tagColor = null;
+  if (tagForm.value) {
+    tagForm.value?.resetForm();
+  }
+};
+
+const saveTag = async () => {
+  if (!tagForm.value || !(await tagForm.value.validate()).valid) {
+    return;
+  }
+  await memoStore.saveTag(state.tagContent || "", state.tagColor || "");
+  resetTagForm();
 };
 
 const deleteTag = (id: number) => {
