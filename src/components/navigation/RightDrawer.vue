@@ -72,7 +72,10 @@
           @click="memoStore.openTagDialog"
         />
       </div>
-      <div class="mt-2 d-flex flex-column flex-gap">
+      <div
+        class="mt-2 d-flex flex-column flex-gap"
+        v-if="memoStore.tags.length"
+      >
         <v-chip
           @click="addToFilter(tag)"
           :color="isInTagFilter(tag) ? tag.color : 'grey'"
@@ -88,6 +91,12 @@
           </v-icon>
           <span> {{ tag.content }} </span>
         </v-chip>
+      </div>
+      <div
+        class="text-grey text-caption mt-1"
+        v-else
+      >
+        No tags found.
       </div>
     </div>
   </v-navigation-drawer>
