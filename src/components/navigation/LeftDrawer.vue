@@ -3,7 +3,8 @@
     :order="1"
     v-model="state.drawer"
     :permanent="mdAndUp"
-    class="pa-5 bg-grey-lighten-5"
+    class="pa-5"
+    :class="theme.current.value.dark ? '' : 'bg-grey-lighten-5'"
   >
     <template #append>
       <v-list-item
@@ -52,12 +53,13 @@ import { useAppStore } from "@/store/app";
 import { useUserStore } from "@/store/user";
 import { reactive, watch } from "vue";
 import { useRouter } from "vue-router";
-import { useDisplay } from "vuetify";
+import { useDisplay, useTheme } from "vuetify";
 
 const userStore = useUserStore();
 const appStore = useAppStore();
 const router = useRouter();
 const { mdAndUp } = useDisplay();
+const theme = useTheme();
 
 const state = reactive({
   drawer: mdAndUp.value ? true : false,
@@ -81,20 +83,15 @@ const navItems = [
     icon: "mdi-paperclip"
   },
   {
-    title: "Explore",
-    icon: "mdi-earth"
-  },
-  {
     title: "Profile",
     icon: "mdi-account-outline"
   },
   {
-    title: "Inbox",
-    icon: "mdi-bell-outline"
-  },
-  {
     title: "Settings",
-    icon: "mdi-cogs"
+    icon: "mdi-cogs",
+    to: {
+      name: ROUTE_NAMES.SETTINGS
+    }
   }
 ];
 

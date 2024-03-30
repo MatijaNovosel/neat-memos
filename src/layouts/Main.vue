@@ -3,7 +3,10 @@
     <alerts />
     <left-drawer v-if="isAuthenticated" />
     <right-drawer v-if="isAuthenticated" />
-    <v-main class="main bg-grey-lighten-4">
+    <v-main
+      class="main"
+      :class="theme.current.value.dark ? '' : 'bg-grey-lighten-4'"
+    >
       <router-view />
     </v-main>
     <edit-memo-dialog />
@@ -21,9 +24,11 @@ import Alerts from "../components/notifications/Alerts.vue";
 import EditMemoDialog from "../components/editMemoDialog/EditMemoDialog.vue";
 import PreviewMemoDialog from "../components/previewMemoDialog/PreviewMemoDialog.vue";
 import NewTagDialog from "../components/newTagDialog/NewTagDialog.vue";
+import { useTheme } from "vuetify";
 
 const userStore = useUserStore();
 const { isAuthenticated } = storeToRefs(userStore);
+const theme = useTheme();
 </script>
 
 <style scoped lang="scss">

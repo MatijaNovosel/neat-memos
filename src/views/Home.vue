@@ -1,27 +1,6 @@
 <template>
   <v-container class="main-ctr">
-    <div
-      v-if="smAndDown"
-      class="d-flex align-center mb-4"
-    >
-      <v-btn
-        icon="mdi-menu"
-        variant="text"
-        color="grey"
-        density="comfortable"
-        class="mr-2"
-        @click="appStore.triggerLeftDrawer"
-      />
-      <span class="text-subtitle-1 font-weight-bold"> Neat memos </span>
-      <v-spacer />
-      <v-btn
-        icon="mdi-magnify"
-        variant="text"
-        color="grey"
-        density="comfortable"
-        @click="appStore.triggerRightDrawer"
-      />
-    </div>
+    <mobile-drawer-controls />
     <memo-entry />
     <v-row
       v-if="memoStore.filterActive"
@@ -94,6 +73,7 @@
 <script setup lang="ts">
 import Memo from "@/components/memo/Memo.vue";
 import MemoEntry from "@/components/memoEntry/MemoEntry.vue";
+import MobileDrawerControls from "@/components/mobileDrawerControls/MobileDrawerControls.vue";
 import { useAppStore } from "@/store/app";
 import { useMemoStore } from "@/store/memos";
 import { onMounted, reactive } from "vue";

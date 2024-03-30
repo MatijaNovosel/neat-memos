@@ -4,7 +4,7 @@
     <v-card
       :width="smAndDown ? '100%' : '400'"
       flat
-      color="grey-lighten-4"
+      color="transparent"
       class="pa-5 mx-auto"
     >
       <div class="text-center text-h1 text-orange mb-5">🐈</div>
@@ -108,8 +108,10 @@
       <v-select
         hide-details
         prepend-inner-icon="mdi-moon-waning-crescent"
+        :items="THEME_OPTIONS"
+        v-model="state.selectedTheme"
         density="compact"
-        label="Theme"
+        @update:model-value="updateTheme"
       />
     </div>
   </div>
@@ -125,11 +127,14 @@ import { reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
+import { THEME_OPTIONS } from "@/constants/app";
+import { onMounted } from "vue";
 
 interface State {
   showPassword: boolean;
   userName: string | null;
   password: string | null;
+  selectedTheme: string | null;
 }
 
 const loginForm = ref<IVuetifyForm>();
@@ -143,7 +148,8 @@ const { alert } = useNotifications();
 const state: State = reactive({
   userName: null,
   password: null,
-  showPassword: false
+  showPassword: false,
+  selectedTheme: null
 });
 
 const resetForm = () => {
@@ -171,6 +177,14 @@ const login = async () => {
     });
   }, 1000);
 };
+
+const updateTheme = () => {
+  appStore.setTheme(state.selectedTheme || "light");
+};
+
+onMounted(() => {
+  state.selectedTheme = appStore.darkMode ? "dark" : "light";
+});
 </script>
 
 <style scoped>

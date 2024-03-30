@@ -26,6 +26,15 @@ const routes: RouteRecordRaw[] = [
         }
       },
       {
+        path: "settings",
+        name: ROUTE_NAMES.SETTINGS,
+        component: () => import("../views/Settings.vue"),
+        meta: {
+          title: "settings.title",
+          auth: true
+        }
+      },
+      {
         path: "permissions",
         name: ROUTE_NAMES.NO_PERMISSIONS,
         component: () => import("../views/NoPermissions.vue"),

@@ -31,7 +31,14 @@
 import { storeToRefs } from "pinia";
 import ConfirmationDialogProvider from "./components/confirmationDialog/ConfirmationDialogProvider.vue";
 import { useAppStore } from "./store/app";
+import { onMounted } from "vue";
+import { useTheme } from "vuetify";
 
 const appStore = useAppStore();
+const theme = useTheme();
 const { loading } = storeToRefs(appStore);
+
+onMounted(() => {
+  theme.global.name.value = appStore.darkMode ? "dark" : "light";
+});
 </script>

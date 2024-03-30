@@ -1,29 +1,56 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { useTheme } from "vuetify";
 
-export const useAppStore = defineStore("app", () => {
-  const loading = ref(false);
-  const leftDrawer = ref(false);
-  const rightDrawer = ref(false);
+export const useAppStore = defineStore(
+  "app",
+  () => {
+    // Data
+    const loading = ref(false);
+    const leftDrawer = ref(false);
+    const rightDrawer = ref(false);
+    const darkMode = ref(false);
 
-  const setLoading = (data: boolean) => {
-    loading.value = data;
-  };
+    // Composables
+    const theme = useTheme();
 
-  const triggerLeftDrawer = () => {
-    leftDrawer.value = !leftDrawer.value;
-  };
+    const setLoading = (data: boolean) => {
+      loading.value = data;
+    };
 
-  const triggerRightDrawer = () => {
-    rightDrawer.value = !rightDrawer.value;
-  };
+    const triggerLeftDrawer = () => {
+      leftDrawer.value = !leftDrawer.value;
+    };
 
-  return {
-    loading,
-    setLoading,
-    triggerLeftDrawer,
-    triggerRightDrawer,
-    leftDrawer,
-    rightDrawer
-  };
-});
+    const triggerRightDrawer = () => {
+      rightDrawer.value = !rightDrawer.value;
+    };
+
+    const toggleDarkMode = () => {
+      darkMode.value = !darkMode.value;
+      theme.global.name.value = darkMode.value ? "dark" : "light";
+    };
+
+    const setTheme = (value: string) => {
+      darkMode.value = value === "dark";
+      theme.global.name.value = darkMode.value ? "dark" : "light";
+    };
+
+    return {
+      loading,
+      setLoading,
+      triggerLeftDrawer,
+      triggerRightDrawer,
+      leftDrawer,
+      rightDrawer,
+      darkMode,
+      toggleDarkMode,
+      setTheme
+    };
+  },
+  {
+    persist: {
+      storage: sessionStorage
+    }
+  }
+);

@@ -4,7 +4,8 @@
     :order="1"
     v-model="state.drawer"
     :permanent="mdAndUp"
-    class="pa-5 right-drawer bg-grey-lighten-4"
+    class="pa-5 right-drawer"
+    :class="theme.current.value.dark ? '' : 'bg-grey-lighten-4'"
   >
     <template #prepend>
       <v-text-field
@@ -12,7 +13,7 @@
         placeholder="Search memos"
         density="compact"
         hide-details
-        variant="outlined"
+        variant="filled"
         prepend-inner-icon="mdi-magnify"
         clearable
         color="grey"
@@ -107,11 +108,12 @@ import { TagModel } from "@/models/tag";
 import { useAppStore } from "@/store/app";
 import { useMemoStore } from "@/store/memos";
 import { reactive, watch } from "vue";
-import { useDisplay } from "vuetify";
+import { useDisplay, useTheme } from "vuetify";
 
 const { mdAndUp } = useDisplay();
 const appStore = useAppStore();
 const memoStore = useMemoStore();
+const theme = useTheme();
 
 const state = reactive({
   drawer: mdAndUp.value ? true : false
