@@ -16,7 +16,7 @@
         variant="filled"
         prepend-inner-icon="mdi-magnify"
         clearable
-        color="grey"
+        :bg-color="theme.current.value.dark ? '' : 'white'"
         v-model="memoStore.searchText"
       />
     </template>
@@ -37,7 +37,7 @@
             mdi-calendar
           </v-icon>
           Days
-          <template #append> 3 </template>
+          <template #append> {{ memoStore.dayCount }} </template>
         </v-list-item>
         <v-list-item density="compact">
           <v-icon

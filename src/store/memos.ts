@@ -229,6 +229,21 @@ export const useMemoStore = defineStore("memos", () => {
 
   const tagCount = computed(() => tags.value.length);
 
+  const dayCount = computed(() => {
+    if (memos.value.length) {
+      return [
+        ...new Set(
+          memos.value.map((m) => {
+            const d = new Date(m.createdAt);
+            d.setHours(0, 0, 0, 0);
+            return d.getTime();
+          })
+        )
+      ].length;
+    }
+    return 0;
+  });
+
   const filterActive = computed(() => {
     return searchText.value || filterTags.value.length;
   });
@@ -265,6 +280,7 @@ export const useMemoStore = defineStore("memos", () => {
     filterTags,
     addToTagFilter,
     saveTag,
-    deleteTag
+    deleteTag,
+    dayCount
   };
 });
