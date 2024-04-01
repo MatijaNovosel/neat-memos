@@ -23,7 +23,7 @@
               v-slot="{ field, errors }"
               v-model="state.userName"
               name="register-username"
-              rules="required|min:3"
+              rules="required|min:3|alpha_num"
               label="Username"
             >
               <v-text-field
