@@ -3,5 +3,7 @@ export default {
   username: "Korisničko ime",
   areYouSure: "Jeste li sigurni",
   forgotPassword: "Zaboravljena lozinka",
-  login: "Prijava"
+  login: "Prijava",
+  no: "No",
+  yes: "Yes"
 };

@@ -159,7 +159,6 @@ const login = async () => {
       text: "Welcome!"
     });
   } catch (e) {
-    console.log(e);
     alert({
       text: `Failed to log in! ${e}`,
       type: "error"

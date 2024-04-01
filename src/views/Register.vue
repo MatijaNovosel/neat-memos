@@ -178,7 +178,6 @@ const login = async () => {
       text: "Account created!"
     });
   } catch (e) {
-    console.log(e);
     alert({
       text: `Failed to register! ${e}`,
       type: "error"

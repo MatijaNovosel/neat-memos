@@ -3,5 +3,7 @@ export default {
   username: "Username",
   areYouSure: "Are you sure",
   forgotPassword: "Forgot password",
-  login: "Login"
+  login: "Login",
+  no: "No",
+  yes: "Yes"
 };
