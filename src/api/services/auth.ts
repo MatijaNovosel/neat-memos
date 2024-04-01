@@ -11,6 +11,32 @@ export class AuthService implements IAuthService {
     this.appStore = appStore;
   }
 
+  async registerWithEmailAndPassword(email: string, password: string): Promise<void> {
+    const { data, error } = await this.appStore.supabase.auth.signUp({
+      email,
+      password
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    // Create data table
+    const { error: dataTableError } = await this.appStore.supabase
+      .from("memos")
+      .insert([
+        {
+          username: email.split("@")[0],
+          userId: data.user!.id
+        }
+      ])
+      .select();
+
+    if (dataTableError) {
+      throw dataTableError;
+    }
+  }
+
   async signInWithEmailAndPassword(email: string, password: string): Promise<TokenModel> {
     const { data, error } = await this.appStore.supabase.auth.signInWithPassword({
       email,

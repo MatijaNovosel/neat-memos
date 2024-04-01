@@ -32,6 +32,10 @@ export const useUserStore = defineStore(
       };
     };
 
+    const register = async (email: string, password: string) => {
+      await authService.registerWithEmailAndPassword(email, password);
+    };
+
     const setToken = (tokenModel: TokenModel) => {
       token.value = tokenModel;
     };
@@ -58,7 +62,8 @@ export const useUserStore = defineStore(
       login,
       setToken,
       getUserData,
-      logOut
+      logOut,
+      register
     };
   },
   {
