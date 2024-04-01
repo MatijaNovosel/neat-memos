@@ -1,5 +1,6 @@
 <template>
   <v-dialog
+    class="d-flex flex-column align-center"
     :fullscreen="smAndDown"
     width="450"
     persistent
@@ -16,7 +17,7 @@
           @click="close"
         />
       </v-card-title>
-      <v-card-text class="pt-0">
+      <v-card-text class="pt-0 align-content-end">
         <vv-form
           ref="tagForm"
           as="v-form"
