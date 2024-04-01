@@ -106,7 +106,7 @@
 <script setup lang="ts">
 import { IVuetifyForm } from "@/models/common";
 import { useMemoStore } from "@/store/memos";
-import { computed, reactive, ref } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import { useDisplay, useTheme } from "vuetify";
 
 interface State {
@@ -142,7 +142,6 @@ const saveTag = async () => {
     return;
   }
   await memoStore.saveTag(state.tagContent || "", state.tagColor || "");
-  resetTagForm();
 };
 
 const deleteTag = async (id: number) => {
@@ -152,4 +151,17 @@ const deleteTag = async (id: number) => {
 const tagNames = computed(() => {
   return memoStore.tags.map((t) => t.content);
 });
+
+watch(
+  () => memoStore.tags,
+  (newVal, oldVal) => {
+    // Poruka budućem sebi: ovo sam stavio ovdje jer je race condition za validiranje
+    // čudan pa detektira da tag postoji u vee - validate pa resetiranje
+    // ne radimo unutar poziva za stvaranje već naknadno
+    if (newVal.length > oldVal.length) resetTagForm();
+  },
+  {
+    deep: true
+  }
+);
 </script>

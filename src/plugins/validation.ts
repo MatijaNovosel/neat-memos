@@ -29,8 +29,13 @@ Object.keys(rules).forEach((rule) => {
 });
 
 defineRule("must_not_be_in_array", (value: string, array) => {
+  if (!value || !value.length) {
+    return true;
+  }
+
   if (array.includes(value)) {
     return "Tag already exists!";
   }
+
   return true;
 });
