@@ -12,7 +12,7 @@
         <v-btn
           icon="mdi-close"
           variant="text"
-          color="black"
+          :color="theme.current.value.dark ? 'white' : 'black'"
           @click="close"
         />
       </v-card-title>
@@ -107,7 +107,7 @@
 import { IVuetifyForm } from "@/models/common";
 import { useMemoStore } from "@/store/memos";
 import { reactive, ref } from "vue";
-import { useDisplay } from "vuetify";
+import { useDisplay, useTheme } from "vuetify";
 
 interface State {
   tagContent: string | null;
@@ -116,6 +116,7 @@ interface State {
 
 const tagForm = ref<IVuetifyForm | null>(null);
 
+const theme = useTheme();
 const memoStore = useMemoStore();
 const { smAndDown } = useDisplay();
 

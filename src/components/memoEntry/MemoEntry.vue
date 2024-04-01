@@ -1,6 +1,6 @@
 <template>
   <v-card
-    color="white"
+    :color="theme.current.value.dark ? '' : 'white'"
     class="mb-4 px-6 pb-4 d-flex flex-column"
     border
     flat
@@ -201,6 +201,7 @@ import { TagModel } from "@/models/tag";
 import { useMemoStore } from "@/store/memos";
 import { useFileDialog } from "@vueuse/core";
 import { computed, reactive, ref } from "vue";
+import { useTheme } from "vuetify";
 
 interface Props {
   initialContent?: string | null;
@@ -220,6 +221,8 @@ interface State {
   selectedTags: TagModel[];
   tagMenuExpanded: boolean;
 }
+
+const theme = useTheme();
 
 const memoForm = ref<IVuetifyForm>();
 

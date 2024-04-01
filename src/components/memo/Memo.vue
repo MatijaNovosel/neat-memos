@@ -1,7 +1,7 @@
 <template>
   <v-card
     flat
-    color="white"
+    :color="theme.current.value.dark ? '' : 'white'"
   >
     <div
       class="d-flex justify-space-between align-center px-5 pt-3 text-subtitle-2 text-grey font-weight-regular"
@@ -80,13 +80,14 @@
 
 <script setup lang="ts">
 import MarkdownRenderer from "@/components/markdownRenderer/MarkdownRenderer.vue";
+import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
+import { MEMO_ACTIONS, memoActionItems } from "@/constants/memo";
+import { capitalize } from "@/helpers/string";
 import { MemoModel } from "@/models/memo";
 import { useMemoStore } from "@/store/memos";
-import { formatRelative, format, isToday } from "date-fns";
+import { format, formatRelative, isToday } from "date-fns";
 import { computed } from "vue";
-import { capitalize } from "@/helpers/string";
-import { memoActionItems, MEMO_ACTIONS } from "@/constants/memo";
-import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
+import { useTheme } from "vuetify";
 
 interface Props {
   data: MemoModel;
@@ -98,6 +99,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const memoStore = useMemoStore();
+const theme = useTheme();
 const createConfirmationDialog = useConfirmationDialog();
 
 const handleAction = async (action: string) => {

@@ -12,7 +12,7 @@
         <v-btn
           icon="mdi-close"
           variant="text"
-          color="black"
+          :color="theme.current.value.dark ? 'white' : 'black'"
           @click="close"
         />
       </v-card-title>
@@ -30,10 +30,11 @@
 <script setup lang="ts">
 import Memo from "@/components/memo/Memo.vue";
 import { useMemoStore } from "@/store/memos";
-import { useDisplay } from "vuetify";
+import { useDisplay, useTheme } from "vuetify";
 
 const memoStore = useMemoStore();
 const { smAndDown } = useDisplay();
+const theme = useTheme();
 
 const close = () => {
   memoStore.closePreviewDialog();

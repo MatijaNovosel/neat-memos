@@ -12,7 +12,7 @@
         <v-btn
           icon="mdi-close"
           variant="text"
-          color="black"
+          :color="theme.current.value.dark ? 'white' : 'black'"
           @click="close"
         />
       </v-card-title>
@@ -31,12 +31,13 @@ import MemoEntry from "@/components/memoEntry/MemoEntry.vue";
 import { TagModel } from "@/models/tag";
 import { useMemoStore } from "@/store/memos";
 import { ref, watch } from "vue";
-import { useDisplay } from "vuetify";
+import { useDisplay, useTheme } from "vuetify";
 
 const memoStore = useMemoStore();
 const initialContent = ref<string | null | undefined>(null);
 const initialTags = ref<TagModel[]>([]);
 const { smAndDown } = useDisplay();
+const theme = useTheme();
 
 const close = () => {
   memoStore.closeEditDialog();
