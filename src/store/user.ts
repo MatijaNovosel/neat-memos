@@ -3,6 +3,7 @@ import { AuthService } from "@/api/services/auth";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { IUserAccount, TokenModel } from "../models/user";
+import { useMemoStore } from "./memos";
 
 export const useUserStore = defineStore(
   "user",
@@ -16,6 +17,9 @@ export const useUserStore = defineStore(
     // Services
     const authService = new AuthService();
     const accountService = new AccountService();
+
+    // Stores
+    const memoStore = useMemoStore();
 
     const login = async (email: string, password: string): Promise<void> => {
       const response = await authService.signInWithEmailAndPassword(email, password);
@@ -40,6 +44,10 @@ export const useUserStore = defineStore(
     const logOut = () => {
       user.value = null;
       token.value = null;
+      permissions.value = [];
+      memoStore.setMemos([]);
+      memoStore.setTags([]);
+      memoStore.setSearchText(null);
     };
 
     return {
