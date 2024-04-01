@@ -1,12 +1,30 @@
-import { IUserAccount } from "@/models/user";
+import { PiniaStore } from "@/constants/types";
+import { UserDataModel } from "@/models/user";
+import { useAppStore } from "@/store/app";
 import { IAccountService } from "../interfaces/account";
 
 export class AccountService implements IAccountService {
-  async getUserData(): Promise<IUserAccount> {
+  appStore: PiniaStore<typeof useAppStore>;
+
+  constructor() {
+    const appStore = useAppStore();
+    this.appStore = appStore;
+  }
+
+  async getUserData(userId: string): Promise<UserDataModel> {
+    const { data, error } = await this.appStore.supabase
+      .from("userData")
+      .select("username, darkMode, language, createdAt")
+      .eq("userId", userId);
+
+    if (error) {
+      throw error;
+    }
+
+    const user = data[0];
+
     return {
-      id: "3ff413cc-c9c2-4723-8d8b-7cb7e0295463",
-      email: "matija@matija.com",
-      userName: "matija"
+      username: user.username
     };
   }
 }

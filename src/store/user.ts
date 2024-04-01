@@ -17,36 +17,29 @@ export const useUserStore = defineStore(
     const authService = new AuthService();
     const accountService = new AccountService();
 
-    const login = async (userName: string, password: string): Promise<void> => {
-      const response = await authService.login(userName, password);
+    const login = async (email: string, password: string): Promise<void> => {
+      const response = await authService.signInWithEmailAndPassword(email, password);
       setToken(response);
-      await getUserData();
+      const userData = await getUserData(response.userId);
+      user.value = {
+        userName: userData.username,
+        id: response.userId,
+        email
+      };
     };
 
     const setToken = (tokenModel: TokenModel) => {
       token.value = tokenModel;
     };
 
-    const getUserData = async () => {
-      const userData = await accountService.getUserData();
-      user.value = {
-        id: "3ff413cc-c9c2-4723-8d8b-7cb7e0295463",
-        userName: userData.userName,
-        email: userData.email
-      };
-      permissions.value = [];
+    const getUserData = async (id: string) => {
+      const userData = await accountService.getUserData(id);
+      return userData;
     };
 
     const logOut = () => {
       user.value = null;
       token.value = null;
-    };
-
-    const clearUserData = () => {
-      document.cookie = "uc=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
-      token.value = null;
-      user.value = null;
-      permissions.value = [];
     };
 
     return {
@@ -57,7 +50,6 @@ export const useUserStore = defineStore(
       login,
       setToken,
       getUserData,
-      clearUserData,
       logOut
     };
   },

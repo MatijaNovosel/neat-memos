@@ -21,10 +21,10 @@
           >
             <vv-field
               v-slot="{ field, errors }"
-              v-model="state.email"
-              name="email"
-              rules="required|email"
-              label="Email"
+              v-model="state.userName"
+              name="username"
+              rules="required"
+              :label="i18n.t('username')"
             >
               <v-text-field
                 v-bind="field"
@@ -33,7 +33,7 @@
                 density="compact"
                 hide-details="auto"
                 :error-messages="errors"
-                placeholder="Email"
+                :label="i18n.t('username')"
               />
             </vv-field>
           </v-col>
@@ -57,7 +57,7 @@
                 :error-messages="errors"
                 :append-inner-icon="state.showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="state.showPassword ? 'text' : 'password'"
-                :placeholder="i18n.t('password')"
+                :label="i18n.t('password')"
                 @click:append-inner="state.showPassword = !state.showPassword"
               />
             </vv-field>
@@ -119,19 +119,20 @@
 
 <script setup lang="ts">
 import { useNotifications } from "@/composables/useNotifications";
-import { THEME_OPTIONS } from "@/constants/app";
 import { IVuetifyForm } from "@/models/common";
 import ROUTE_NAMES from "@/router/routeNames";
 import { useAppStore } from "@/store/app";
 import { useUserStore } from "@/store/user";
-import { onMounted, reactive, ref } from "vue";
+import { reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
+import { THEME_OPTIONS } from "@/constants/app";
+import { onMounted } from "vue";
 
 interface State {
   showPassword: boolean;
-  email: string | null;
+  userName: string | null;
   password: string | null;
   selectedTheme: string | null;
 }
@@ -145,14 +146,14 @@ const { smAndDown } = useDisplay();
 const { alert } = useNotifications();
 
 const state: State = reactive({
-  email: null,
+  userName: null,
   password: null,
   showPassword: false,
   selectedTheme: null
 });
 
 const resetForm = () => {
-  state.email = null;
+  state.userName = null;
   state.password = null;
   if (loginForm.value) {
     loginForm.value?.resetForm();
@@ -163,25 +164,18 @@ const login = async () => {
   if (!loginForm.value || !(await loginForm.value.validate()).valid) {
     return;
   }
-  try {
-    appStore.setLoading(true);
-    await userStore.login(state.email as string, state.password as string);
+  appStore.setLoading(true);
+  await userStore.login(state.userName as string, state.password as string);
+  setTimeout(() => {
+    resetForm();
+    appStore.setLoading(false);
     router.push({
       name: ROUTE_NAMES.HOME
     });
     alert({
       text: "Welcome!"
     });
-  } catch (e) {
-    console.log(e);
-    alert({
-      text: `Failed to log in! ${e}`,
-      type: "error"
-    });
-  } finally {
-    resetForm();
-    appStore.setLoading(false);
-  }
+  }, 1000);
 };
 
 const updateTheme = () => {

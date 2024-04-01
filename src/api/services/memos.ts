@@ -1,18 +1,18 @@
-import { useSupabase } from "@/composables/useSupabase";
 import { CreateMemoModel, MemoModel, UpdateMemoModel } from "@/models/memo";
 import { IMemoService } from "../interfaces/memos";
-import { SupabaseClient } from "@supabase/supabase-js";
+import { useAppStore } from "@/store/app";
+import { PiniaStore } from "@/constants/types";
 
 export class MemoService implements IMemoService {
-  supabase: SupabaseClient;
+  appStore: PiniaStore<typeof useAppStore>;
 
   constructor() {
-    const { supabase } = useSupabase();
-    this.supabase = supabase;
+    const appStore = useAppStore();
+    this.appStore = appStore;
   }
 
   async editMemo(data: UpdateMemoModel): Promise<void> {
-    const { error } = await this.supabase
+    const { error } = await this.appStore.supabase
       .from("memos")
       .update([
         {
@@ -29,7 +29,7 @@ export class MemoService implements IMemoService {
     const idsToRemove = data.initialTagIds.filter((x) => !data.tagIds.includes(x));
 
     for (let i = 0; i < idsToRemove.length; i++) {
-      const { error } = await this.supabase
+      const { error } = await this.appStore.supabase
         .from("memoTags")
         .delete()
         .eq("tagId", idsToRemove[i])
@@ -40,7 +40,7 @@ export class MemoService implements IMemoService {
     }
 
     for (let i = 0; i < idsToAdd.length; i++) {
-      const { error } = await this.supabase.from("memoTags").insert([
+      const { error } = await this.appStore.supabase.from("memoTags").insert([
         {
           tagId: idsToAdd[i],
           memoId: data.id
@@ -53,7 +53,7 @@ export class MemoService implements IMemoService {
   }
 
   async pinMemo(id: number, pinStatus: boolean): Promise<void> {
-    const { error } = await this.supabase
+    const { error } = await this.appStore.supabase
       .from("memos")
       .update([
         {
@@ -68,7 +68,7 @@ export class MemoService implements IMemoService {
   }
 
   async saveMemo(data: CreateMemoModel): Promise<number> {
-    const { data: response, error } = await this.supabase
+    const { data: response, error } = await this.appStore.supabase
       .from("memos")
       .insert([
         {
@@ -85,7 +85,7 @@ export class MemoService implements IMemoService {
     }
 
     for (let i = 0; i < data.tagIds.length; i++) {
-      const { error } = await this.supabase
+      const { error } = await this.appStore.supabase
         .from("memoTags")
         .insert([
           {
@@ -103,14 +103,14 @@ export class MemoService implements IMemoService {
   }
 
   async deleteMemo(id: number): Promise<void> {
-    const { error } = await this.supabase.from("memos").delete().eq("id", id);
+    const { error } = await this.appStore.supabase.from("memos").delete().eq("id", id);
     if (error) {
       throw error;
     }
   }
 
   async getMemos(userId: string): Promise<MemoModel[]> {
-    const { data, error } = await this.supabase
+    const { data, error } = await this.appStore.supabase
       .from("memos")
       .select("id, createdAt, content, userId, pinned, tags ( id, content, color)")
       .eq("userId", userId);

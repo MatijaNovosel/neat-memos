@@ -187,18 +187,17 @@
 
 <script lang="ts" setup>
 import {
-  MEMO_VISIBILITY,
-  memoVisibilityItems,
-  MEMO_ADDITIONAL_ACTIONS,
-  memoAdditionalActionItems,
+  DEFAULT_CHECK_LIST,
   DEFAULT_CODE_BLOCK,
-  DEFAULT_CHECK_LIST
+  MEMO_ADDITIONAL_ACTIONS,
+  MEMO_VISIBILITY,
+  memoAdditionalActionItems,
+  memoVisibilityItems
 } from "@/constants/memo";
 import { IVuetifyForm } from "@/models/common";
 import { TagModel } from "@/models/tag";
 import { useMemoStore } from "@/store/memos";
-import { computed } from "vue";
-import { reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 
 interface Props {
   initialContent?: string | null;
@@ -242,14 +241,14 @@ const handleAction = (action: string) => {
   switch (action) {
     case MEMO_ADDITIONAL_ACTIONS.ADD_CODE_BLOCK:
       if (state.content) {
-        state.content += DEFAULT_CODE_BLOCK;
+        state.content += `\n${DEFAULT_CODE_BLOCK}`;
       } else {
         state.content = DEFAULT_CODE_BLOCK;
       }
       break;
     case MEMO_ADDITIONAL_ACTIONS.ADD_CHECKLIST:
       if (state.content) {
-        state.content += DEFAULT_CHECK_LIST;
+        state.content += `\n${DEFAULT_CHECK_LIST}`;
       } else {
         state.content = DEFAULT_CHECK_LIST;
       }

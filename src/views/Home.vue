@@ -2,46 +2,12 @@
   <v-container class="main-ctr">
     <mobile-drawer-controls />
     <memo-entry />
-    <v-row
-      v-if="memoStore.filterActive"
-      class="ml-1 my-3 d-flex align-center"
-    >
-      <v-icon color="grey"> mdi-filter-outline </v-icon>
-      <span class="text-subtitle-2 ml-1 text-grey"> Filter: </span>
-      <v-chip
-        v-if="memoStore.searchText"
-        color="orange"
-        class="ml-2"
-        label
-        closable
-        @click:close="memoStore.removeFilter(MEMO_FILTERS.SEARCH_TEXT)"
-      >
-        <v-icon
-          icon="mdi-magnify"
-          start
-        />
-        {{ memoStore.searchText }}
-      </v-chip>
-      <v-chip
-        v-for="tag in memoStore.filterTags"
-        :key="tag.id"
-        :color="tag.color"
-        class="ml-2"
-        label
-        closable
-        @click:close="memoStore.removeFilter(MEMO_FILTERS.TAG, tag.id)"
-      >
-        <v-icon
-          icon="mdi-tag-outline"
-          :color="tag.color"
-          start
-        />
-        {{ tag.content }}
-      </v-chip>
-    </v-row>
+    <v-expand-transition>
+      <active-filters v-if="memoStore.filterActive" />
+    </v-expand-transition>
     <v-row v-if="state.loading">
       <v-progress-circular
-        class="mt-6 mx-auto"
+        class="my-6 mx-auto"
         color="orange"
         size="50"
         indeterminate
@@ -71,12 +37,12 @@
 </template>
 
 <script setup lang="ts">
+import ActiveFilters from "@/components/activeFilters/ActiveFilters.vue";
 import Memo from "@/components/memo/Memo.vue";
 import MemoEntry from "@/components/memoEntry/MemoEntry.vue";
 import MobileDrawerControls from "@/components/mobileDrawerControls/MobileDrawerControls.vue";
 import { useMemoStore } from "@/store/memos";
 import { onMounted, reactive } from "vue";
-import { MEMO_FILTERS } from "@/constants/memo";
 
 interface State {
   loading: boolean;

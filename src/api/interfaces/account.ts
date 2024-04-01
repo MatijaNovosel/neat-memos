@@ -1,5 +1,5 @@
-import { IUserAccount } from "@/models/user";
+import { UserDataModel } from "@/models/user";
 
 export interface IAccountService {
-  getUserData(): Promise<IUserAccount>;
+  getUserData(userId: string): Promise<UserDataModel>;
 }

@@ -1,3 +1,4 @@
+import { createClient } from "@supabase/supabase-js";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useTheme } from "vuetify";
@@ -13,6 +14,10 @@ export const useAppStore = defineStore(
 
     // Composables
     const theme = useTheme();
+    const supabase = createClient(
+      import.meta.env.VITE_SUPABASE_URL as string,
+      import.meta.env.VITE_SUPABASE_ANON as string
+    );
 
     const setLoading = (data: boolean) => {
       loading.value = data;
@@ -45,12 +50,14 @@ export const useAppStore = defineStore(
       rightDrawer,
       darkMode,
       toggleDarkMode,
-      setTheme
+      setTheme,
+      supabase
     };
   },
   {
     persist: {
-      storage: sessionStorage
+      storage: sessionStorage,
+      paths: ["darkMode"]
     }
   }
 );
