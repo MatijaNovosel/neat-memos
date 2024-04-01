@@ -94,6 +94,7 @@
           variant="text"
           color="grey"
           class="mr-2"
+          @click="openImageDialog"
           icon
         >
           <v-icon> mdi-image-outline </v-icon>
@@ -109,6 +110,7 @@
           density="compact"
           variant="text"
           color="grey"
+          @click="addReference"
           icon
         >
           <v-icon> mdi-link-variant </v-icon>
@@ -197,6 +199,7 @@ import {
 import { IVuetifyForm } from "@/models/common";
 import { TagModel } from "@/models/tag";
 import { useMemoStore } from "@/store/memos";
+import { useFileDialog } from "@vueuse/core";
 import { computed, reactive, ref } from "vue";
 
 interface Props {
@@ -221,6 +224,15 @@ interface State {
 const memoForm = ref<IVuetifyForm>();
 
 const memoStore = useMemoStore();
+
+const {
+  files,
+  open: openImageDialog,
+  reset,
+  onChange: onImageDialogChange
+} = useFileDialog({
+  accept: "image/*"
+});
 
 const state: State = reactive({
   content: props.initialContent || null,
@@ -292,7 +304,19 @@ const addToSelectedTags = (tag: TagModel) => {
   state.selectedTags.push(tag);
 };
 
-const interactionDisabled = computed(() => {
-  return props.disabled || props.readonly;
+const addReference = () => {
+  const reference =
+    "[Plenky](https://vlada.gov.hr/UserDocsImages//00%20Foto%20mobitel/Europski%20semestar/%C4%8Clanovi%20Vlade/5%20%C4%8Clanovi%20Vlade%20-%2015%20Vlada%20RH/Plenkovi%C4%87.jpg)";
+  if (state.content) {
+    state.content += `\n${reference}`;
+  } else {
+    state.content = reference;
+  }
+};
+
+const interactionDisabled = computed(() => props.disabled || props.readonly);
+
+onImageDialogChange((file) => {
+  console.log(file);
 });
 </script>

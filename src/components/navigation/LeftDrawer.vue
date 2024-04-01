@@ -18,9 +18,9 @@
     <template #prepend>
       <v-list-item
         class="text-subtitle-2"
-        prepend-avatar="https://vlada.gov.hr/UserDocsImages//00%20Foto%20mobitel/Europski%20semestar/%C4%8Clanovi%20Vlade/5%20%C4%8Clanovi%20Vlade%20-%2015%20Vlada%20RH/Plenkovi%C4%87.jpg"
+        prepend-avatar="/plenky.jpg"
       >
-        Matija
+        {{ userStore.user?.userName || "Undefined" }}
       </v-list-item>
     </template>
     <v-list
