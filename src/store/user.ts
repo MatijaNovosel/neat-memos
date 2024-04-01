@@ -3,6 +3,7 @@ import { AuthService } from "@/api/services/auth";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { IUserAccount, TokenModel } from "../models/user";
+import { useAppStore } from "./app";
 import { useMemoStore } from "./memos";
 
 export const useUserStore = defineStore(
@@ -20,6 +21,7 @@ export const useUserStore = defineStore(
 
     // Stores
     const memoStore = useMemoStore();
+    const appStore = useAppStore();
 
     const login = async (email: string, password: string): Promise<void> => {
       const response = await authService.signInWithEmailAndPassword(email, password);
@@ -32,8 +34,8 @@ export const useUserStore = defineStore(
       };
     };
 
-    const register = async (email: string, password: string) => {
-      await authService.registerWithEmailAndPassword(email, password);
+    const register = async (email: string, password: string, username: string) => {
+      await authService.registerWithEmailAndPassword(email, password, username);
     };
 
     const setToken = (tokenModel: TokenModel) => {
@@ -49,6 +51,7 @@ export const useUserStore = defineStore(
       user.value = null;
       token.value = null;
       permissions.value = [];
+      appStore.setTheme("light");
       memoStore.setMemos([]);
       memoStore.setTags([]);
       memoStore.setSearchText(null);

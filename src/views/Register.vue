@@ -7,10 +7,10 @@
       color="transparent"
       class="pa-5 mx-auto"
     >
-      <div class="text-center text-h1 text-orange mb-5">🐈</div>
-      <div class="text-center text-h4 text-orange mb-5 font-weight-bold">Neat memos</div>
+      <logo-header />
+      <div class="text-center mb-3">Create your account</div>
       <vv-form
-        ref="loginForm"
+        ref="registerForm"
         as="v-form"
         @submit="login"
       >
@@ -22,9 +22,9 @@
             <vv-field
               v-slot="{ field, errors }"
               v-model="state.userName"
-              name="username"
-              rules="required"
-              :label="i18n.t('username')"
+              name="register-username"
+              rules="required|min:3"
+              label="Username"
             >
               <v-text-field
                 v-bind="field"
@@ -33,7 +33,31 @@
                 density="compact"
                 hide-details="auto"
                 :error-messages="errors"
-                :label="i18n.t('username')"
+                prepend-icon="mdi-account-outline"
+                placeholder="Username"
+              />
+            </vv-field>
+          </v-col>
+          <v-col
+            cols="12"
+            class="my-2"
+          >
+            <vv-field
+              v-slot="{ field, errors }"
+              v-model="state.email"
+              name="register-email"
+              rules="required|email"
+              label="Email"
+            >
+              <v-text-field
+                v-bind="field"
+                clearable
+                variant="filled"
+                density="compact"
+                hide-details="auto"
+                prepend-icon="mdi-email-outline"
+                :error-messages="errors"
+                placeholder="Email"
               />
             </vv-field>
           </v-col>
@@ -44,8 +68,8 @@
             <vv-field
               v-slot="{ field, errors }"
               v-model="state.password"
-              name="password"
-              rules="required"
+              name="register-password"
+              rules="required|min:6"
               :label="i18n.t('password')"
             >
               <v-text-field
@@ -55,23 +79,17 @@
                 density="compact"
                 hide-details="auto"
                 :error-messages="errors"
+                prepend-icon="mdi-lock-outline"
                 :append-inner-icon="state.showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="state.showPassword ? 'text' : 'password'"
-                :label="i18n.t('password')"
+                :placeholder="i18n.t('password')"
                 @click:append-inner="state.showPassword = !state.showPassword"
               />
             </vv-field>
           </v-col>
-          <v-col cols="12">
-            <v-checkbox
-              color="orange"
-              hide-details
-              label="Remember me"
-            />
-          </v-col>
           <v-col
             cols="12"
-            class="text-center mb-4"
+            class="text-center my-4"
           >
             <v-btn
               variant="flat"
@@ -79,45 +97,33 @@
               color="orange-darken-1"
               rounded="md"
             >
-              {{ i18n.t("login") }}
+              Register
             </v-btn>
           </v-col>
           <v-col
             cols="12"
             class="text-center text-caption"
           >
-            Don't have an account?
+            Already have an account?
             <router-link
               class="text-orange text-decoration-none font-weight-bold"
-              :to="{}"
+              :to="{
+                name: ROUTE_NAMES.LOGIN
+              }"
             >
-              Sign up
+              Sign in
             </router-link>
           </v-col>
         </v-row>
       </vv-form>
     </v-card>
-    <div class="d-flex flex-column flex-md-row md:flex-row bottom-box mx-auto">
-      <v-select
-        density="compact"
-        hide-details
-        prepend-inner-icon="mdi-earth"
-        label="Language"
-        class="mr-md-3 mb-3 mb-md-0"
-      />
-      <v-select
-        hide-details
-        prepend-inner-icon="mdi-moon-waning-crescent"
-        :items="THEME_OPTIONS"
-        v-model="state.selectedTheme"
-        density="compact"
-        @update:model-value="updateTheme"
-      />
-    </div>
+    <bottom-options />
   </div>
 </template>
 
 <script setup lang="ts">
+import BottomOptions from "@/components/bottomOptions/BottomOptions.vue";
+import LogoHeader from "@/components/logoHeader/LogoHeader.vue";
 import { useNotifications } from "@/composables/useNotifications";
 import { IVuetifyForm } from "@/models/common";
 import ROUTE_NAMES from "@/router/routeNames";
@@ -125,66 +131,63 @@ import { useAppStore } from "@/store/app";
 import { useUserStore } from "@/store/user";
 import { reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
-import { THEME_OPTIONS } from "@/constants/app";
-import { onMounted } from "vue";
 
 interface State {
   showPassword: boolean;
   userName: string | null;
+  email: string | null;
   password: string | null;
-  selectedTheme: string | null;
 }
 
-const loginForm = ref<IVuetifyForm>();
+const registerForm = ref<IVuetifyForm>();
 const userStore = useUserStore();
 const appStore = useAppStore();
 const i18n = useI18n();
-const router = useRouter();
 const { smAndDown } = useDisplay();
 const { alert } = useNotifications();
 
 const state: State = reactive({
   userName: null,
   password: null,
-  showPassword: false,
-  selectedTheme: null
+  email: null,
+  showPassword: false
 });
 
 const resetForm = () => {
   state.userName = null;
   state.password = null;
-  if (loginForm.value) {
-    loginForm.value?.resetForm();
+  state.email = null;
+  if (registerForm.value) {
+    registerForm.value?.resetForm();
   }
 };
 
 const login = async () => {
-  if (!loginForm.value || !(await loginForm.value.validate()).valid) {
+  if (!registerForm.value || !(await registerForm.value.validate()).valid) {
     return;
   }
-  appStore.setLoading(true);
-  await userStore.login(state.userName as string, state.password as string);
-  setTimeout(() => {
+  try {
+    appStore.setLoading(true);
+    await userStore.register(
+      state.email as string,
+      state.password as string,
+      state.userName as string
+    );
+    alert({
+      text: "Account created!"
+    });
+  } catch (e) {
+    console.log(e);
+    alert({
+      text: `Failed to register! ${e}`,
+      type: "error"
+    });
+  } finally {
     resetForm();
     appStore.setLoading(false);
-    router.push({
-      name: ROUTE_NAMES.HOME
-    });
-    alert({
-      text: "Welcome!"
-    });
-  }, 1000);
+  }
 };
-
-const updateTheme = () => {
-  appStore.setTheme(state.selectedTheme || "light");
-};
-
-onMounted(() => {
-  state.selectedTheme = appStore.darkMode ? "dark" : "light";
-});
 </script>
 
 <style scoped>

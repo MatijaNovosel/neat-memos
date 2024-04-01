@@ -17,7 +17,7 @@ const routes: RouteRecordRaw[] = [
         }
       },
       {
-        path: "",
+        path: "register",
         name: ROUTE_NAMES.REGISTER,
         component: () => import("../views/Register.vue"),
         meta: {

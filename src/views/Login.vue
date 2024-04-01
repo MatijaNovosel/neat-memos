@@ -7,8 +7,7 @@
       color="transparent"
       class="pa-5 mx-auto"
     >
-      <div class="text-center text-h1 text-orange mb-5">🐈</div>
-      <div class="text-center text-h4 text-orange mb-5 font-weight-bold">Neat memos</div>
+      <logo-header />
       <vv-form
         ref="loginForm"
         as="v-form"
@@ -22,7 +21,7 @@
             <vv-field
               v-slot="{ field, errors }"
               v-model="state.email"
-              name="email"
+              name="login-email"
               rules="required|email"
               label="Email"
             >
@@ -32,6 +31,7 @@
                 variant="filled"
                 density="compact"
                 hide-details="auto"
+                prepend-icon="mdi-email-outline"
                 :error-messages="errors"
                 placeholder="Email"
               />
@@ -44,7 +44,7 @@
             <vv-field
               v-slot="{ field, errors }"
               v-model="state.password"
-              name="password"
+              name="login-password"
               rules="required"
               :label="i18n.t('password')"
             >
@@ -54,6 +54,7 @@
                 variant="filled"
                 density="compact"
                 hide-details="auto"
+                prepend-icon="mdi-lock-outline"
                 :error-messages="errors"
                 :append-inner-icon="state.showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="state.showPassword ? 'text' : 'password'"
@@ -89,7 +90,9 @@
             Don't have an account?
             <router-link
               class="text-orange text-decoration-none font-weight-bold"
-              :to="{}"
+              :to="{
+                name: ROUTE_NAMES.REGISTER
+              }"
             >
               Sign up
             </router-link>
@@ -97,34 +100,19 @@
         </v-row>
       </vv-form>
     </v-card>
-    <div class="d-flex flex-column flex-md-row md:flex-row bottom-box mx-auto">
-      <v-select
-        density="compact"
-        hide-details
-        prepend-inner-icon="mdi-earth"
-        label="Language"
-        class="mr-md-3 mb-3 mb-md-0"
-      />
-      <v-select
-        hide-details
-        prepend-inner-icon="mdi-moon-waning-crescent"
-        :items="THEME_OPTIONS"
-        v-model="state.selectedTheme"
-        density="compact"
-        @update:model-value="updateTheme"
-      />
-    </div>
+    <bottom-options />
   </div>
 </template>
 
 <script setup lang="ts">
+import BottomOptions from "@/components/bottomOptions/BottomOptions.vue";
+import LogoHeader from "@/components/logoHeader/LogoHeader.vue";
 import { useNotifications } from "@/composables/useNotifications";
-import { THEME_OPTIONS } from "@/constants/app";
 import { IVuetifyForm } from "@/models/common";
 import ROUTE_NAMES from "@/router/routeNames";
 import { useAppStore } from "@/store/app";
 import { useUserStore } from "@/store/user";
-import { onMounted, reactive, ref } from "vue";
+import { reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
@@ -133,7 +121,6 @@ interface State {
   showPassword: boolean;
   email: string | null;
   password: string | null;
-  selectedTheme: string | null;
 }
 
 const loginForm = ref<IVuetifyForm>();
@@ -147,8 +134,7 @@ const { alert } = useNotifications();
 const state: State = reactive({
   email: null,
   password: null,
-  showPassword: false,
-  selectedTheme: null
+  showPassword: false
 });
 
 const resetForm = () => {
@@ -183,14 +169,6 @@ const login = async () => {
     appStore.setLoading(false);
   }
 };
-
-const updateTheme = () => {
-  appStore.setTheme(state.selectedTheme || "light");
-};
-
-onMounted(() => {
-  state.selectedTheme = appStore.darkMode ? "dark" : "light";
-});
 </script>
 
 <style scoped>

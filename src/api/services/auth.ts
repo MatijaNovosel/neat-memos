@@ -11,7 +11,11 @@ export class AuthService implements IAuthService {
     this.appStore = appStore;
   }
 
-  async registerWithEmailAndPassword(email: string, password: string): Promise<void> {
+  async registerWithEmailAndPassword(
+    email: string,
+    password: string,
+    username: string
+  ): Promise<void> {
     const { data, error } = await this.appStore.supabase.auth.signUp({
       email,
       password
@@ -22,15 +26,12 @@ export class AuthService implements IAuthService {
     }
 
     // Create data table
-    const { error: dataTableError } = await this.appStore.supabase
-      .from("memos")
-      .insert([
-        {
-          username: email.split("@")[0],
-          userId: data.user!.id
-        }
-      ])
-      .select();
+    const { error: dataTableError } = await this.appStore.supabase.from("userData").insert([
+      {
+        username,
+        userId: data.user!.id
+      }
+    ]);
 
     if (dataTableError) {
       throw dataTableError;
