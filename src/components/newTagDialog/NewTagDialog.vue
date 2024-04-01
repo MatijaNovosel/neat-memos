@@ -26,7 +26,7 @@
             v-slot="{ field, errors }"
             v-model="state.tagContent"
             name="username"
-            rules="required"
+            :rules="`required|min:3|must_not_be_in_array:${tagNames}`"
             label="Tag name"
           >
             <v-text-field
@@ -106,7 +106,7 @@
 <script setup lang="ts">
 import { IVuetifyForm } from "@/models/common";
 import { useMemoStore } from "@/store/memos";
-import { reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import { useDisplay, useTheme } from "vuetify";
 
 interface State {
@@ -148,4 +148,8 @@ const saveTag = async () => {
 const deleteTag = async (id: number) => {
   await memoStore.deleteTag(id);
 };
+
+const tagNames = computed(() => {
+  return memoStore.tags.map((t) => t.content);
+});
 </script>

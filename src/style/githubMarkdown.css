@@ -561,7 +561,7 @@
 .markdown-body table,
 .markdown-body ul {
   margin-top: 0;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 .markdown-body hr {
@@ -747,7 +747,7 @@
 }
 
 .markdown-body li > p {
-  margin-top: 16px;
+  margin-top: 8px;
 }
 
 .markdown-body li + li {
@@ -791,15 +791,6 @@
 
 .markdown-body table td > :last-child {
   margin-bottom: 0;
-}
-
-.markdown-body table tr {
-  background-color: var(--bgColor-default, var(--color-canvas-default));
-  border-top: 1px solid var(--borderColor-muted, var(--color-border-muted));
-}
-
-.markdown-body table tr:nth-child(2n) {
-  background-color: var(--bgColor-muted, var(--color-canvas-subtle));
 }
 
 .markdown-body table img {
