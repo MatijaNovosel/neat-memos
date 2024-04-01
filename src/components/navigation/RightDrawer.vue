@@ -97,7 +97,7 @@
         class="text-grey text-caption mt-1"
         v-else
       >
-        No tags found.
+        No tags found! 🙀
       </div>
     </div>
   </v-navigation-drawer>

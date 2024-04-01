@@ -70,7 +70,10 @@
       </v-card-text>
       <v-card-text class="pt-2 pb-4">
         <span class="text-grey text-subtitle-2"> All tags </span>
-        <div class="d-flex flex-wrap flex-gap mt-2">
+        <div
+          class="d-flex flex-wrap flex-gap mt-2"
+          v-if="memoStore.tags.length"
+        >
           <v-chip
             density="compact"
             :color="tag.color"
@@ -88,6 +91,12 @@
             </v-icon>
             <span> {{ tag.content }} </span>
           </v-chip>
+        </div>
+        <div
+          class="text-grey text-subtitle-1 mt-2"
+          v-else
+        >
+          No tags found! 🙀
         </div>
       </v-card-text>
     </v-card>
