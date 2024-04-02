@@ -14,7 +14,7 @@
         v-slot="{ field, errors }"
         v-model="state.content"
         name="username"
-        rules="required|max:2048"
+        rules="required|max:2048|min:3"
         label="Content"
       >
         <v-textarea
