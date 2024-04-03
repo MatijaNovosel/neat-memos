@@ -15,7 +15,10 @@ export class TagService implements ITagService {
     const { data, error } = await this.appStore.supabase
       .from("tags")
       .select("id, content, color")
-      .eq("userId", userId);
+      .eq("userId", userId)
+      .order("createdAt", {
+        ascending: false
+      });
 
     if (error) {
       throw error;

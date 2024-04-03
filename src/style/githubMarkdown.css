@@ -785,7 +785,7 @@
 
 .markdown-body table td,
 .markdown-body table th {
-  padding: 6px 13px;
+  padding: 4px 8px;
   border: 1px solid var(--borderColor-default, var(--color-border-default));
 }
 
