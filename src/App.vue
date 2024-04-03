@@ -29,16 +29,19 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+import { onMounted } from "vue";
+import { useI18n } from "vue-i18n";
+import { useTheme } from "vuetify";
 import ConfirmationDialogProvider from "./components/confirmationDialog/ConfirmationDialogProvider.vue";
 import { useAppStore } from "./store/app";
-import { onMounted } from "vue";
-import { useTheme } from "vuetify";
 
 const appStore = useAppStore();
+const i18n = useI18n();
 const theme = useTheme();
 const { loading } = storeToRefs(appStore);
 
 onMounted(() => {
   theme.global.name.value = appStore.darkMode ? "dark" : "light";
+  i18n.locale.value = appStore.language;
 });
 </script>

@@ -1,18 +1,21 @@
+import i18n from "@/i18n";
+import { computed } from "vue";
+
 export const MEMO_VISIBILITY = {
   PRIVATE: 1,
   PUBLIC: 2
 };
 
-export const memoVisibilityItems = [
+export const memoVisibilityItems = computed(() => [
   {
-    title: "Private",
+    title: i18n.global.t("private"),
     value: MEMO_VISIBILITY.PRIVATE
   },
   {
-    title: "Public",
+    title: i18n.global.t("public"),
     value: MEMO_VISIBILITY.PUBLIC
   }
-];
+]);
 
 export const MEMO_ACTIONS = {
   PIN: "pin",
@@ -22,38 +25,32 @@ export const MEMO_ACTIONS = {
   SHARE: "share"
 };
 
-export const memoActionItems = [
+export const memoActionItems = computed(() => [
   {
     icon: "mdi-pin",
-    text: "Pin",
+    text: i18n.global.t("pin"),
     type: MEMO_ACTIONS.PIN,
     color: "grey"
   },
   {
     icon: "mdi-delete-outline",
-    text: "Delete",
+    text: i18n.global.t("delete"),
     type: MEMO_ACTIONS.DELETE,
     color: "red"
   },
   {
-    icon: "mdi-archive-outline",
-    text: "Archive",
-    type: MEMO_ACTIONS.ARCHIVE,
-    color: "orange"
-  },
-  {
     icon: "mdi-pencil",
-    text: "Edit",
+    text: i18n.global.t("edit"),
     type: MEMO_ACTIONS.EDIT,
     color: "grey"
   },
   {
     icon: "mdi-share",
-    text: "Share",
+    text: i18n.global.t("share"),
     type: MEMO_ACTIONS.SHARE,
     color: "grey"
   }
-];
+]);
 
 export const MEMO_ADDITIONAL_ACTIONS = {
   PREVIEW: "preview",
@@ -61,26 +58,26 @@ export const MEMO_ADDITIONAL_ACTIONS = {
   ADD_CHECKLIST: "addChecklist"
 };
 
-export const memoAdditionalActionItems = [
+export const memoAdditionalActionItems = computed(() => [
   {
     icon: "mdi-view-module",
-    text: "Preview",
+    text: i18n.global.t("preview"),
     type: MEMO_ADDITIONAL_ACTIONS.PREVIEW,
     color: "grey"
   },
   {
     icon: "mdi-code-braces",
-    text: "Add code block",
+    text: i18n.global.t("addCodeBlock"),
     type: MEMO_ADDITIONAL_ACTIONS.ADD_CODE_BLOCK,
     color: "grey"
   },
   {
     icon: "mdi-checkbox-marked",
-    text: "Add checklist",
+    text: i18n.global.t("addTaskList"),
     type: MEMO_ADDITIONAL_ACTIONS.ADD_CHECKLIST,
     color: "grey"
   }
-];
+]);
 
 export const DEFAULT_CODE_BLOCK = `\`\`\`javascript
 const x = 1;

@@ -10,7 +10,7 @@
     <template #prepend>
       <v-text-field
         class="bg-white"
-        placeholder="Search memos"
+        :placeholder="i18n.t('searchMemos')"
         density="compact"
         hide-details
         variant="filled"
@@ -26,7 +26,7 @@
       flat
     >
       <v-card-title class="text-subtitle-1 font-weight-bold text-grey pb-1">
-        Statistics
+        {{ i18n.t("statistics") }}
       </v-card-title>
       <v-card-text class="px-0 pb-3">
         <v-list-item density="compact">
@@ -36,7 +36,7 @@
           >
             mdi-calendar
           </v-icon>
-          Days
+          {{ i18n.t("days") }}
           <template #append> {{ memoStore.dayCount }} </template>
         </v-list-item>
         <v-list-item density="compact">
@@ -46,7 +46,7 @@
           >
             mdi-bookshelf
           </v-icon>
-          Memos
+          {{ i18n.t("memos") }}
           <template #append> {{ memoStore.memoCount }} </template>
         </v-list-item>
         <v-list-item density="compact">
@@ -56,14 +56,14 @@
           >
             mdi-tag-outline
           </v-icon>
-          Tags
+          {{ i18n.t("tags") }}
           <template #append> {{ memoStore.tagCount }} </template>
         </v-list-item>
       </v-card-text>
     </v-card>
     <div class="mt-4 ml-2">
       <div class="d-flex items-center align-center">
-        <span class="text-subtitle-1 text-grey"> Tags </span>
+        <span class="text-subtitle-1 text-grey"> {{ i18n.t("tags") }} </span>
         <v-btn
           class="ml-2"
           variant="text"
@@ -97,7 +97,7 @@
         class="text-grey text-caption mt-1"
         v-else
       >
-        No tags found! 🙀
+        {{ i18n.t("noTagsFound") }} 🙀
       </div>
     </div>
   </v-navigation-drawer>
@@ -108,12 +108,14 @@ import { TagModel } from "@/models/tag";
 import { useAppStore } from "@/store/app";
 import { useMemoStore } from "@/store/memos";
 import { reactive, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { useDisplay, useTheme } from "vuetify";
 
 const { mdAndUp } = useDisplay();
 const appStore = useAppStore();
 const memoStore = useMemoStore();
 const theme = useTheme();
+const i18n = useI18n();
 
 const state = reactive({
   drawer: mdAndUp.value ? true : false

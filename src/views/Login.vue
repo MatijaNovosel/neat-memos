@@ -23,7 +23,7 @@
               v-model="state.email"
               name="login-email"
               rules="required|email"
-              label="Email"
+              :label="i18n.t('email')"
             >
               <v-text-field
                 v-bind="field"
@@ -33,7 +33,7 @@
                 hide-details="auto"
                 prepend-icon="mdi-email-outline"
                 :error-messages="errors"
-                placeholder="Email"
+                :placeholder="i18n.t('email')"
               />
             </vv-field>
           </v-col>
@@ -67,7 +67,7 @@
             <v-checkbox
               color="orange"
               hide-details
-              label="Remember me"
+              :label="i18n.t('rememberMe')"
             />
           </v-col>
           <v-col
@@ -87,14 +87,14 @@
             cols="12"
             class="text-center text-caption"
           >
-            Don't have an account?
+            {{ i18n.t("dontHaveAnAccount") }}
             <router-link
               class="text-orange text-decoration-none font-weight-bold"
               :to="{
                 name: ROUTE_NAMES.REGISTER
               }"
             >
-              Sign up
+              {{ i18n.t("signUp") }}
             </router-link>
           </v-col>
         </v-row>
@@ -156,11 +156,11 @@ const login = async () => {
       name: ROUTE_NAMES.HOME
     });
     alert({
-      text: "Welcome!"
+      text: i18n.t("welcome")
     });
   } catch (e) {
     alert({
-      text: `Failed to log in! ${e}`,
+      text: i18n.t("failedToLogIn", [e]),
       type: "error"
     });
   } finally {

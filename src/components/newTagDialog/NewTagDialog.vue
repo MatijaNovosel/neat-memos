@@ -8,7 +8,7 @@
   >
     <v-card>
       <v-card-title class="d-flex items-center align-center pt-4 px-6">
-        <span> Tags </span>
+        <span> {{ i18n.t("tags") }} </span>
         <v-spacer />
         <v-btn
           icon="mdi-close"
@@ -34,7 +34,7 @@
               v-model="state.tagContent"
               v-bind="field"
               density="compact"
-              placeholder="Tag name"
+              :placeholder="i18n.t('tagName')"
               hide-details="auto"
               :error-messages="errors"
             >
@@ -70,7 +70,7 @@
         </vv-form>
       </v-card-text>
       <v-card-text class="pt-2 pb-4">
-        <span class="text-grey text-subtitle-2"> All tags </span>
+        <span class="text-grey text-subtitle-2"> {{ i18n.t("allTags") }} </span>
         <div
           class="d-flex flex-wrap flex-gap mt-2"
           v-if="memoStore.tags.length"
@@ -97,7 +97,7 @@
           class="text-grey text-subtitle-1 mt-2"
           v-else
         >
-          No tags found! 🙀
+          {{ i18n.t("noTagsFound") }} 🙀
         </div>
       </v-card-text>
     </v-card>
@@ -108,6 +108,7 @@
 import { IVuetifyForm } from "@/models/common";
 import { useMemoStore } from "@/store/memos";
 import { computed, reactive, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { useDisplay, useTheme } from "vuetify";
 
 interface State {
@@ -119,6 +120,7 @@ const tagForm = ref<IVuetifyForm | null>(null);
 
 const theme = useTheme();
 const memoStore = useMemoStore();
+const i18n = useI18n();
 const { smAndDown } = useDisplay();
 
 const state: State = reactive({

@@ -7,11 +7,28 @@
       border
     >
       <v-card-text class="d-flex flex-column flex-gap">
+        <div class="text-grey">
+          {{ i18n.t("userData") }}
+        </div>
+        <v-text-field
+          prepend-inner-icon="mdi-account-outline"
+          hide-details
+          density="compact"
+          :placeholder="i18n.t('username')"
+        />
+      </v-card-text>
+      <v-card-text class="d-flex flex-column flex-gap">
+        <div class="text-grey">
+          {{ i18n.t("appPreferences") }}
+        </div>
         <v-select
           prepend-inner-icon="mdi-earth"
           hide-details
           density="compact"
-          placeholder="Language"
+          v-model="state.language"
+          :items="LANGUAGE_OPTIONS"
+          :placeholder="i18n.t('language')"
+          @update:model-value="updateLanguage"
         />
         <v-select
           prepend-inner-icon="mdi-moon-waning-crescent"
@@ -19,7 +36,7 @@
           density="compact"
           v-model="state.theme"
           :items="THEME_OPTIONS"
-          placeholder="Theme"
+          :placeholder="i18n.t('theme')"
           @update:model-value="updateTheme"
         />
       </v-card-text>
@@ -28,28 +45,36 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from "@/store/app";
-import { THEME_OPTIONS } from "@/constants/app";
-import { reactive } from "vue";
-import { onMounted } from "vue";
 import MobileDrawerControls from "@/components/mobileDrawerControls/MobileDrawerControls.vue";
+import { LANGUAGE_OPTIONS, THEME_OPTIONS } from "@/constants/app";
+import { useAppStore } from "@/store/app";
+import { onMounted, reactive } from "vue";
+import { useI18n } from "vue-i18n";
 
 interface State {
   theme: string | null;
+  language: string | null;
 }
 
+const i18n = useI18n();
 const appStore = useAppStore();
 
 const state: State = reactive({
-  theme: null
+  theme: null,
+  language: null
 });
 
 const updateTheme = () => {
   appStore.setTheme(state.theme || "light");
 };
 
+const updateLanguage = () => {
+  appStore.setLanguage(state.language || "en");
+};
+
 onMounted(() => {
   state.theme = appStore.darkMode ? "dark" : "light";
+  state.language = appStore.language;
 });
 </script>
 

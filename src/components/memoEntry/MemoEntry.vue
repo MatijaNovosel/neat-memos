@@ -13,9 +13,9 @@
       <vv-field
         v-slot="{ field, errors }"
         v-model="state.content"
-        name="username"
+        name="content"
         rules="required|max:2048|min:3"
-        label="Content"
+        :label="i18n.t('content')"
       >
         <v-textarea
           :readonly="props.readonly"
@@ -27,7 +27,7 @@
           rows="1"
           variant="plain"
           v-model="state.content"
-          placeholder="Any thoughts..."
+          :placeholder="i18n.t('anyThoughts')"
         />
       </vv-field>
       <div class="mt-4">
@@ -68,7 +68,7 @@
             activator="parent"
             location="start"
           >
-            Additional actions
+            {{ i18n.t("additionalActions") }}
           </v-tooltip>
         </v-btn>
         <v-btn
@@ -85,7 +85,7 @@
             activator="parent"
             location="start"
           >
-            Add tag
+            {{ i18n.t("addTag") }}
           </v-tooltip>
         </v-btn>
         <v-btn
@@ -102,7 +102,7 @@
             activator="parent"
             location="start"
           >
-            Add image
+            {{ i18n.t("addImage") }}
           </v-tooltip>
         </v-btn>
         <v-btn
@@ -118,7 +118,7 @@
             activator="parent"
             location="start"
           >
-            Add reference
+            {{ i18n.t("addReference") }}
           </v-tooltip>
         </v-btn>
       </div>
@@ -156,7 +156,7 @@
             prepend-inner-icon="mdi-lock-outline"
             density="compact"
             hide-details
-            placeholder="Visibility"
+            :placeholder="i18n.t('visibility')"
             :items="memoVisibilityItems"
             v-model="state.memoVisibility"
             class="mr-5 flex-shrink"
@@ -175,7 +175,7 @@
             variant="flat"
             class="text-capitalize"
           >
-            Save
+            {{ i18n.t("save") }}
             <v-icon
               icon="mdi-send-outline"
               class="ml-2"
@@ -201,6 +201,7 @@ import { TagModel } from "@/models/tag";
 import { useMemoStore } from "@/store/memos";
 import { useFileDialog } from "@vueuse/core";
 import { computed, reactive, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { useTheme } from "vuetify";
 
 interface Props {
@@ -227,6 +228,7 @@ const theme = useTheme();
 const memoForm = ref<IVuetifyForm>();
 
 const memoStore = useMemoStore();
+const i18n = useI18n();
 
 const {
   files,
@@ -286,7 +288,7 @@ const saveMemo = async () => {
   if (!memoForm.value || !(await memoForm.value.validate()).valid) {
     return;
   }
-  const content = state.content || "No content";
+  const content = state.content || i18n.t("noContent");
   if (memoStore.activeMemo) {
     await memoStore.editMemo(content, state.selectedTags);
   } else {

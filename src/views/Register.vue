@@ -8,7 +8,9 @@
       class="pa-5 mx-auto"
     >
       <logo-header />
-      <div class="text-center mb-3">Create your account</div>
+      <div class="text-center mb-3">
+        {{ i18n.t("createYourAccount") }}
+      </div>
       <vv-form
         ref="registerForm"
         as="v-form"
@@ -24,7 +26,7 @@
               v-model="state.userName"
               name="register-username"
               rules="required|min:3|alpha_num"
-              label="Username"
+              :label="i18n.t('username')"
             >
               <v-text-field
                 v-bind="field"
@@ -34,7 +36,7 @@
                 hide-details="auto"
                 :error-messages="errors"
                 prepend-icon="mdi-account-outline"
-                placeholder="Username"
+                :placeholder="i18n.t('username')"
               />
             </vv-field>
           </v-col>
@@ -47,7 +49,7 @@
               v-model="state.email"
               name="register-email"
               rules="required|email"
-              label="Email"
+              :label="i18n.t('email')"
             >
               <v-text-field
                 v-bind="field"
@@ -57,7 +59,7 @@
                 hide-details="auto"
                 prepend-icon="mdi-email-outline"
                 :error-messages="errors"
-                placeholder="Email"
+                :placeholder="i18n.t('email')"
               />
             </vv-field>
           </v-col>
@@ -97,21 +99,21 @@
               color="orange-darken-1"
               rounded="md"
             >
-              Register
+              {{ i18n.t("register") }}
             </v-btn>
           </v-col>
           <v-col
             cols="12"
             class="text-center text-caption"
           >
-            Already have an account?
+            {{ i18n.t("alreadyHaveAnAccount") }}
             <router-link
               class="text-orange text-decoration-none font-weight-bold"
               :to="{
                 name: ROUTE_NAMES.LOGIN
               }"
             >
-              Sign in
+              {{ i18n.t("signIn") }}
             </router-link>
           </v-col>
         </v-row>
@@ -175,11 +177,11 @@ const login = async () => {
       state.userName as string
     );
     alert({
-      text: "Account created!"
+      text: i18n.t("accountCreated")
     });
   } catch (e) {
     alert({
-      text: `Failed to register! ${e}`,
+      text: i18n.t("failedToRegister", [e]),
       type: "error"
     });
   } finally {
