@@ -57,6 +57,10 @@ export default {
   public: "Javno",
   addTaskList: "Dodaj popis zadataka",
   noDataFound: "Nema podataka",
+  memoSaved: "Zapis spremljen!",
+  memoDeleted: "Zapis izbrisan!",
+  tagDeleted: "Oznaka izbrisana!",
+  tagSaved: "Oznaka spremljena!",
   languages: {
     hr: "Hrvatski",
     en: "Engleski",

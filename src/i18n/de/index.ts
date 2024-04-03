@@ -59,6 +59,10 @@ export default {
   dark: "Dunkel",
   licht: "Licht",
   noDataFound: "Keine Daten gefunden",
+  memoSaved: "Notiz gespeichert!",
+  memoDeleted: "Notiz gelöscht!",
+  tagDeleted: "Tag gelöscht!",
+  tagSaved: "Tag gespeichert!",
   languages: {
     hr: "Kroatisch",
     en: "Englisch",

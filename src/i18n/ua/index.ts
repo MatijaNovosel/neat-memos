@@ -59,6 +59,10 @@ export default {
   dark: "Темний",
   light: "Світлий",
   noDataFound: "Дані не знайдено",
+  memoSaved: "Запис збережено!",
+  memoDeleted: "Запис видалено!",
+  tagDeleted: "Тег видалено!",
+  tagSaved: "Тег збережено!",
   languages: {
     hr: "Хорватська",
     en: "Англійська",

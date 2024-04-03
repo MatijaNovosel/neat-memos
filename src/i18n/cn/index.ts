@@ -59,6 +59,10 @@ export default {
   dark: "暗",
   light: "亮",
   noDataFound: "没有找到数据",
+  memoSaved: "备忘录已保存!",
+  memoDeleted: "备忘录已删除!",
+  tagDeleted: "标签已删除!",
+  tagSaved: "标签已保存!",
   languages: {
     hr: "克罗地亚语",
     en: "英语",

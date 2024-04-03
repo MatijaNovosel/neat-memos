@@ -59,6 +59,10 @@ export default {
   dark: "暗い",
   light: "明るい",
   noDataFound: "データが見つかりませんでした",
+  memoSaved: "メモが保存されました!",
+  memoDeleted: "メモが削除されました!",
+  tagDeleted: "タグが削除されました!",
+  tagSaved: "タグが保存されました!",
   languages: {
     hr: "クロアチア語",
     en: "英語",

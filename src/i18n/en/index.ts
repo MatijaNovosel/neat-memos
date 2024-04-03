@@ -59,6 +59,10 @@ export default {
   dark: "Dark",
   light: "Light",
   noDataFound: "No data found",
+  memoSaved: "Memo saved!",
+  memoDeleted: "Memo deleted!",
+  tagDeleted: "Tag deleted!",
+  tagSaved: "Tag saved!",
   languages: {
     hr: "Croatian",
     en: "English",
