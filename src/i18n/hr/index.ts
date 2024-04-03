@@ -61,6 +61,8 @@ export default {
   memoDeleted: "Zapis izbrisan!",
   tagDeleted: "Oznaka izbrisana!",
   tagSaved: "Oznaka spremljena!",
+  light: "Svjetlo",
+  dark: "Tamno",
   languages: {
     hr: "Hrvatski",
     en: "Engleski",
