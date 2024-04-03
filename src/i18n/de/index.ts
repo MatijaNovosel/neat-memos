@@ -58,6 +58,7 @@ export default {
   addTaskList: "Aufgabenliste hinzufügen",
   dark: "Dunkel",
   licht: "Licht",
+  noDataFound: "Keine Daten gefunden",
   languages: {
     hr: "Kroatisch",
     en: "Englisch",

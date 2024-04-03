@@ -58,6 +58,7 @@ export default {
   addTaskList: "Add task list",
   dark: "Dark",
   light: "Light",
+  noDataFound: "No data found",
   languages: {
     hr: "Croatian",
     en: "English",

@@ -58,6 +58,7 @@ export default {
   addTaskList: "タスクリストを追加",
   dark: "暗い",
   light: "明るい",
+  noDataFound: "データが見つかりませんでした",
   languages: {
     hr: "クロアチア語",
     en: "英語",

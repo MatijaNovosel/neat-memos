@@ -58,6 +58,7 @@ export default {
   addTaskList: "添加任务列表",
   dark: "暗",
   light: "亮",
+  noDataFound: "没有找到数据",
   languages: {
     hr: "克罗地亚语",
     en: "英语",

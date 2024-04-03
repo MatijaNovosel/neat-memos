@@ -18,7 +18,7 @@
       v-if="!memoStore.filteredMemos.length && !state.loading"
     >
       <span class="text-h1 mb-5"> 😿 </span>
-      <span class="text-h6"> No data found. </span>
+      <span class="text-h6"> {{ i18n.t("noDataFound") }}. </span>
     </div>
     <v-row
       v-else
@@ -43,12 +43,14 @@ import MemoEntry from "@/components/memoEntry/MemoEntry.vue";
 import MobileDrawerControls from "@/components/mobileDrawerControls/MobileDrawerControls.vue";
 import { useMemoStore } from "@/store/memos";
 import { onMounted, reactive } from "vue";
+import { useI18n } from "vue-i18n";
 
 interface State {
   loading: boolean;
 }
 
 const memoStore = useMemoStore();
+const i18n = useI18n();
 
 const state: State = reactive({
   loading: false

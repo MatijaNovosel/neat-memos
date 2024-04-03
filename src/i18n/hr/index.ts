@@ -56,6 +56,7 @@ export default {
   private: "Privatno",
   public: "Javno",
   addTaskList: "Dodaj popis zadataka",
+  noDataFound: "Nema podataka",
   languages: {
     hr: "Hrvatski",
     en: "Engleski",

@@ -58,6 +58,7 @@ export default {
   addTaskList: "Додати список завдань",
   dark: "Темний",
   light: "Світлий",
+  noDataFound: "Дані не знайдено",
   languages: {
     hr: "Хорватська",
     en: "Англійська",
