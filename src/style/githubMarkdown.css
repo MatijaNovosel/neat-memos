@@ -772,6 +772,7 @@
 }
 
 .markdown-body table {
+  border-collapse: collapse;
   display: block;
   width: 100%;
   width: max-content;
