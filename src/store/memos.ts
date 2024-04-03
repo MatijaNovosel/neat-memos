@@ -3,11 +3,11 @@ import { ResourcesService } from "@/api/services/resources";
 import { TagService } from "@/api/services/tag";
 import { useNotifications } from "@/composables/useNotifications";
 import { MEMO_FILTERS } from "@/constants/memo";
+import i18n from "@/i18n";
 import { MemoModel } from "@/models/memo";
 import { TagModel } from "@/models/tag";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { useI18n } from "vue-i18n";
 import { useUserStore } from "./user";
 
 export const useMemoStore = defineStore(
@@ -34,7 +34,6 @@ export const useMemoStore = defineStore(
 
     // Stores
     const userStore = useUserStore();
-    const i18n = useI18n();
 
     // Composables
     const { alert } = useNotifications();
@@ -75,7 +74,7 @@ export const useMemoStore = defineStore(
         ...tags.value
       ]);
       alert({
-        text: i18n.t("tagSaved")
+        text: i18n.global.t("tagSaved")
       });
     };
 
@@ -94,7 +93,7 @@ export const useMemoStore = defineStore(
         memo.content = content;
         memo.tags = tags;
         alert({
-          text: i18n.t("memoSaved")
+          text: i18n.global.t("memoSaved")
         });
         setActiveMemo(null);
         closeEditDialog();
@@ -120,7 +119,7 @@ export const useMemoStore = defineStore(
         ...memos.value
       ]);
       alert({
-        text: i18n.t("memoSaved")
+        text: i18n.global.t("memoSaved")
       });
     };
 
@@ -128,7 +127,7 @@ export const useMemoStore = defineStore(
       await memoService.deleteMemo(id);
       memos.value = memos.value.filter((m) => m.id !== id);
       alert({
-        text: i18n.t("memoDeleted")
+        text: i18n.global.t("memoDeleted")
       });
     };
 
@@ -141,7 +140,7 @@ export const useMemoStore = defineStore(
         }
       });
       alert({
-        text: i18n.t("tagDeleted")
+        text: i18n.global.t("tagDeleted")
       });
     };
 
