@@ -8,7 +8,7 @@
       class="align-center justify-center"
     >
       <v-progress-circular
-        color="primary"
+        color="orange"
         indeterminate
         size="160"
         width="16"
