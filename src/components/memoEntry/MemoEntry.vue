@@ -127,21 +127,29 @@
           class="d-flex flex-wrap flex-gap mt-3"
           v-if="state.tagMenuExpanded"
         >
-          <v-chip
-            density="compact"
-            :color="isInSelectedTags(tag.id) ? tag.color : 'grey'"
-            v-for="tag in memoStore.tags"
-            :key="tag.id"
-            @click="addToSelectedTags(tag)"
-          >
-            <v-icon
-              class="mr-2"
-              size="15"
+          <template v-if="memoStore.tags.length">
+            <v-chip
+              density="compact"
+              :color="isInSelectedTags(tag.id) ? tag.color : 'grey'"
+              v-for="tag in memoStore.tags"
+              :key="tag.id"
+              @click="addToSelectedTags(tag)"
             >
-              mdi-pound
-            </v-icon>
-            <span> {{ tag.content }} </span>
-          </v-chip>
+              <v-icon
+                class="mr-2"
+                size="15"
+              >
+                mdi-pound
+              </v-icon>
+              <span> {{ tag.content }} </span>
+            </v-chip>
+          </template>
+          <div
+            class="text-grey text-subtitle-2"
+            v-else
+          >
+            {{ i18n.t("noTagsFound") }}
+          </div>
         </div>
       </v-expand-transition>
       <v-divider class="mt-3" />
@@ -321,7 +329,12 @@ const addReference = () => {
 
 const interactionDisabled = computed(() => props.disabled || props.readonly);
 
-onImageDialogChange((file) => {
-  console.log(file);
+onImageDialogChange(async (files) => {
+  if (files) {
+    const file = files[0];
+    console.log({ file });
+    const path = await memoStore.uploadFile(file);
+    console.log({ path });
+  }
 });
 </script>

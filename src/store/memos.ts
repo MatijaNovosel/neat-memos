@@ -1,4 +1,5 @@
 import { MemoService } from "@/api/services/memos";
+import { ResourcesService } from "@/api/services/resources";
 import { TagService } from "@/api/services/tag";
 import { useNotifications } from "@/composables/useNotifications";
 import { MEMO_FILTERS } from "@/constants/memo";
@@ -26,6 +27,7 @@ export const useMemoStore = defineStore("memos", () => {
   // Services
   const memoService = new MemoService();
   const tagService = new TagService();
+  const resourcesService = new ResourcesService();
 
   // Stores
   const userStore = useUserStore();
@@ -192,6 +194,12 @@ export const useMemoStore = defineStore("memos", () => {
     searchText.value = data;
   };
 
+  const uploadFile = async (file: File) => {
+    // const path = await resourcesService.uploadFile(file);
+    // return path;
+    return "";
+  };
+
   const removeFilter = (filterType: number, tagId?: number) => {
     switch (filterType) {
       case MEMO_FILTERS.SEARCH_TEXT:
@@ -288,6 +296,7 @@ export const useMemoStore = defineStore("memos", () => {
     deleteTag,
     dayCount,
     setPreviewMemo,
-    previewMemo
+    previewMemo,
+    uploadFile
   };
 });
