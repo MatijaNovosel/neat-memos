@@ -18,7 +18,7 @@
         :label="i18n.t('content')"
       >
         <v-textarea
-          :readonly="props.readonly"
+          :readonly="props.readonly || state.loading"
           auto-grow
           v-bind="field"
           hide-details="auto"
