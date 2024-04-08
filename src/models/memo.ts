@@ -7,6 +7,7 @@ export interface MemoModel {
   content: string;
   pinned: boolean;
   tags?: TagModel[];
+  files?: File[] | MemoFile[];
 }
 
 export interface UpdateMemoModel {
@@ -21,4 +22,12 @@ export interface CreateMemoModel {
   content: string;
   userId: string;
   tagIds: number[];
+}
+
+export interface MemoFile {
+  id: string;
+  name: string;
+  size: number;
+  url: string;
+  createdAt: string;
 }

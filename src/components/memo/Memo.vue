@@ -75,6 +75,26 @@
         <span> {{ tag.content }} </span>
       </v-chip>
     </v-card-text>
+    <template v-if="props.data.files && props.data.files.length">
+      <v-divider />
+      <v-card-text class="d-flex flex-wrap flex-gap">
+        <v-chip
+          @click="downloadFile(file)"
+          color="orange"
+          density="compact"
+          v-for="(file, i) in props.data.files"
+          :key="i"
+        >
+          <v-icon
+            class="mr-1"
+            size="14"
+          >
+            mdi-paperclip
+          </v-icon>
+          {{ file.name }}
+        </v-chip>
+      </v-card-text>
+    </template>
   </v-card>
 </template>
 
@@ -82,8 +102,9 @@
 import MarkdownRenderer from "@/components/markdownRenderer/MarkdownRenderer.vue";
 import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
 import { MEMO_ACTIONS, memoActionItems } from "@/constants/memo";
+import { downloadFileFromUrl } from "@/helpers/file";
 import { capitalize } from "@/helpers/string";
-import { MemoModel } from "@/models/memo";
+import { MemoFile, MemoModel } from "@/models/memo";
 import { useMemoStore } from "@/store/memos";
 import { format, formatRelative, isToday } from "date-fns";
 import { computed } from "vue";
@@ -128,4 +149,9 @@ const createdAtFormatted = computed(() => {
     return format(date, "dd.MM.yyyy. HH:mm");
   }
 });
+
+const downloadFile = (file: File | MemoFile) => {
+  if ("id" in file) downloadFileFromUrl(file.url, file.name);
+  else downloadFile(file);
+};
 </script>

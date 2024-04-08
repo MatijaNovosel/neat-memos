@@ -45,7 +45,7 @@ export default {
   noContent: "No content",
   visibility: "Visibility",
   addTag: "Add tag",
-  addImage: "Add image",
+  addFile: "Add file",
   addReference: "Add reference",
   pin: "Pin",
   delete: "Delete",

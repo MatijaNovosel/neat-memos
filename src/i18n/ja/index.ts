@@ -45,7 +45,7 @@ export default {
   noContent: "内容がありません",
   visibility: "可視性",
   addTag: "タグを追加",
-  addImage: "画像を追加",
+  addFile: "ファイルを追加する",
   addReference: "参照を追加",
   pin: "ピン",
   delete: "削除",

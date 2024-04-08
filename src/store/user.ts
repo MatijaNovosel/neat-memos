@@ -47,7 +47,7 @@ export const useUserStore = defineStore(
       return userData;
     };
 
-    const logOut = () => {
+    const logOut = async () => {
       user.value = null;
       token.value = null;
       permissions.value = [];
@@ -55,6 +55,7 @@ export const useUserStore = defineStore(
       memoStore.setMemos([]);
       memoStore.setTags([]);
       memoStore.setSearchText(null);
+      await appStore.supabase.auth.signOut();
     };
 
     return {

@@ -32,7 +32,7 @@
       </vv-field>
       <div class="mt-4">
         <v-btn
-          :disabled="props.readonly"
+          :disabled="interactionDisabled"
           density="compact"
           variant="text"
           color="grey"
@@ -97,12 +97,12 @@
           @click="openImageDialog"
           icon
         >
-          <v-icon> mdi-image-outline </v-icon>
+          <v-icon> mdi-paperclip </v-icon>
           <v-tooltip
             activator="parent"
             location="start"
           >
-            {{ i18n.t("addImage") }}
+            {{ i18n.t("addFile") }}
           </v-tooltip>
         </v-btn>
         <v-btn
@@ -129,6 +129,7 @@
         >
           <template v-if="memoStore.tags.length">
             <v-chip
+              :disabled="interactionDisabled"
               density="compact"
               :color="isInSelectedTags(tag.id) ? tag.color : 'grey'"
               v-for="tag in memoStore.tags"
@@ -137,9 +138,9 @@
             >
               <v-icon
                 class="mr-2"
-                size="15"
+                size="18"
               >
-                mdi-pound
+                {{ isInSelectedTags(tag.id) ? "mdi-pound-box" : "mdi-pound-box-outline" }}
               </v-icon>
               <span> {{ tag.content }} </span>
             </v-chip>
@@ -153,6 +154,28 @@
         </div>
       </v-expand-transition>
       <v-divider class="mt-3" />
+      <div
+        class="mt-3 d-flex flex-wrap flex-gap"
+        v-if="state.files.length"
+      >
+        <v-chip
+          :disabled="interactionDisabled"
+          color="orange"
+          closable
+          density="compact"
+          @click:close="removeFile(i)"
+          v-for="(file, i) in state.files"
+          :key="i"
+        >
+          <v-icon
+            class="mr-1"
+            size="14"
+          >
+            mdi-paperclip
+          </v-icon>
+          {{ file.name }}
+        </v-chip>
+      </div>
       <v-row
         no-gutters
         align="center"
@@ -180,6 +203,7 @@
             rounded="lg"
             :color="interactionDisabled ? 'grey' : 'orange'"
             type="submit"
+            :loading="state.loading"
             variant="flat"
             class="text-capitalize"
           >
@@ -225,10 +249,12 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 interface State {
+  files: File[];
   content: string | null;
   memoVisibility: number;
   selectedTags: TagModel[];
   tagMenuExpanded: boolean;
+  loading: boolean;
 }
 
 const theme = useTheme();
@@ -241,25 +267,30 @@ const i18n = useI18n();
 const {
   files,
   open: openImageDialog,
-  reset,
+  reset: resetFileDialog,
   onChange: onImageDialogChange
 } = useFileDialog({
-  accept: "image/*"
+  accept: "image/*",
+  multiple: true
 });
 
 const state: State = reactive({
+  files: [],
   content: props.initialContent || null,
   memoVisibility: MEMO_VISIBILITY.PRIVATE,
   selectedTags: [...(props.initialTags || [])],
-  tagMenuExpanded: true
+  tagMenuExpanded: true,
+  loading: false
 });
 
 const resetMemoForm = () => {
   state.content = null;
   state.selectedTags = [];
+  state.files = [];
   if (memoForm.value) {
     memoForm.value?.resetForm();
   }
+  resetFileDialog();
 };
 
 const handleAction = (action: string) => {
@@ -296,13 +327,18 @@ const saveMemo = async () => {
   if (!memoForm.value || !(await memoForm.value.validate()).valid) {
     return;
   }
-  const content = state.content || i18n.t("noContent");
-  if (memoStore.activeMemo) {
-    await memoStore.editMemo(content, state.selectedTags);
-  } else {
-    await memoStore.saveMemo(content, state.selectedTags);
+  try {
+    state.loading = true;
+    const content = state.content || i18n.t("noContent");
+    if (memoStore.activeMemo) {
+      await memoStore.editMemo(content, state.selectedTags);
+    } else {
+      await memoStore.saveMemo(content, state.selectedTags, state.files);
+    }
+    resetMemoForm();
+  } finally {
+    state.loading = false;
   }
-  resetMemoForm();
 };
 
 const isInSelectedTags = (tagId: number) => {
@@ -327,14 +363,16 @@ const addReference = () => {
   }
 };
 
-const interactionDisabled = computed(() => props.disabled || props.readonly);
+const removeFile = (i: number) => {
+  state.files.splice(i, 1);
+};
+
+const interactionDisabled = computed(() => props.disabled || props.readonly || state.loading);
 
 onImageDialogChange(async (files) => {
   if (files) {
-    const file = files[0];
-    console.log({ file });
-    const path = await memoStore.uploadFile(file);
-    console.log({ path });
+    state.files.push(...files);
+    resetFileDialog();
   }
 });
 </script>

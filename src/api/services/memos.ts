@@ -1,7 +1,7 @@
-import { CreateMemoModel, MemoModel, UpdateMemoModel } from "@/models/memo";
-import { IMemoService } from "../interfaces/memos";
-import { useAppStore } from "@/store/app";
 import { PiniaStore } from "@/constants/types";
+import { CreateMemoModel, MemoModel, UpdateMemoModel } from "@/models/memo";
+import { useAppStore } from "@/store/app";
+import { IMemoService } from "../interfaces/memos";
 
 export class MemoService implements IMemoService {
   appStore: PiniaStore<typeof useAppStore>;
@@ -102,17 +102,25 @@ export class MemoService implements IMemoService {
     return id;
   }
 
-  async deleteMemo(id: number): Promise<void> {
+  async deleteMemo(id: number, fileIds: string[]): Promise<void> {
     const { error } = await this.appStore.supabase.from("memos").delete().eq("id", id);
     if (error) {
       throw error;
+    }
+
+    const { error: fileDeleteError } = await this.appStore.supabase.storage
+      .from("neatMemos")
+      .remove(fileIds);
+
+    if (fileDeleteError) {
+      throw fileDeleteError;
     }
   }
 
   async getMemos(userId: string): Promise<MemoModel[]> {
     const { data, error } = await this.appStore.supabase
       .from("memos")
-      .select("id, createdAt, content, userId, pinned, tags ( id, content, color)")
+      .select("id, createdAt, content, userId, pinned, tags ( id, content, color), resources (*)")
       .eq("userId", userId);
 
     if (error) {
@@ -124,7 +132,8 @@ export class MemoService implements IMemoService {
     }
 
     return data.map<MemoModel>((memo) => ({
-      ...memo
+      ...memo,
+      files: memo.resources
     }));
   }
 }

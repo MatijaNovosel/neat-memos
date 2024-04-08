@@ -45,7 +45,7 @@ export default {
   noContent: "Kein Inhalt",
   visibility: "Sichtbarkeit",
   addTag: "Tag hinzufügen",
-  addImage: "Bild hinzufügen",
+  addFile: "Datei hinzufügen",
   addReference: "Referenz hinzufügen",
   pin: "Anheften",
   delete: "Löschen",

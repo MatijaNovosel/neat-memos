@@ -3,8 +3,9 @@ import { ResourcesService } from "@/api/services/resources";
 import { TagService } from "@/api/services/tag";
 import { useNotifications } from "@/composables/useNotifications";
 import { MEMO_FILTERS } from "@/constants/memo";
+import { getExtensionFromFileName } from "@/helpers/file";
 import i18n from "@/i18n";
-import { MemoModel } from "@/models/memo";
+import { MemoFile, MemoModel } from "@/models/memo";
 import { TagModel } from "@/models/tag";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -100,13 +101,28 @@ export const useMemoStore = defineStore(
       }
     };
 
-    const saveMemo = async (content: string, tags: TagModel[]) => {
+    const saveMemo = async (content: string, tags: TagModel[], files: File[]) => {
       const userId = userStore.user?.id as string;
       const id = await memoService.saveMemo({
         content,
         userId,
         tagIds: tags.map((x) => x.id)
       });
+      const uploadedFiles: MemoFile[] = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const uploadedFile = await resourcesService.uploadFile(files[i], id);
+        if (uploadedFile) {
+          uploadedFiles.push({
+            id: uploadedFile.id,
+            url: uploadedFile.url,
+            createdAt: new Date().toString(),
+            name: `${uploadedFile.id}.${getExtensionFromFileName(files[i].name)}`,
+            size: files[i].size
+          });
+        }
+      }
+
       setMemos([
         {
           content,
@@ -114,7 +130,8 @@ export const useMemoStore = defineStore(
           createdAt: new Date().toString(),
           userId,
           tags,
-          pinned: false
+          pinned: false,
+          files: uploadedFiles
         },
         ...memos.value
       ]);
@@ -124,7 +141,12 @@ export const useMemoStore = defineStore(
     };
 
     const deleteMemo = async (id: number) => {
-      await memoService.deleteMemo(id);
+      const fileIds: string[] = [];
+      const memo = memos.value.find((m) => m.id === id);
+      if (memo) {
+        (memo.files as MemoFile[]).forEach((f) => fileIds.push(f.id));
+      }
+      await memoService.deleteMemo(id, fileIds);
       memos.value = memos.value.filter((m) => m.id !== id);
       alert({
         text: i18n.global.t("memoDeleted")
@@ -197,10 +219,14 @@ export const useMemoStore = defineStore(
       searchText.value = data;
     };
 
-    const uploadFile = async (file: File) => {
+    const uploadFile = async (file: File, memoId: number) => {
       // const path = await resourcesService.uploadFile(file);
       // return path;
       return "";
+    };
+
+    const retrieveFile = async (id: string) => {
+      await resourcesService.retrieveFile(id);
     };
 
     const removeFilter = (filterType: number, tagId?: number) => {
@@ -302,7 +328,8 @@ export const useMemoStore = defineStore(
       dayCount,
       setPreviewMemo,
       previewMemo,
-      uploadFile
+      uploadFile,
+      retrieveFile
     };
   },
   {

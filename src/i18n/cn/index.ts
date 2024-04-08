@@ -45,7 +45,7 @@ export default {
   noContent: "无内容",
   visibility: "可见性",
   addTag: "添加标签",
-  addImage: "添加图片",
+  addFile: "添加文件",
   addReference: "添加参考",
   pin: "置顶",
   delete: "删除",

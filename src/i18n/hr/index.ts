@@ -45,7 +45,7 @@ export default {
   noContent: "Nema sadržaja",
   visibility: "Vidljivost",
   addTag: "Dodaj oznaku",
-  addImage: "Dodaj sliku",
+  addFile: "Dodaj datoteku",
   addReference: "Dodaj referencu",
   pin: "Prikvači",
   delete: "Obriši",

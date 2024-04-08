@@ -45,7 +45,7 @@ export default {
   noContent: "Немає вмісту",
   visibility: "Видимість",
   addTag: "Додати тег",
-  addImage: "Додати зображення",
+  addFile: "Додати файл",
   addReference: "Додати посилання",
   pin: "Закріпити",
   delete: "Видалити",

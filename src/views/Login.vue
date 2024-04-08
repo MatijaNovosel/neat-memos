@@ -21,11 +21,12 @@
             <vv-field
               v-slot="{ field, errors }"
               v-model="state.email"
-              name="login-email"
+              name="email"
               rules="required|email"
               :label="i18n.t('email')"
             >
               <v-text-field
+                type="email"
                 v-bind="field"
                 clearable
                 variant="filled"
@@ -44,7 +45,7 @@
             <vv-field
               v-slot="{ field, errors }"
               v-model="state.password"
-              name="login-password"
+              name="password"
               rules="required"
               :label="i18n.t('password')"
             >
