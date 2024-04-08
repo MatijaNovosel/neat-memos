@@ -161,9 +161,8 @@
         <v-chip
           :disabled="interactionDisabled"
           color="orange"
-          closable
           density="compact"
-          @click:close="removeFile(i)"
+          @click="removeFile(i)"
           v-for="(file, i) in state.files"
           :key="i"
         >
@@ -184,7 +183,7 @@
         <v-col cols="4">
           <v-select
             :disabled="interactionDisabled"
-            prepend-inner-icon="mdi-lock-outline"
+            prepend-inner-icon="mdi-eye"
             density="compact"
             hide-details
             :placeholder="i18n.t('visibility')"
@@ -220,6 +219,8 @@
 </template>
 
 <script lang="ts" setup>
+import { useNotifications } from "@/composables/useNotifications";
+import { MAX_FILE_SIZE } from "@/constants/app";
 import {
   DEFAULT_CHECK_LIST,
   DEFAULT_CODE_BLOCK,
@@ -229,6 +230,7 @@ import {
   memoVisibilityItems
 } from "@/constants/memo";
 import { IVuetifyForm } from "@/models/common";
+import { MemoFile } from "@/models/memo";
 import { TagModel } from "@/models/tag";
 import { useMemoStore } from "@/store/memos";
 import { useFileDialog } from "@vueuse/core";
@@ -239,6 +241,7 @@ import { useTheme } from "vuetify";
 interface Props {
   initialContent?: string | null;
   initialTags?: TagModel[];
+  initialFiles?: MemoFile[];
   readonly?: boolean;
   disabled?: boolean;
 }
@@ -249,7 +252,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 interface State {
-  files: File[];
+  files: File[] | MemoFile[];
   content: string | null;
   memoVisibility: number;
   selectedTags: TagModel[];
@@ -263,6 +266,7 @@ const memoForm = ref<IVuetifyForm>();
 
 const memoStore = useMemoStore();
 const i18n = useI18n();
+const { alert } = useNotifications();
 
 const {
   files,
@@ -270,12 +274,11 @@ const {
   reset: resetFileDialog,
   onChange: onImageDialogChange
 } = useFileDialog({
-  accept: "image/*",
   multiple: true
 });
 
 const state: State = reactive({
-  files: [],
+  files: props.initialFiles ? (props.initialFiles as MemoFile[]) : [],
   content: props.initialContent || null,
   memoVisibility: MEMO_VISIBILITY.PRIVATE,
   selectedTags: [...(props.initialTags || [])],
@@ -316,7 +319,8 @@ const handleAction = (action: string) => {
         createdAt: new Date().toISOString(),
         pinned: false,
         userId: "",
-        tags: state.selectedTags
+        tags: state.selectedTags,
+        files: state.files
       });
       memoStore.openPreviewDialog();
       break;
@@ -333,7 +337,7 @@ const saveMemo = async () => {
     if (memoStore.activeMemo) {
       await memoStore.editMemo(content, state.selectedTags);
     } else {
-      await memoStore.saveMemo(content, state.selectedTags, state.files);
+      await memoStore.saveMemo(content, state.selectedTags, state.files as File[]);
     }
     resetMemoForm();
   } finally {
@@ -363,15 +367,24 @@ const addReference = () => {
   }
 };
 
-const removeFile = (i: number) => {
-  state.files.splice(i, 1);
+const removeFile = (idx: number) => {
+  state.files = state.files.filter((f, i) => i !== idx) as File[];
 };
 
 const interactionDisabled = computed(() => props.disabled || props.readonly || state.loading);
 
 onImageDialogChange(async (files) => {
   if (files) {
-    state.files.push(...files);
+    for (const file of files) {
+      if (file.size < MAX_FILE_SIZE) {
+        (state.files as File[]).push(file);
+      } else {
+        alert({
+          text: "File too big! (Max 10MB)",
+          type: "error"
+        });
+      }
+    }
     resetFileDialog();
   }
 });

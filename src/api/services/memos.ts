@@ -108,12 +108,14 @@ export class MemoService implements IMemoService {
       throw error;
     }
 
-    const { error: fileDeleteError } = await this.appStore.supabase.storage
-      .from("neatMemos")
-      .remove(fileIds);
+    if (fileIds.length) {
+      const { error: fileDeleteError } = await this.appStore.supabase.storage
+        .from("neatMemos")
+        .remove(fileIds);
 
-    if (fileDeleteError) {
-      throw fileDeleteError;
+      if (fileDeleteError) {
+        throw fileDeleteError;
+      }
     }
   }
 

@@ -38,3 +38,5 @@ export const LANGUAGE_OPTIONS = computed(() => [
     value: "ua"
   }
 ]);
+
+export const MAX_FILE_SIZE = 10_000_000;

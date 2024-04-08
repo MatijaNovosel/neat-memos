@@ -1,5 +1,6 @@
 <template>
   <v-card
+    :loading="state.loading"
     flat
     :color="theme.current.value.dark ? '' : 'white'"
   >
@@ -53,7 +54,7 @@
       </v-btn>
     </div>
     <v-card-text class="pt-2">
-      <markdown-renderer :source="props.data.content" />
+      <markdown-renderer :source="props.data.content || 'No content'" />
     </v-card-text>
     <v-card-text
       class="pt-0 d-flex flex-gap"
@@ -81,7 +82,7 @@
         <v-chip
           @click="downloadFile(file)"
           color="orange"
-          closable
+          :closable="!props.readonly"
           @click:close="deleteFile(file)"
           density="compact"
           v-for="(file, i) in props.data.files"
@@ -109,12 +110,16 @@ import { capitalize } from "@/helpers/string";
 import { MemoFile, MemoModel } from "@/models/memo";
 import { useMemoStore } from "@/store/memos";
 import { format, formatRelative, isToday } from "date-fns";
-import { computed } from "vue";
+import { computed, reactive } from "vue";
 import { useTheme } from "vuetify";
 
 interface Props {
   data: MemoModel;
   readonly?: boolean;
+}
+
+interface State {
+  loading: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -125,7 +130,12 @@ const memoStore = useMemoStore();
 const theme = useTheme();
 const createConfirmationDialog = useConfirmationDialog();
 
+const state: State = reactive({
+  loading: false
+});
+
 const handleAction = async (action: string) => {
+  state.loading = true;
   switch (action) {
     case MEMO_ACTIONS.DELETE:
       const answer = await createConfirmationDialog();
@@ -141,6 +151,7 @@ const handleAction = async (action: string) => {
       memoStore.openEditDialog();
       break;
   }
+  state.loading = false;
 };
 
 const createdAtFormatted = computed(() => {
@@ -154,7 +165,7 @@ const createdAtFormatted = computed(() => {
 
 const downloadFile = (file: File | MemoFile) => {
   if ("id" in file) downloadFileFromUrl(file.url, file.name);
-  else downloadFile(file);
+  // else downloadFile(file);
 };
 
 const deleteFile = async (file: File | MemoFile) => {
