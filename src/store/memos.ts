@@ -153,6 +153,13 @@ export const useMemoStore = defineStore(
       });
     };
 
+    const deleteFile = async (id: string) => {
+      await resourcesService.deleteFile(id);
+      alert({
+        text: "File deleted!"
+      });
+    };
+
     const deleteTag = async (id: number) => {
       await tagService.deleteTag(id);
       tags.value = tags.value.filter((t) => t.id !== id);
@@ -329,7 +336,8 @@ export const useMemoStore = defineStore(
       setPreviewMemo,
       previewMemo,
       uploadFile,
-      retrieveFile
+      retrieveFile,
+      deleteFile
     };
   },
   {

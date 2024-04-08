@@ -81,6 +81,8 @@
         <v-chip
           @click="downloadFile(file)"
           color="orange"
+          closable
+          @click:close="deleteFile(file)"
           density="compact"
           v-for="(file, i) in props.data.files"
           :key="i"
@@ -153,5 +155,9 @@ const createdAtFormatted = computed(() => {
 const downloadFile = (file: File | MemoFile) => {
   if ("id" in file) downloadFileFromUrl(file.url, file.name);
   else downloadFile(file);
+};
+
+const deleteFile = async (file: File | MemoFile) => {
+  if ("id" in file) await memoStore.deleteFile(file.id);
 };
 </script>
