@@ -153,8 +153,12 @@ export const useMemoStore = defineStore(
       });
     };
 
-    const deleteFile = async (id: string) => {
+    const deleteFile = async (memoId: number, id: string) => {
       await resourcesService.deleteFile(id);
+      const memo = memos.value.find((m) => m.id === memoId);
+      if (memo && memo.files) {
+        memo.files = (memo.files as MemoFile[]).filter((f) => f.id !== id);
+      }
       alert({
         text: "File deleted!"
       });

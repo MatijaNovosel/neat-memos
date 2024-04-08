@@ -158,6 +158,6 @@ const downloadFile = (file: File | MemoFile) => {
 };
 
 const deleteFile = async (file: File | MemoFile) => {
-  if ("id" in file) await memoStore.deleteFile(file.id);
+  if ("id" in file) await memoStore.deleteFile(props.data.id, file.id);
 };
 </script>

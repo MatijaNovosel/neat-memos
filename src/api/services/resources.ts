@@ -21,6 +21,12 @@ export class ResourcesService implements IResourcesService {
     if (fileDeleteError) {
       throw fileDeleteError;
     }
+
+    const { error } = await this.appStore.supabase.from("resources").delete().eq("id", id);
+
+    if (error) {
+      throw error;
+    }
   }
 
   async retrieveFile(id: string): Promise<string> {
