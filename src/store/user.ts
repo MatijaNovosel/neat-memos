@@ -58,6 +58,10 @@ export const useUserStore = defineStore(
       await appStore.supabase.auth.signOut();
     };
 
+    const deleteAccount = async () => {
+      await authService.deleteAccount();
+    };
+
     return {
       user,
       permissions,
@@ -67,7 +71,8 @@ export const useUserStore = defineStore(
       setToken,
       getUserData,
       logOut,
-      register
+      register,
+      deleteAccount
     };
   },
   {

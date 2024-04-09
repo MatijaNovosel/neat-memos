@@ -11,6 +11,10 @@ export class AuthService implements IAuthService {
     this.appStore = appStore;
   }
 
+  deleteAccount(): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+
   async registerWithEmailAndPassword(
     email: string,
     password: string,

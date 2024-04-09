@@ -8,6 +8,7 @@ export default class ROUTE_NAMES {
   static readonly RESET_PASSWORD = "reset-password";
   static readonly SETTINGS = "settings";
   static readonly MEMO = "memo";
+  static readonly PRIVACY = "privacy";
 
   static readonly HOME = "home";
 }

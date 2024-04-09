@@ -57,6 +57,14 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: "memo.title"
         }
+      },
+      {
+        path: "privacy",
+        name: ROUTE_NAMES.PRIVACY,
+        component: () => import("../views/Privacy.vue"),
+        meta: {
+          title: "privacy.title"
+        }
       }
     ]
   }

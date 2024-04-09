@@ -89,6 +89,13 @@ const navItems = computed(() => [
     icon: "mdi-account-outline"
   },
   {
+    title: "Privacy",
+    icon: "mdi-eye",
+    to: {
+      name: ROUTE_NAMES.PRIVACY
+    }
+  },
+  {
     title: i18n.t("links.settings"),
     icon: "mdi-cogs",
     to: {
