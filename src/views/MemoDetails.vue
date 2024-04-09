@@ -40,11 +40,11 @@
 </template>
 
 <script lang="ts" setup>
+import { MemoService } from "@/api/services/memos";
 import Memo from "@/components/memo/Memo.vue";
 import MobileDrawerControls from "@/components/mobileDrawerControls/MobileDrawerControls.vue";
 import { MemoModel } from "@/models/memo";
 import ROUTE_NAMES from "@/router/routeNames";
-import { useMemoStore } from "@/store/memos";
 import { useUserStore } from "@/store/user";
 import { onMounted, reactive, watch } from "vue";
 import { useI18n } from "vue-i18n";
@@ -55,8 +55,6 @@ interface State {
   loading: boolean;
 }
 
-const memoStore = useMemoStore();
-
 const state: State = reactive({
   memo: null,
   loading: false
@@ -65,10 +63,11 @@ const state: State = reactive({
 const route = useRoute();
 const i18n = useI18n();
 const userStore = useUserStore();
+const memoService = new MemoService();
 
 const getMemo = async () => {
   state.loading = true;
-  const memo = await memoStore.getMemoById(parseInt(route.params.id as string));
+  const memo = await memoService.getMemo(parseInt(route.params.id as string));
   state.memo = memo;
   state.loading = false;
 };

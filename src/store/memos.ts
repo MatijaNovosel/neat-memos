@@ -3,7 +3,6 @@ import { ResourcesService } from "@/api/services/resources";
 import { TagService } from "@/api/services/tag";
 import { useNotifications } from "@/composables/useNotifications";
 import { MEMO_FILTERS } from "@/constants/memo";
-import { getExtensionFromFileName } from "@/helpers/file";
 import i18n from "@/i18n";
 import { MemoFile, MemoModel } from "@/models/memo";
 import { TagModel } from "@/models/tag";
@@ -59,11 +58,6 @@ export const useMemoStore = defineStore(
       setTags(data);
     };
 
-    const getMemoById = async (id: number) => {
-      const memo = await memoService.getMemo(id);
-      return memo;
-    };
-
     const saveTag = async (content: string, color: string) => {
       const userId = userStore.user?.id as string;
       const id = await tagService.saveTag({
@@ -117,13 +111,13 @@ export const useMemoStore = defineStore(
       const uploadedFiles: MemoFile[] = [];
 
       for (let i = 0; i < files.length; i++) {
-        const uploadedFile = await resourcesService.uploadFile(files[i], id);
+        const uploadedFile = await resourcesService.uploadFile(files[i], id, userStore.user!.id);
         if (uploadedFile) {
           uploadedFiles.push({
             id: uploadedFile.id,
             url: uploadedFile.url,
             createdAt: new Date().toString(),
-            name: `${uploadedFile.id}.${getExtensionFromFileName(files[i].name)}`,
+            name: files[i].name,
             size: files[i].size
           });
         }
@@ -244,8 +238,8 @@ export const useMemoStore = defineStore(
       return "";
     };
 
-    const retrieveFile = async (id: string) => {
-      await resourcesService.retrieveFile(id);
+    const getFile = async (id: string) => {
+      await resourcesService.getFile(id);
     };
 
     const removeFilter = (filterType: number, tagId?: number) => {
@@ -353,9 +347,8 @@ export const useMemoStore = defineStore(
       setPreviewMemo,
       previewMemo,
       uploadFile,
-      retrieveFile,
+      getFile,
       deleteFile,
-      getMemoById,
       clearFilters
     };
   },

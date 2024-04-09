@@ -82,7 +82,10 @@ const navItems = computed(() => [
   },
   {
     title: i18n.t("links.resources"),
-    icon: "mdi-paperclip"
+    icon: "mdi-paperclip",
+    to: {
+      name: ROUTE_NAMES.RESOURCES
+    }
   },
   {
     title: "Privacy",

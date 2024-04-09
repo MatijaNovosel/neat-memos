@@ -1,6 +1,6 @@
 import { PiniaStore } from "@/constants/types";
-import { getExtensionFromFileName } from "@/helpers/file";
 import { generateRandomString } from "@/helpers/misc";
+import { MemoFile } from "@/models/memo";
 import { ResourceUploadReturnDto } from "@/models/resources";
 import { useAppStore } from "@/store/app";
 import { IResourcesService } from "../interfaces/resources";
@@ -11,6 +11,19 @@ export class ResourcesService implements IResourcesService {
   constructor() {
     const appStore = useAppStore();
     this.appStore = appStore;
+  }
+
+  async getFiles(userId: string): Promise<MemoFile[]> {
+    const { data, error } = await this.appStore.supabase
+      .from("resources")
+      .select("*")
+      .eq("userId", userId);
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
   }
 
   async deleteFile(id: string): Promise<void> {
@@ -29,7 +42,7 @@ export class ResourcesService implements IResourcesService {
     }
   }
 
-  async retrieveFile(id: string): Promise<string> {
+  async getFile(id: string): Promise<string> {
     const { data: filePath, error } = await this.appStore.supabase.storage
       .from("neatMemos")
       .createSignedUrl(id, 3.156e8); // 10 years
@@ -41,7 +54,11 @@ export class ResourcesService implements IResourcesService {
     return filePath?.signedUrl;
   }
 
-  async uploadFile(file: File, memoId: number): Promise<ResourceUploadReturnDto | null> {
+  async uploadFile(
+    file: File,
+    memoId: number,
+    userId: string
+  ): Promise<ResourceUploadReturnDto | null> {
     const id = generateRandomString(6);
     const { data, error } = await this.appStore.supabase.storage
       .from("neatMemos")
@@ -58,15 +75,16 @@ export class ResourcesService implements IResourcesService {
       return null;
     }
 
-    const url = await this.retrieveFile(id);
+    const url = await this.getFile(id);
 
     const { error: fileSaveError } = await this.appStore.supabase.from("resources").insert([
       {
         id,
-        name: `${id}.${getExtensionFromFileName(file.name)}`,
+        name: file.name,
         size: file.size,
         url,
-        memoId
+        memoId,
+        userId
       }
     ]);
 

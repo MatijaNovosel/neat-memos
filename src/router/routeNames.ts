@@ -9,6 +9,7 @@ export default class ROUTE_NAMES {
   static readonly SETTINGS = "settings";
   static readonly MEMO = "memo";
   static readonly PRIVACY = "privacy";
+  static readonly RESOURCES = "resources";
 
   static readonly HOME = "home";
 }

@@ -66,6 +66,15 @@ const routes: RouteRecordRaw[] = [
           title: "privacy.title",
           auth: true
         }
+      },
+      {
+        path: "resources",
+        name: ROUTE_NAMES.RESOURCES,
+        component: () => import("../views/Resources.vue"),
+        meta: {
+          title: "resources.title",
+          auth: true
+        }
       }
     ]
   }
