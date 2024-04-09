@@ -15,7 +15,7 @@ export class MemoService implements IMemoService {
     const { data, error } = await this.appStore.supabase
       .from("memos")
       .select(
-        "id, createdAt, content, userId, pinned, private, tags ( id, content, color), resources (*)"
+        "id, createdAt, content, updatedAt, userId, pinned, private, tags ( id, content, color), resources (*)"
       )
       .eq("id", id);
 
@@ -146,7 +146,7 @@ export class MemoService implements IMemoService {
     const { data, error } = await this.appStore.supabase
       .from("memos")
       .select(
-        "id, createdAt, content, userId, pinned, private, tags ( id, content, color), resources (*)"
+        "id, createdAt, content, updatedAt, userId, pinned, private, tags ( id, content, color), resources (*)"
       )
       .eq("userId", userId);
 

@@ -3,6 +3,7 @@ import { TagModel } from "./tag";
 export interface MemoModel {
   id: number;
   createdAt: string;
+  updatedAt: string;
   userId: string;
   content: string;
   pinned: boolean;

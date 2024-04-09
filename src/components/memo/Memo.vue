@@ -4,15 +4,30 @@
     flat
     :color="theme.current.value.dark ? '' : 'white'"
   >
-    <div
-      class="d-flex justify-space-between align-center px-5 pt-3 text-subtitle-2 text-grey font-weight-regular"
-    >
+    <div class="d-flex justify-space-between align-center px-5 pt-3 text-grey font-weight-regular">
       <div class="d-flex align-center ml-n1">
-        <span> {{ createdAtFormatted }} </span>
-        <template v-if="props.data.pinned">
-          <span class="ml-2 mr-1"> • </span>
-          <v-icon color="amber"> mdi-bookmark-outline </v-icon>
-        </template>
+        <div class="d-flex flex-column">
+          <span class="d-flex align-center">
+            <span class="text-subtitle-2">
+              {{ createdAtFormatted }}
+            </span>
+            <template v-if="props.data.pinned">
+              <span class="ml-2 mr-1"> • </span>
+              <v-icon
+                size="18"
+                color="amber"
+              >
+                mdi-bookmark
+              </v-icon>
+            </template>
+          </span>
+          <span
+            v-if="!sameDate"
+            class="text-caption text-grey-lighten-1"
+          >
+            Updated {{ updatedAtFormatted }}
+          </span>
+        </div>
       </div>
       <v-btn
         variant="text"
@@ -174,13 +189,26 @@ const handleAction = async (action: string) => {
   state.loading = false;
 };
 
-const createdAtFormatted = computed(() => {
-  const date = new Date(props.data.createdAt);
+const dateFormatFn = (date: Date) => {
   if (isToday(date)) {
     return capitalize(formatRelative(date, new Date()));
   } else {
     return format(date, "dd.MM.yyyy. HH:mm");
   }
+};
+
+const sameDate = computed(() => {
+  return new Date(props.data.createdAt).getTime() === new Date(props.data.updatedAt).getTime();
+});
+
+const createdAtFormatted = computed(() => {
+  const date = new Date(props.data.createdAt);
+  return dateFormatFn(date);
+});
+
+const updatedAtFormatted = computed(() => {
+  const date = new Date(props.data.updatedAt);
+  return dateFormatFn(date);
 });
 
 const downloadFile = (file: File | MemoFile) => {
