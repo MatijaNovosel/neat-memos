@@ -6,6 +6,7 @@ export interface MemoModel {
   userId: string;
   content: string;
   pinned: boolean;
+  private: boolean;
   tags?: TagModel[];
   files?: File[] | MemoFile[];
 }

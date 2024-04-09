@@ -104,6 +104,7 @@
 <script setup lang="ts">
 import MarkdownRenderer from "@/components/markdownRenderer/MarkdownRenderer.vue";
 import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
+import { useNotifications } from "@/composables/useNotifications";
 import { MEMO_ACTIONS, memoActionItems } from "@/constants/memo";
 import { downloadFileFromUrl } from "@/helpers/file";
 import { capitalize } from "@/helpers/string";
@@ -131,6 +132,7 @@ const props = withDefaults(defineProps<Props>(), {
 const memoStore = useMemoStore();
 const theme = useTheme();
 const router = useRouter();
+const { alert } = useNotifications();
 const createConfirmationDialog = useConfirmationDialog();
 
 const state: State = reactive({
@@ -154,6 +156,13 @@ const handleAction = async (action: string) => {
       memoStore.openEditDialog();
       break;
     case MEMO_ACTIONS.SHARE:
+      if (props.data.private) {
+        alert({
+          text: "Cannot share, private memo!",
+          type: "error"
+        });
+        return;
+      }
       router.push({
         name: ROUTE_NAMES.MEMO,
         params: {

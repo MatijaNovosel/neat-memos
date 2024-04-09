@@ -14,7 +14,9 @@ export class MemoService implements IMemoService {
   async getMemo(id: number): Promise<MemoModel | null> {
     const { data, error } = await this.appStore.supabase
       .from("memos")
-      .select("id, createdAt, content, userId, pinned, tags ( id, content, color), resources (*)")
+      .select(
+        "id, createdAt, content, userId, pinned, private, tags ( id, content, color), resources (*)"
+      )
       .eq("id", id);
 
     if (error) {
@@ -143,7 +145,9 @@ export class MemoService implements IMemoService {
   async getMemos(userId: string): Promise<MemoModel[]> {
     const { data, error } = await this.appStore.supabase
       .from("memos")
-      .select("id, createdAt, content, userId, pinned, tags ( id, content, color), resources (*)")
+      .select(
+        "id, createdAt, content, userId, pinned, private, tags ( id, content, color), resources (*)"
+      )
       .eq("userId", userId);
 
     if (error) {
