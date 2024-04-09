@@ -27,6 +27,7 @@
             >
               <v-text-field
                 type="email"
+                :bg-color="theme.current.value.dark ? '' : 'white'"
                 v-bind="field"
                 clearable
                 variant="filled"
@@ -52,6 +53,7 @@
               <v-text-field
                 clearable
                 v-bind="field"
+                :bg-color="theme.current.value.dark ? '' : 'white'"
                 variant="filled"
                 density="compact"
                 hide-details="auto"
@@ -116,7 +118,7 @@ import { useUserStore } from "@/store/user";
 import { reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
-import { useDisplay } from "vuetify";
+import { useDisplay, useTheme } from "vuetify";
 
 interface State {
   showPassword: boolean;
@@ -129,6 +131,7 @@ const userStore = useUserStore();
 const appStore = useAppStore();
 const i18n = useI18n();
 const router = useRouter();
+const theme = useTheme();
 const { smAndDown } = useDisplay();
 const { alert } = useNotifications();
 
