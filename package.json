@@ -9,6 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/android": "^5.7.4",
+    "@capacitor/cli": "^5.7.4",
+    "@capacitor/core": "^5.7.4",
+    "@capacitor/ios": "^5.7.4",
     "@mdi/font": "^7.4.47",
     "@supabase/supabase-js": "^2.41.1",
     "@vee-validate/i18n": "^4.12.6",
