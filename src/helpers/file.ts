@@ -1,3 +1,5 @@
+import axios from "axios";
+
 /**
  * Returns a file extension from a file name.
  * @param {string} fileName - File name.
@@ -181,12 +183,10 @@ export function getContentDispositionName(response: { data?: BlobPart; headers? 
  * @param {string} url - File url.
  */
 export async function downloadFileFromUrl(url: string, fileName: string) {
-  const link = document.createElement("a");
-  link.href = url;
-  link.setAttribute("download", fileName);
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
+  const resp = await axios.get(url, {
+    responseType: "blob"
+  });
+  downloadBlob(resp, fileName);
 }
 
 /**
@@ -202,6 +202,21 @@ export async function downloadFile(file: File) {
     const link = document.createElement("a");
     link.href = fileURL;
     link.setAttribute("download", file.name);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
+}
+
+export function downloadBlob(response: { data: BlobPart }, fileName: string) {
+  if ((window.navigator as any).msSaveOrOpenBlob) {
+    // IE11
+    (window.navigator as any).msSaveOrOpenBlob(new Blob([response.data]), fileName);
+  } else {
+    const fileURL = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = fileURL;
+    link.setAttribute("download", fileName);
     document.body.appendChild(link);
     link.click();
     link.remove();

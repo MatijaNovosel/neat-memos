@@ -230,7 +230,7 @@ export const useMemoStore = defineStore(
       searchText.value = data;
     };
 
-    const uploadFile = async (file: File, memoId: number) => {
+    const uploadFile = async (file: File) => {
       // const path = await resourcesService.uploadFile(file);
       // return path;
       return "";
@@ -347,7 +347,7 @@ export const useMemoStore = defineStore(
   {
     persist: {
       storage: localStorage,
-      paths: ["tags"]
+      paths: ["tags", "memos"]
     }
   }
 );
