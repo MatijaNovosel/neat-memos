@@ -61,20 +61,20 @@
         </v-list-item>
       </v-card-text>
     </v-card>
-    <div class="mt-4 ml-2">
-      <div class="d-flex items-center align-center">
-        <span class="text-subtitle-1 text-grey"> {{ i18n.t("tags") }} </span>
-        <v-btn
-          class="ml-2"
-          variant="text"
-          icon="mdi-plus-box"
-          density="compact"
-          color="grey"
-          @click="memoStore.openTagDialog"
-        />
-      </div>
+    <div class="d-flex items-center align-center mt-3 ml-2">
+      <span class="text-subtitle-1 text-grey"> {{ i18n.t("tags") }} </span>
+      <v-btn
+        class="ml-2"
+        variant="text"
+        icon="mdi-plus-box"
+        density="compact"
+        color="grey"
+        @click="memoStore.openTagDialog"
+      />
+    </div>
+    <div class="mt-4 ml-2 overflow-auto">
       <div
-        class="mt-2 d-flex flex-column flex-gap"
+        class="d-flex flex-column flex-gap"
         v-if="memoStore.tags.length"
       >
         <v-chip
@@ -138,5 +138,10 @@ watch(
 <style scoped lang="scss">
 .right-drawer {
   border: 0;
+}
+
+:deep(.v-navigation-drawer__content) {
+  display: flex;
+  flex-direction: column;
 }
 </style>
