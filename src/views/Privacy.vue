@@ -1,5 +1,6 @@
 <template>
   <v-container class="main-ctr d-flex flex-column">
+    <mobile-drawer-controls hide-right />
     <v-card
       border
       flat
@@ -360,6 +361,7 @@
 </template>
 
 <script setup lang="ts">
+import MobileDrawerControls from "@/components/mobileDrawerControls/MobileDrawerControls.vue";
 import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
 
 const createConfirmationDialog = useConfirmationDialog();

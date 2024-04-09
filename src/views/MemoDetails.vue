@@ -1,5 +1,6 @@
 <template>
   <v-container class="main-ctr">
+    <mobile-drawer-controls hide-right />
     <v-row v-if="state.loading">
       <v-progress-circular
         class="my-6 mx-auto"
@@ -24,6 +25,7 @@
 
 <script lang="ts" setup>
 import Memo from "@/components/memo/Memo.vue";
+import MobileDrawerControls from "@/components/mobileDrawerControls/MobileDrawerControls.vue";
 import { MemoModel } from "@/models/memo";
 import { useMemoStore } from "@/store/memos";
 import { onMounted, reactive, watch } from "vue";
