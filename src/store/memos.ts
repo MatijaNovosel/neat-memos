@@ -98,6 +98,7 @@ export const useMemoStore = defineStore(
       if (memo) {
         memo.content = content;
         memo.tags = tags;
+        memo.updatedAt = new Date().toISOString();
         alert({
           text: i18n.global.t("memoSaved")
         });
