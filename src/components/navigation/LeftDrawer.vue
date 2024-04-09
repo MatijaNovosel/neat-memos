@@ -85,10 +85,6 @@ const navItems = computed(() => [
     icon: "mdi-paperclip"
   },
   {
-    title: i18n.t("links.profile"),
-    icon: "mdi-account-outline"
-  },
-  {
     title: "Privacy",
     icon: "mdi-eye",
     to: {
