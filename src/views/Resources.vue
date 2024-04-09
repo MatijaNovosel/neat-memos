@@ -41,8 +41,13 @@
               border
               class="pt-3"
             >
-              <div class="pl-5 pb-2 text-caption">
-                {{ file.name }}
+              <div class="pl-5 pb-2 d-flex flex-column">
+                <span class="text-subtitle-2">
+                  {{ file.name }}
+                </span>
+                <span class="text-grey text-caption">
+                  {{ formatDate(file.createdAt) }}
+                </span>
               </div>
               <v-divider />
               <div class="d-flex justify-end py-2 pr-3">
@@ -73,8 +78,10 @@
 <script setup lang="ts">
 import { ResourcesService } from "@/api/services/resources";
 import { getExtensionFromFileName } from "@/helpers/file";
+import { capitalize } from "@/helpers/string";
 import { MemoFile } from "@/models/memo";
 import { useUserStore } from "@/store/user";
+import { format, formatRelative, isToday } from "date-fns";
 import { computed, onMounted, reactive } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -107,6 +114,15 @@ const groupedFiles = computed(() => {
 
   return groups;
 });
+
+const formatDate = (date: string) => {
+  const d = new Date(date);
+  if (isToday(d)) {
+    return capitalize(formatRelative(d, new Date()));
+  } else {
+    return format(d, "dd.MM.yyyy. HH:mm");
+  }
+};
 
 const downloadFile = (file: MemoFile) => {
   //
