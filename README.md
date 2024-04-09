@@ -1,9 +1,6 @@
-# Vue 3 + TypeScript + Vite
+<p align=center>
+  <img src="https://user-images.githubusercontent.com/36193643/200551153-0bcf74d7-16b5-448e-8987-db0b820fb62a.png" width="200" height="200" />
+</p>
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-## Recommended Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Vue - Official](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (previously Volar) and disable Vetur
-
-- Use [vue-tsc](https://github.com/vuejs/language-tools/tree/master/packages/tsc) for performing the same type checking from the command line, or for generating d.ts files for SFCs.
+<h1 align=center>Neat memos</h1>
+<p align=center>A simple app for taking notes on the go.</p>

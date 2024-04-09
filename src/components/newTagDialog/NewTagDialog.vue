@@ -168,3 +168,9 @@ watch(
   }
 );
 </script>
+
+<style scoped lang="scss">
+:deep(.v-color-picker-preview__alpha) {
+  display: none !important;
+}
+</style>

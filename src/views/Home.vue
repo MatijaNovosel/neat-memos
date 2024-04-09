@@ -21,7 +21,7 @@
       <span class="text-h6"> {{ i18n.t("noDataFound") }}. </span>
     </div>
     <v-row
-      v-else
+      v-if="!state.loading && memoStore.filteredMemos.length"
       class="pb-6"
     >
       <v-col
