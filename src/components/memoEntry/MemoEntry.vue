@@ -320,7 +320,9 @@ const handleAction = (action: string) => {
         pinned: false,
         userId: "",
         tags: state.selectedTags,
-        files: state.files
+        files: state.files,
+        private: false,
+        updatedAt: new Date().toISOString()
       });
       memoStore.openPreviewDialog();
       break;

@@ -136,7 +136,9 @@ export const useMemoStore = defineStore(
           userId,
           tags,
           pinned: false,
-          files: uploadedFiles
+          files: uploadedFiles,
+          private: false,
+          updatedAt: new Date().toString()
         },
         ...memos.value
       ]);
