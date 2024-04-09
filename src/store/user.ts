@@ -54,7 +54,7 @@ export const useUserStore = defineStore(
       appStore.setTheme("light");
       memoStore.setMemos([]);
       memoStore.setTags([]);
-      memoStore.setSearchText(null);
+      memoStore.clearFilters();
       await appStore.supabase.auth.signOut();
     };
 

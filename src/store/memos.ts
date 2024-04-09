@@ -259,6 +259,11 @@ export const useMemoStore = defineStore(
       }
     };
 
+    const clearFilters = () => {
+      searchText.value = null;
+      filterTags.value = [];
+    };
+
     const setTags = (data: TagModel[]) => {
       tags.value = data;
     };
@@ -350,7 +355,8 @@ export const useMemoStore = defineStore(
       uploadFile,
       retrieveFile,
       deleteFile,
-      getMemoById
+      getMemoById,
+      clearFilters
     };
   },
   {
