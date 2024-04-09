@@ -135,7 +135,8 @@ input:-webkit-autofill:focus {
 }
 
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -144,7 +145,6 @@ input:-webkit-autofill:focus {
 
 ::-webkit-scrollbar-thumb {
   background: #e69d54;
-  border-radius: 4px;
 }
 
 .w-fit-content {
