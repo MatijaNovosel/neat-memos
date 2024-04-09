@@ -4,6 +4,7 @@
     class="d-flex align-center mb-4"
   >
     <v-btn
+      v-show="!props.hideLeft"
       icon="mdi-menu"
       variant="text"
       color="grey"
@@ -25,15 +26,17 @@
 </template>
 
 <script setup lang="ts">
-import { useDisplay } from "vuetify";
 import { useAppStore } from "@/store/app";
+import { useDisplay } from "vuetify";
 
 interface Props {
   hideRight?: boolean;
+  hideLeft?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  hideRight: false
+  hideRight: false,
+  hideLeft: false
 });
 
 const appStore = useAppStore();

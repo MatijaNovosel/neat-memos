@@ -35,6 +35,6 @@ const removeAlert = (alert: AlertModel) => {
   transform: translateX(calc(50vw - 50%));
   margin: 5px;
   text-align: center;
-  z-index: 100000;
+  z-index: 1000000000;
 }
 </style>
