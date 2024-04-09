@@ -135,15 +135,16 @@ input:-webkit-autofill:focus {
 }
 
 ::-webkit-scrollbar {
-  width: 16px;
+  width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #aeb3cd;
+  background-color: #aeb3cda9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #5764a9;
+  background: #e69d54;
+  border-radius: 4px;
 }
 
 .w-fit-content {
