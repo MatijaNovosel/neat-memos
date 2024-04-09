@@ -63,7 +63,8 @@ const routes: RouteRecordRaw[] = [
         name: ROUTE_NAMES.PRIVACY,
         component: () => import("../views/Privacy.vue"),
         meta: {
-          title: "privacy.title"
+          title: "privacy.title",
+          auth: true
         }
       }
     ]
