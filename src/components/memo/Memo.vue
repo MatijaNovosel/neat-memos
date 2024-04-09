@@ -108,9 +108,11 @@ import { MEMO_ACTIONS, memoActionItems } from "@/constants/memo";
 import { downloadFileFromUrl } from "@/helpers/file";
 import { capitalize } from "@/helpers/string";
 import { MemoFile, MemoModel } from "@/models/memo";
+import ROUTE_NAMES from "@/router/routeNames";
 import { useMemoStore } from "@/store/memos";
 import { format, formatRelative, isToday } from "date-fns";
 import { computed, reactive } from "vue";
+import { useRouter } from "vue-router";
 import { useTheme } from "vuetify";
 
 interface Props {
@@ -128,6 +130,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const memoStore = useMemoStore();
 const theme = useTheme();
+const router = useRouter();
 const createConfirmationDialog = useConfirmationDialog();
 
 const state: State = reactive({
@@ -149,6 +152,14 @@ const handleAction = async (action: string) => {
     case MEMO_ACTIONS.EDIT:
       memoStore.setActiveMemo(props.data);
       memoStore.openEditDialog();
+      break;
+    case MEMO_ACTIONS.SHARE:
+      router.push({
+        name: ROUTE_NAMES.MEMO,
+        params: {
+          id: props.data.id
+        }
+      });
       break;
   }
   state.loading = false;

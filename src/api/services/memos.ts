@@ -11,12 +11,33 @@ export class MemoService implements IMemoService {
     this.appStore = appStore;
   }
 
+  async getMemo(id: number): Promise<MemoModel | null> {
+    const { data, error } = await this.appStore.supabase
+      .from("memos")
+      .select("id, createdAt, content, userId, pinned, tags ( id, content, color), resources (*)")
+      .eq("id", id);
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data) {
+      return null;
+    }
+
+    return data.map<MemoModel>((memo) => ({
+      ...memo,
+      files: memo.resources
+    }))[0];
+  }
+
   async editMemo(data: UpdateMemoModel): Promise<void> {
     const { error } = await this.appStore.supabase
       .from("memos")
       .update([
         {
-          content: data.content
+          content: data.content,
+          updatedAt: new Date()
         }
       ])
       .eq("id", data.id);

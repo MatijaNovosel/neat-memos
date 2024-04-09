@@ -59,6 +59,11 @@ export const useMemoStore = defineStore(
       setTags(data);
     };
 
+    const getMemoById = async (id: number) => {
+      const memo = await memoService.getMemo(id);
+      return memo;
+    };
+
     const saveTag = async (content: string, color: string) => {
       const userId = userStore.user?.id as string;
       const id = await tagService.saveTag({
@@ -341,7 +346,8 @@ export const useMemoStore = defineStore(
       previewMemo,
       uploadFile,
       retrieveFile,
-      deleteFile
+      deleteFile,
+      getMemoById
     };
   },
   {

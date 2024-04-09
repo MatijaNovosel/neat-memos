@@ -63,16 +63,3 @@ onMounted(async () => {
   state.loading = false;
 });
 </script>
-
-<style scoped lang="scss">
-.main-ctr {
-  max-width: 60%;
-  height: 100vh;
-}
-
-@media only screen and (max-width: 600px) {
-  .main-ctr {
-    max-width: 100%;
-  }
-}
-</style>

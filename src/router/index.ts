@@ -49,6 +49,14 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: "noPermission.title"
         }
+      },
+      {
+        path: "memo/:id",
+        name: ROUTE_NAMES.MEMO,
+        component: () => import("../views/MemoDetails.vue"),
+        meta: {
+          title: "memo.title"
+        }
       }
     ]
   }
