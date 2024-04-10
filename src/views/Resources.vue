@@ -164,18 +164,19 @@ const groupedFiles = computed<Record<string, MemoFile[]>>(() => {
     groups[extension] = [];
   }
 
+  const text = state.searchText?.toLowerCase() || "";
+
   for (const file of state.files) {
     const ext = getExtensionFromFileName(file.name);
-    const text = state.searchText || "";
     if (
-      (file.name.toLowerCase().includes(text) || text.includes(ext)) &&
-      state.filterExtensions.length
-        ? state.filterExtensions.includes(ext)
-        : true
+      file.name.toLowerCase().includes(text) &&
+      (state.filterExtensions.length ? state.filterExtensions.includes(ext) : true)
     ) {
       groups[ext].push(file);
     }
   }
+
+  console.log(groups);
 
   return groups;
 });
