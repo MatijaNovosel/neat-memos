@@ -16,6 +16,17 @@
       <span class="text-h6"> {{ i18n.t("noDataFound") }}. </span>
     </v-row>
     <v-row v-if="!state.loading && state.files.length">
+      <v-col cols="12">
+        <v-text-field
+          hide-details
+          density="compact"
+          :bg-color="theme.current.value.dark ? '' : 'white'"
+          placeholder="Search"
+          v-model="state.searchText"
+          prepend-inner-icon="mdi-magnify"
+        >
+        </v-text-field>
+      </v-col>
       <v-col
         cols="12"
         v-for="(group, i) in Object.keys(groupedFiles)"
@@ -41,16 +52,24 @@
               border
               class="pt-3"
             >
-              <div class="pl-5 pb-2 d-flex flex-column">
-                <span class="text-subtitle-2">
-                  {{ file.name }}
-                </span>
-                <span class="text-grey text-caption">
-                  {{ formatDate(file.createdAt) }}
-                </span>
+              <div class="pl-5 pb-2 d-flex align-center">
+                <v-icon
+                  class="mr-3"
+                  color="grey"
+                >
+                  {{ getIconFromExtension(getExtensionFromFileName(file.name)) }}
+                </v-icon>
+                <div class="d-flex flex-column">
+                  <span class="text-subtitle-2">
+                    {{ file.name }} ({{ fileSizeReadable(file.size) }})
+                  </span>
+                  <span class="text-grey text-caption">
+                    {{ formatDate(file.createdAt) }}
+                  </span>
+                </div>
               </div>
               <v-divider />
-              <div class="d-flex justify-end py-2 pr-3">
+              <div class="d-flex justify-end py-1 pr-3">
                 <v-btn
                   size="x-small"
                   variant="text"
@@ -77,29 +96,38 @@
 
 <script setup lang="ts">
 import { ResourcesService } from "@/api/services/resources";
-import { getExtensionFromFileName } from "@/helpers/file";
+import {
+  downloadFileFromUrl,
+  fileSizeReadable,
+  getExtensionFromFileName,
+  getIconFromExtension
+} from "@/helpers/file";
 import { capitalize } from "@/helpers/string";
 import { MemoFile } from "@/models/memo";
 import { useUserStore } from "@/store/user";
 import { format, formatRelative, isToday } from "date-fns";
 import { computed, onMounted, reactive } from "vue";
 import { useI18n } from "vue-i18n";
+import { useTheme } from "vuetify";
 
 interface State {
   files: MemoFile[];
   loading: boolean;
+  searchText: string | null;
 }
 
 const resourcesService = new ResourcesService();
 const userStore = useUserStore();
 const i18n = useI18n();
+const theme = useTheme();
 
 const state: State = reactive({
   files: [],
-  loading: false
+  loading: false,
+  searchText: null
 });
 
-const groupedFiles = computed(() => {
+const groupedFiles = computed<Record<string, MemoFile[]>>(() => {
   const groups = {};
   const extensions = new Set(state.files.map((f) => getExtensionFromFileName(f.name)));
 
@@ -125,7 +153,7 @@ const formatDate = (date: string) => {
 };
 
 const downloadFile = (file: MemoFile) => {
-  //
+  downloadFileFromUrl(file.url, file.name);
 };
 
 onMounted(async () => {

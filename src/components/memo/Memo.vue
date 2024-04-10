@@ -109,7 +109,7 @@
           >
             mdi-paperclip
           </v-icon>
-          {{ file.name }}
+          {{ file.name }} ({{ fileSizeReadable(file.size) }})
         </v-chip>
       </v-card-text>
     </template>
@@ -121,7 +121,7 @@ import MarkdownRenderer from "@/components/markdownRenderer/MarkdownRenderer.vue
 import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
 import { useNotifications } from "@/composables/useNotifications";
 import { MEMO_ACTIONS, memoActionItems } from "@/constants/memo";
-import { downloadFileFromUrl } from "@/helpers/file";
+import { downloadFileFromUrl, fileSizeReadable } from "@/helpers/file";
 import { capitalize } from "@/helpers/string";
 import { MemoFile, MemoModel } from "@/models/memo";
 import ROUTE_NAMES from "@/router/routeNames";

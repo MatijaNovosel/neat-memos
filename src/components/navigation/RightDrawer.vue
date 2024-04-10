@@ -9,11 +9,9 @@
   >
     <template #prepend>
       <v-text-field
-        class="bg-white"
         :placeholder="i18n.t('searchMemos')"
         density="compact"
         hide-details
-        variant="filled"
         prepend-inner-icon="mdi-magnify"
         clearable
         :bg-color="theme.current.value.dark ? '' : 'white'"

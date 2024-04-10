@@ -39,6 +39,82 @@ export function fileSizeReadable(bytes: number, si = false, dp = 1) {
 }
 
 /**
+ * Returns an icon from a file extension.
+ * @param {string} extension - File extension.
+ * @return File icon.
+ * @example const icon = getIconFromExtension("html"); // mdi-html
+ */
+export function getIconFromExtension(extension: string): string {
+  switch (extension.toLowerCase()) {
+    case "html":
+    case "htm":
+    case "shtml":
+      return "mdi-language-html";
+    case "css":
+      return "mdi-language-css3";
+    case "rss":
+      return "mdi-rss-box";
+    case "xml":
+      return "mdi-file-xml-box";
+    case "gif":
+      return "mdi-file-gif-box";
+    case "jpg":
+    case "jpeg":
+    case "bmp":
+    case "tiff":
+    case "png":
+    case "ico":
+    case "webp":
+    case "tif":
+      return "mdi-image-outline";
+    case "js":
+      return "mdi-language-javascript";
+    case "atom":
+      return "mdi-atom";
+    case "mml":
+    case "txt":
+    case "htc":
+    case "wbmp":
+    case "wml":
+    case "ps":
+    case "eps":
+    case "ai":
+    case "rtf":
+    case "jad":
+    case "jng":
+    case "wmlc":
+    case "kml":
+    case "kmz":
+      return "mdi-text-box-outline";
+    case "svg":
+      return "mdi-svg";
+    case "jar":
+    case "war":
+    case "ear":
+      return "mdi-language-java";
+    case "hqx":
+      return "mdi-food-apple";
+    case "doc":
+      return "mdi-file-word-box";
+    case "pdf":
+      return "mdi-file-pdf-box";
+    case "xls":
+      return "mdi-file-excel-box";
+    case "ppt":
+      return "mdi-file-powerpoint-box";
+    case "7z":
+    case "zip":
+    case "rar":
+      return "mdi-zip-box";
+    case "mp3":
+    case "wav":
+      return "mdi-music-note";
+    default:
+      return "mdi-file-outline";
+  }
+}
+
+/**
  * Returns a mime type from a file extension.
  * @param {string} extension - File extension.
  * @return Mime type of the file.

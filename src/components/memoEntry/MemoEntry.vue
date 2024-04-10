@@ -172,7 +172,7 @@
           >
             mdi-paperclip
           </v-icon>
-          {{ file.name }}
+          {{ file.name }} ({{ fileSizeReadable(file.size) }})
         </v-chip>
       </div>
       <v-row
@@ -229,6 +229,7 @@ import {
   memoAdditionalActionItems,
   memoVisibilityItems
 } from "@/constants/memo";
+import { fileSizeReadable } from "@/helpers/file";
 import { IVuetifyForm } from "@/models/common";
 import { MemoFile } from "@/models/memo";
 import { TagModel } from "@/models/tag";
