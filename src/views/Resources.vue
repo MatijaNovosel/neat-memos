@@ -71,7 +71,6 @@
             >
               <v-card
                 flat
-                border
                 class="pt-3"
               >
                 <div class="pl-5 pb-2 d-flex align-center">
