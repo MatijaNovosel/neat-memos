@@ -8,14 +8,7 @@
         indeterminate
       />
     </v-row>
-    <v-row
-      class="mt-10 d-flex flex-column align-center"
-      v-if="!state.files.length && !state.loading"
-    >
-      <span class="text-h1 mb-5"> 😿 </span>
-      <span class="text-h6"> {{ i18n.t("noDataFound") }}. </span>
-    </v-row>
-    <v-row v-if="!state.loading && state.files.length">
+    <v-row v-if="!state.loading">
       <v-col cols="12">
         <v-text-field
           hide-details
@@ -24,72 +17,102 @@
           placeholder="Search"
           v-model="state.searchText"
           prepend-inner-icon="mdi-magnify"
-        >
-        </v-text-field>
+          clearable
+        />
       </v-col>
       <v-col
         cols="12"
+        class="pt-0 d-flex flex-gap"
+      >
+        <v-chip
+          @click="selectTag(extension)"
+          :key="i"
+          :color="state.filterExtensions.includes(extension) ? 'orange' : 'grey'"
+          density="compact"
+          size="small"
+          v-for="(extension, i) in extensions"
+        >
+          {{ extension }}
+        </v-chip>
+      </v-col>
+    </v-row>
+    <v-divider class="my-4" />
+    <v-row
+      class="mt-10 d-flex flex-column align-center"
+      v-if="!groupedFilesCount && !state.loading"
+    >
+      <span class="text-h1 mb-5"> 😿 </span>
+      <span class="text-h6"> {{ i18n.t("noDataFound") }}. </span>
+    </v-row>
+    <v-row v-if="!state.loading && groupedFilesCount">
+      <div
+        class="display-contents"
         v-for="(group, i) in Object.keys(groupedFiles)"
         :key="i"
       >
-        <v-chip
-          class="mb-3"
-          size="small"
-          density="compact"
-          color="orange"
+        <v-col
+          cols="12"
+          v-if="groupedFiles[group].length"
         >
-          {{ group }}
-        </v-chip>
-        <v-row>
-          <v-col
-            cols="12"
-            md="4"
-            v-for="(file, j) in groupedFiles[group]"
-            :key="j"
+          <v-chip
+            class="mb-3"
+            size="small"
+            density="compact"
+            color="orange"
           >
-            <v-card
-              flat
-              border
-              class="pt-3"
+            {{ group }}
+          </v-chip>
+          <v-row>
+            <v-col
+              cols="12"
+              md="4"
+              v-for="(file, j) in groupedFiles[group]"
+              :key="j"
             >
-              <div class="pl-5 pb-2 d-flex align-center">
-                <v-icon
-                  class="mr-3"
-                  color="grey"
-                >
-                  {{ getIconFromExtension(getExtensionFromFileName(file.name)) }}
-                </v-icon>
-                <div class="d-flex flex-column">
-                  <span class="text-subtitle-2">
-                    {{ file.name }} ({{ fileSizeReadable(file.size) }})
-                  </span>
-                  <span class="text-grey text-caption">
-                    {{ formatDate(file.createdAt) }}
-                  </span>
+              <v-card
+                flat
+                border
+                class="pt-3"
+              >
+                <div class="pl-5 pb-2 d-flex align-center">
+                  <v-icon
+                    class="mr-3"
+                    color="grey"
+                  >
+                    {{ getIconFromExtension(getExtensionFromFileName(file.name)) }}
+                  </v-icon>
+                  <div class="d-flex flex-column">
+                    <span class="text-subtitle-2">
+                      {{ file.name }} ({{ fileSizeReadable(file.size) }})
+                    </span>
+                    <span class="text-grey text-caption">
+                      {{ formatDate(file.createdAt) }}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <v-divider />
-              <div class="d-flex justify-end py-1 pr-3">
-                <v-btn
-                  size="x-small"
-                  variant="text"
-                  rounded="12"
-                  color="orange-darken-2"
-                  icon="mdi-download"
-                  @click="downloadFile(file)"
-                />
-                <v-btn
-                  size="x-small"
-                  variant="text"
-                  rounded="12"
-                  color="orange"
-                  icon="mdi-link"
-                />
-              </div>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-col>
+                <v-divider />
+                <div class="d-flex justify-end py-1 pr-3">
+                  <v-btn
+                    size="x-small"
+                    variant="text"
+                    rounded="12"
+                    color="orange-darken-2"
+                    icon="mdi-download"
+                    @click="downloadFile(file)"
+                  />
+                  <v-btn
+                    size="x-small"
+                    variant="text"
+                    rounded="12"
+                    color="orange"
+                    icon="mdi-link"
+                  />
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-col>
+      </div>
     </v-row>
   </v-container>
 </template>
@@ -114,6 +137,7 @@ interface State {
   files: MemoFile[];
   loading: boolean;
   searchText: string | null;
+  filterExtensions: string[];
 }
 
 const resourcesService = new ResourcesService();
@@ -124,7 +148,12 @@ const theme = useTheme();
 const state: State = reactive({
   files: [],
   loading: false,
-  searchText: null
+  searchText: null,
+  filterExtensions: []
+});
+
+const extensions = computed(() => {
+  return new Set(state.files.map((f) => getExtensionFromFileName(f.name)));
 });
 
 const groupedFiles = computed<Record<string, MemoFile[]>>(() => {
@@ -137,10 +166,22 @@ const groupedFiles = computed<Record<string, MemoFile[]>>(() => {
 
   for (const file of state.files) {
     const ext = getExtensionFromFileName(file.name);
-    groups[ext].push(file);
+    const text = state.searchText || "";
+    if (
+      (file.name.toLowerCase().includes(text) || text.includes(ext)) &&
+      state.filterExtensions.length
+        ? state.filterExtensions.includes(ext)
+        : true
+    ) {
+      groups[ext].push(file);
+    }
   }
 
   return groups;
+});
+
+const groupedFilesCount = computed(() => {
+  return Object.values(groupedFiles.value).flat().length;
 });
 
 const formatDate = (date: string) => {
@@ -154,6 +195,14 @@ const formatDate = (date: string) => {
 
 const downloadFile = (file: MemoFile) => {
   downloadFileFromUrl(file.url, file.name);
+};
+
+const selectTag = (tag: string) => {
+  if (!state.filterExtensions.includes(tag)) {
+    state.filterExtensions.push(tag);
+  } else {
+    state.filterExtensions = state.filterExtensions.filter((ext) => ext !== tag);
+  }
 };
 
 onMounted(async () => {
