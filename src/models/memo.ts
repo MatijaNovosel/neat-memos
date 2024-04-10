@@ -32,4 +32,5 @@ export interface MemoFile {
   size: number;
   url: string;
   createdAt: string;
+  memoId: number;
 }

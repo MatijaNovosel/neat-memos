@@ -118,7 +118,8 @@ export const useMemoStore = defineStore(
             url: uploadedFile.url,
             createdAt: new Date().toString(),
             name: files[i].name,
-            size: files[i].size
+            size: files[i].size,
+            memoId: id
           });
         }
       }

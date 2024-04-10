@@ -103,6 +103,12 @@
                     size="x-small"
                     variant="text"
                     rounded="12"
+                    :to="{
+                      name: ROUTE_NAMES.TIMELINE,
+                      params: {
+                        id: file.memoId
+                      }
+                    }"
                     color="orange"
                     icon="mdi-link"
                   />
@@ -126,6 +132,7 @@ import {
 } from "@/helpers/file";
 import { capitalize } from "@/helpers/string";
 import { MemoFile } from "@/models/memo";
+import ROUTE_NAMES from "@/router/routeNames";
 import { useUserStore } from "@/store/user";
 import { format, formatRelative, isToday } from "date-fns";
 import { computed, onMounted, reactive } from "vue";

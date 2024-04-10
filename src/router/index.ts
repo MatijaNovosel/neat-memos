@@ -43,14 +43,6 @@ const routes: RouteRecordRaw[] = [
         }
       },
       {
-        path: "permissions",
-        name: ROUTE_NAMES.NO_PERMISSIONS,
-        component: () => import("../views/NoPermissions.vue"),
-        meta: {
-          title: "noPermission.title"
-        }
-      },
-      {
         path: "memo/:id",
         name: ROUTE_NAMES.MEMO,
         component: () => import("../views/MemoDetails.vue"),
@@ -75,6 +67,20 @@ const routes: RouteRecordRaw[] = [
           title: "resources.title",
           auth: true
         }
+      },
+      {
+        path: "timeline",
+        name: ROUTE_NAMES.TIMELINE,
+        component: () => import("../views/Timeline.vue"),
+        meta: {
+          title: "timeline.title",
+          auth: true
+        }
+      },
+      {
+        path: "/:pathMatch(.*)*",
+        name: "NotFound",
+        component: () => import("../views/NotFound.vue")
       }
     ]
   }

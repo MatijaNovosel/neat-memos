@@ -77,6 +77,13 @@ const navItems = computed(() => [
     }
   },
   {
+    title: i18n.t("links.timeline"),
+    icon: "mdi-clock-outline",
+    to: {
+      name: ROUTE_NAMES.TIMELINE
+    }
+  },
+  {
     title: i18n.t("links.resources"),
     icon: "mdi-paperclip",
     to: {
