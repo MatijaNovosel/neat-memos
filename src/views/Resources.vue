@@ -176,8 +176,6 @@ const groupedFiles = computed<Record<string, MemoFile[]>>(() => {
     }
   }
 
-  console.log(groups);
-
   return groups;
 });
 
