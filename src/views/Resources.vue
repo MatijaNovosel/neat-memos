@@ -104,7 +104,7 @@
                     variant="text"
                     rounded="12"
                     :to="{
-                      name: ROUTE_NAMES.TIMELINE,
+                      name: ROUTE_NAMES.MEMO,
                       params: {
                         id: file.memoId
                       }
