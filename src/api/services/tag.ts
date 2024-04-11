@@ -1,18 +1,10 @@
-import { PiniaStore } from "@/constants/types";
+import supabase from "@/helpers/supabase";
 import { CreateTagModel, TagModel, UpdateTagModel } from "@/models/tag";
-import { useAppStore } from "@/store/app";
 import { ITagService } from "../interfaces/tag";
 
 export class TagService implements ITagService {
-  appStore: PiniaStore<typeof useAppStore>;
-
-  constructor() {
-    const appStore = useAppStore();
-    this.appStore = appStore;
-  }
-
   async getTags(userId: string): Promise<TagModel[]> {
-    const { data, error } = await this.appStore.supabase
+    const { data, error } = await supabase
       .from("tags")
       .select("id, content, color")
       .eq("userId", userId)
@@ -32,7 +24,7 @@ export class TagService implements ITagService {
   }
 
   async saveTag(data: CreateTagModel): Promise<number> {
-    const { data: response, error } = await this.appStore.supabase
+    const { data: response, error } = await supabase
       .from("tags")
       .insert([
         {
@@ -56,7 +48,7 @@ export class TagService implements ITagService {
   }
 
   async deleteTag(id: number): Promise<void> {
-    const { error } = await this.appStore.supabase.from("tags").delete().eq("id", id);
+    const { error } = await supabase.from("tags").delete().eq("id", id);
     if (error) {
       throw error;
     }

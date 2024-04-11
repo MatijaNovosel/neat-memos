@@ -78,21 +78,25 @@ export const useMemoStore = defineStore(
       });
     };
 
-    const editMemo = async (content: string, tags: TagModel[]) => {
+    const editMemo = async (content: string, tags: TagModel[], files: Array<MemoFile | File>) => {
       const userId = userStore.user?.id as string;
       const id = activeMemo.value!.id;
       const memo = memos.value.find((m) => m.id === id);
-      await memoService.editMemo({
-        content,
-        id,
-        userId,
-        initialTagIds: memo?.tags?.map((x) => x.id) || [],
-        tagIds: tags.map((x) => x.id)
-      });
       if (memo) {
+        console.log(memo.files);
+        const newFiles = await memoService.editMemo({
+          content,
+          id,
+          userId,
+          initialTagIds: memo.tags?.map((x) => x.id) || [],
+          tagIds: tags.map((x) => x.id),
+          initialFiles: memo.files ? (memo.files as MemoFile[]) : [],
+          files
+        });
         memo.content = content;
         memo.tags = tags;
         memo.updatedAt = new Date().toISOString();
+        memo.files = newFiles;
         alert({
           text: i18n.global.t("memoSaved")
         });
@@ -233,10 +237,10 @@ export const useMemoStore = defineStore(
       searchText.value = data;
     };
 
-    const uploadFile = async (file: File) => {
-      // const path = await resourcesService.uploadFile(file);
-      // return path;
-      return "";
+    const uploadFile = async (file: File, memoId: number) => {
+      const userId = userStore.user?.id as string;
+      const path = await resourcesService.uploadFile(file, memoId, userId);
+      return path;
     };
 
     const getFile = async (id: string) => {

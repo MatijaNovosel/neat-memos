@@ -253,7 +253,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 interface State {
-  files: File[] | MemoFile[];
+  files: Array<MemoFile | File>;
   content: string | null;
   memoVisibility: number;
   selectedTags: TagModel[];
@@ -273,7 +273,7 @@ const {
   files,
   open: openImageDialog,
   reset: resetFileDialog,
-  onChange: onImageDialogChange
+  onChange: onFileDialogChange
 } = useFileDialog({
   multiple: true
 });
@@ -321,7 +321,7 @@ const handleAction = (action: string) => {
         pinned: false,
         userId: "",
         tags: state.selectedTags,
-        files: state.files,
+        files: state.files as File[],
         private: false,
         updatedAt: new Date().toISOString()
       });
@@ -338,7 +338,7 @@ const saveMemo = async () => {
     state.loading = true;
     const content = state.content || i18n.t("noContent");
     if (memoStore.activeMemo) {
-      await memoStore.editMemo(content, state.selectedTags);
+      await memoStore.editMemo(content, state.selectedTags, state.files);
     } else {
       await memoStore.saveMemo(content, state.selectedTags, state.files as File[]);
     }
@@ -376,7 +376,7 @@ const removeFile = (idx: number) => {
 
 const interactionDisabled = computed(() => props.disabled || props.readonly || state.loading);
 
-onImageDialogChange(async (files) => {
+onFileDialogChange(async (files) => {
   if (files) {
     for (const file of files) {
       if (file.size < MAX_FILE_SIZE) {

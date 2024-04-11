@@ -1,23 +1,12 @@
-import { PiniaStore } from "@/constants/types";
 import { generateRandomString } from "@/helpers/misc";
+import supabase from "@/helpers/supabase";
 import { MemoFile } from "@/models/memo";
 import { ResourceUploadReturnDto } from "@/models/resources";
-import { useAppStore } from "@/store/app";
 import { IResourcesService } from "../interfaces/resources";
 
 export class ResourcesService implements IResourcesService {
-  appStore: PiniaStore<typeof useAppStore>;
-
-  constructor() {
-    const appStore = useAppStore();
-    this.appStore = appStore;
-  }
-
   async getFiles(userId: string): Promise<MemoFile[]> {
-    const { data, error } = await this.appStore.supabase
-      .from("resources")
-      .select("*")
-      .eq("userId", userId);
+    const { data, error } = await supabase.from("resources").select("*").eq("userId", userId);
 
     if (error) {
       throw error;
@@ -27,15 +16,13 @@ export class ResourcesService implements IResourcesService {
   }
 
   async deleteFile(id: string): Promise<void> {
-    const { error: fileDeleteError } = await this.appStore.supabase.storage
-      .from("neatMemos")
-      .remove([id]);
+    const { error: fileDeleteError } = await supabase.storage.from("neatMemos").remove([id]);
 
     if (fileDeleteError) {
       throw fileDeleteError;
     }
 
-    const { error } = await this.appStore.supabase.from("resources").delete().eq("id", id);
+    const { error } = await supabase.from("resources").delete().eq("id", id);
 
     if (error) {
       throw error;
@@ -43,7 +30,7 @@ export class ResourcesService implements IResourcesService {
   }
 
   async getFile(id: string): Promise<string> {
-    const { data: filePath, error } = await this.appStore.supabase.storage
+    const { data: filePath, error } = await supabase.storage
       .from("neatMemos")
       .createSignedUrl(id, 3.156e8); // 10 years
 
@@ -60,12 +47,10 @@ export class ResourcesService implements IResourcesService {
     userId: string
   ): Promise<ResourceUploadReturnDto | null> {
     const id = generateRandomString(6);
-    const { data, error } = await this.appStore.supabase.storage
-      .from("neatMemos")
-      .upload(id, file, {
-        cacheControl: "3600",
-        upsert: false
-      });
+    const { data, error } = await supabase.storage.from("neatMemos").upload(id, file, {
+      cacheControl: "3600",
+      upsert: false
+    });
 
     if (error) {
       throw error;
@@ -77,7 +62,7 @@ export class ResourcesService implements IResourcesService {
 
     const url = await this.getFile(id);
 
-    const { error: fileSaveError } = await this.appStore.supabase.from("resources").insert([
+    const { error: fileSaveError } = await supabase.from("resources").insert([
       {
         id,
         name: file.name,

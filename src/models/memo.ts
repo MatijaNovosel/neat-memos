@@ -18,6 +18,8 @@ export interface UpdateMemoModel {
   content: string;
   tagIds: number[];
   initialTagIds: number[];
+  initialFiles: MemoFile[];
+  files: Array<MemoFile | File>;
 }
 
 export interface CreateMemoModel {

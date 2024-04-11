@@ -1,16 +1,8 @@
-import { PiniaStore } from "@/constants/types";
+import supabase from "@/helpers/supabase";
 import { TokenModel } from "@/models/user";
-import { useAppStore } from "@/store/app";
 import { IAuthService } from "../interfaces/auth";
 
 export class AuthService implements IAuthService {
-  appStore: PiniaStore<typeof useAppStore>;
-
-  constructor() {
-    const appStore = useAppStore();
-    this.appStore = appStore;
-  }
-
   deleteAccount(): Promise<void> {
     throw new Error("Method not implemented.");
   }
@@ -20,7 +12,7 @@ export class AuthService implements IAuthService {
     password: string,
     username: string
   ): Promise<void> {
-    const { data, error } = await this.appStore.supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password
     });
@@ -30,7 +22,7 @@ export class AuthService implements IAuthService {
     }
 
     // Create data table
-    const { error: dataTableError } = await this.appStore.supabase.from("userData").insert([
+    const { error: dataTableError } = await supabase.from("userData").insert([
       {
         username,
         userId: data.user!.id
@@ -43,7 +35,7 @@ export class AuthService implements IAuthService {
   }
 
   async signInWithEmailAndPassword(email: string, password: string): Promise<TokenModel> {
-    const { data, error } = await this.appStore.supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
     });

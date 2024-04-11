@@ -1,4 +1,3 @@
-import { createClient } from "@supabase/supabase-js";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
@@ -17,10 +16,6 @@ export const useAppStore = defineStore(
     // Composables
     const theme = useTheme();
     const i18n = useI18n();
-    const supabase = createClient(
-      import.meta.env.VITE_SUPABASE_URL as string,
-      import.meta.env.VITE_SUPABASE_ANON as string
-    );
 
     const setLoading = (data: boolean) => {
       loading.value = data;
@@ -59,7 +54,6 @@ export const useAppStore = defineStore(
       darkMode,
       toggleDarkMode,
       setTheme,
-      supabase,
       language,
       setLanguage
     };

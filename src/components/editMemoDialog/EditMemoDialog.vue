@@ -53,7 +53,7 @@ watch(
     if (val) {
       initialContent.value = memoStore.activeMemo?.content;
       initialTags.value = memoStore.activeMemo?.tags || [];
-      initialFiles.value = (memoStore.activeMemo?.files as MemoFile[]) || [];
+      initialFiles.value = [...(memoStore.activeMemo?.files as MemoFile[])] || [];
     }
   }
 );

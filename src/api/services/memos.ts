@@ -1,18 +1,18 @@
-import { PiniaStore } from "@/constants/types";
-import { CreateMemoModel, MemoModel, UpdateMemoModel } from "@/models/memo";
-import { useAppStore } from "@/store/app";
+import supabase from "@/helpers/supabase";
+import { CreateMemoModel, MemoFile, MemoModel, UpdateMemoModel } from "@/models/memo";
 import { IMemoService } from "../interfaces/memos";
+import { IResourcesService } from "../interfaces/resources";
+import { ResourcesService } from "./resources";
 
 export class MemoService implements IMemoService {
-  appStore: PiniaStore<typeof useAppStore>;
+  resourcesService: IResourcesService;
 
   constructor() {
-    const appStore = useAppStore();
-    this.appStore = appStore;
+    this.resourcesService = new ResourcesService();
   }
 
   async getMemo(id: number): Promise<MemoModel | null> {
-    const { data, error } = await this.appStore.supabase
+    const { data, error } = await supabase
       .from("memos")
       .select(
         "id, createdAt, content, updatedAt, userId, pinned, private, tags ( id, content, color), resources (*)"
@@ -33,8 +33,8 @@ export class MemoService implements IMemoService {
     }))[0];
   }
 
-  async editMemo(data: UpdateMemoModel): Promise<void> {
-    const { error } = await this.appStore.supabase
+  async editMemo(data: UpdateMemoModel): Promise<MemoFile[]> {
+    const { error } = await supabase
       .from("memos")
       .update([
         {
@@ -48,11 +48,13 @@ export class MemoService implements IMemoService {
       throw error;
     }
 
+    // Tag updating
+
     const idsToAdd = data.tagIds.filter((x) => !data.initialTagIds.includes(x));
     const idsToRemove = data.initialTagIds.filter((x) => !data.tagIds.includes(x));
 
     for (let i = 0; i < idsToRemove.length; i++) {
-      const { error } = await this.appStore.supabase
+      const { error } = await supabase
         .from("memoTags")
         .delete()
         .eq("tagId", idsToRemove[i])
@@ -63,7 +65,7 @@ export class MemoService implements IMemoService {
     }
 
     for (let i = 0; i < idsToAdd.length; i++) {
-      const { error } = await this.appStore.supabase.from("memoTags").insert([
+      const { error } = await supabase.from("memoTags").insert([
         {
           tagId: idsToAdd[i],
           memoId: data.id
@@ -73,10 +75,37 @@ export class MemoService implements IMemoService {
         throw error;
       }
     }
+
+    // File updating
+    const newFiles: MemoFile[] = [];
+    const filesToAdd = data.files.filter((f) => !("id" in f)) as File[];
+    const oldFiles = data.files.filter((f) => "id" in f) as MemoFile[];
+
+    const filesToRemove = data.initialFiles.filter(
+      (x) => !oldFiles.map((x) => x.id).includes(x.id)
+    );
+
+    for (const file of filesToAdd) {
+      const response = await this.resourcesService.uploadFile(file, data.id, data.userId);
+      newFiles.push({
+        createdAt: new Date().toISOString(),
+        size: file.size,
+        id: response?.id as string,
+        memoId: data.id,
+        name: file.name,
+        url: response?.url as string
+      });
+    }
+
+    for (const file of filesToRemove) {
+      await this.resourcesService.deleteFile(file.id);
+    }
+
+    return [...newFiles, ...oldFiles];
   }
 
   async pinMemo(id: number, pinStatus: boolean): Promise<void> {
-    const { error } = await this.appStore.supabase
+    const { error } = await supabase
       .from("memos")
       .update([
         {
@@ -91,7 +120,7 @@ export class MemoService implements IMemoService {
   }
 
   async saveMemo(data: CreateMemoModel): Promise<number> {
-    const { data: response, error } = await this.appStore.supabase
+    const { data: response, error } = await supabase
       .from("memos")
       .insert([
         {
@@ -108,7 +137,7 @@ export class MemoService implements IMemoService {
     }
 
     for (let i = 0; i < data.tagIds.length; i++) {
-      const { error } = await this.appStore.supabase
+      const { error } = await supabase
         .from("memoTags")
         .insert([
           {
@@ -126,15 +155,13 @@ export class MemoService implements IMemoService {
   }
 
   async deleteMemo(id: number, fileIds: string[]): Promise<void> {
-    const { error } = await this.appStore.supabase.from("memos").delete().eq("id", id);
+    const { error } = await supabase.from("memos").delete().eq("id", id);
     if (error) {
       throw error;
     }
 
     if (fileIds.length) {
-      const { error: fileDeleteError } = await this.appStore.supabase.storage
-        .from("neatMemos")
-        .remove(fileIds);
+      const { error: fileDeleteError } = await supabase.storage.from("neatMemos").remove(fileIds);
 
       if (fileDeleteError) {
         throw fileDeleteError;
@@ -143,7 +170,7 @@ export class MemoService implements IMemoService {
   }
 
   async getMemos(userId: string): Promise<MemoModel[]> {
-    const { data, error } = await this.appStore.supabase
+    const { data, error } = await supabase
       .from("memos")
       .select(
         "id, createdAt, content, updatedAt, userId, pinned, private, tags ( id, content, color), resources (*)"
@@ -159,8 +186,15 @@ export class MemoService implements IMemoService {
     }
 
     return data.map<MemoModel>((memo) => ({
-      ...memo,
-      files: memo.resources
+      content: memo.content,
+      id: memo.id,
+      createdAt: memo.createdAt,
+      pinned: memo.pinned,
+      private: memo.private,
+      userId: memo.userId,
+      updatedAt: memo.updatedAt,
+      files: memo.resources,
+      tags: memo.tags
     }));
   }
 }
