@@ -1,5 +1,6 @@
 <template>
   <v-container class="main-ctr">
+    <mobile-drawer-controls hide-right />
     <v-text-field
       readonly
       hide-details
@@ -87,6 +88,7 @@
 
 <script setup lang="ts">
 import Memo from "@/components/memo/Memo.vue";
+import MobileDrawerControls from "@/components/mobileDrawerControls/MobileDrawerControls.vue";
 import { useMemoStore } from "@/store/memos";
 import { format } from "date-fns";
 import { computed, reactive } from "vue";

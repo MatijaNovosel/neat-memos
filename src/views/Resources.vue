@@ -1,5 +1,6 @@
 <template>
   <v-container class="main-ctr">
+    <mobile-drawer-controls hide-right />
     <v-row v-if="state.loading">
       <v-progress-circular
         class="my-6 mx-auto"
@@ -36,7 +37,10 @@
         </v-chip>
       </v-col>
     </v-row>
-    <v-divider class="my-4" />
+    <v-divider
+      class="my-4"
+      v-if="extensions.size"
+    />
     <v-row
       class="mt-10 d-flex flex-column align-center"
       v-if="!groupedFilesCount && !state.loading"
@@ -124,6 +128,7 @@
 
 <script setup lang="ts">
 import { ResourcesService } from "@/api/services/resources";
+import MobileDrawerControls from "@/components/mobileDrawerControls/MobileDrawerControls.vue";
 import {
   downloadFileFromUrl,
   fileSizeReadable,
