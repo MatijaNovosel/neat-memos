@@ -68,7 +68,12 @@
         </v-menu>
       </v-btn>
     </div>
-    <v-card-text class="pt-2">
+    <v-card-text
+      class="pt-2"
+      :class="{
+        dark: theme.current.value.dark
+      }"
+    >
       <markdown-renderer :source="props.data.content || 'No content'" />
     </v-card-text>
     <v-card-text

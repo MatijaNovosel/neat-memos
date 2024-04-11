@@ -969,6 +969,10 @@
   border-radius: 6px;
 }
 
+.dark pre {
+  background-color: black !important;
+}
+
 .markdown-body pre code,
 .markdown-body pre tt {
   display: inline;
