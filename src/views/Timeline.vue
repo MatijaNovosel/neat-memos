@@ -8,14 +8,14 @@
       :bg-color="theme.current.value.dark ? '' : 'white'"
     >
       <v-dialog
+        width="fit-content"
         v-if="smAndDown"
         activator="parent"
       >
         <div class="bg-white d-flex flex-column rounded-lg">
           <m-date-picker
             color="orange"
-            class="pb-0"
-            full-width
+            class="pb-0 mx-auto"
             :events="memoStore.memoDates"
             v-model="state.selectedDate"
           />
@@ -126,8 +126,10 @@ const memos = computed(() => {
 </script>
 
 <style scoped lang="scss">
-:deep(.v-overlay__content) {
-  width: 0px !important;
-  min-width: 0px !important;
+@media only screen and (min-width: 600px) {
+  :deep(.v-overlay__content) {
+    width: 0px !important;
+    min-width: 0px !important;
+  }
 }
 </style>
