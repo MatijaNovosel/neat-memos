@@ -7,8 +7,53 @@
       :model-value="dateFormatted"
       :bg-color="theme.current.value.dark ? '' : 'white'"
     >
-      <v-menu activator="parent">
-        <v-date-picker v-model="state.selectedDate" />
+      <v-dialog
+        v-if="smAndDown"
+        activator="parent"
+      >
+        <template #default="{ isActive }">
+          <div class="bg-white d-flex flex-column rounded-lg">
+            <m-date-picker
+              show-adjacent-months
+              color="orange"
+              class="pb-0"
+              full-width
+              v-model="state.selectedDate"
+            />
+            <v-btn
+              size="small"
+              rounded="12"
+              color="orange-darken-1"
+              class="w-fit-content mx-auto mb-3 mt-1"
+              @click="setToday"
+            >
+              Today
+            </v-btn>
+          </div>
+        </template>
+      </v-dialog>
+      <v-menu
+        v-else
+        :close-on-content-click="false"
+        activator="parent"
+      >
+        <div class="bg-white w-fit-content border d-flex flex-column">
+          <m-date-picker
+            show-adjacent-months
+            color="orange"
+            class="pb-0"
+            v-model="state.selectedDate"
+          />
+          <v-btn
+            size="small"
+            rounded="12"
+            color="orange-darken-1"
+            class="w-fit-content mx-auto mb-3 mt-1"
+            @click="setToday"
+          >
+            Today
+          </v-btn>
+        </div>
       </v-menu>
     </v-text-field>
     <v-row v-if="state.loading">
@@ -48,28 +93,31 @@ import { useMemoStore } from "@/store/memos";
 import { format } from "date-fns";
 import { computed, reactive } from "vue";
 import { useI18n } from "vue-i18n";
-import { useTheme } from "vuetify";
+import { useDisplay, useTheme } from "vuetify";
 
 interface State {
-  selectedDate: Date;
+  selectedDate: string;
   loading: boolean;
 }
 
 const memoStore = useMemoStore();
 const i18n = useI18n();
 const theme = useTheme();
+const { smAndDown } = useDisplay();
 
 const state: State = reactive({
-  selectedDate: new Date(),
+  selectedDate: new Date().toISOString().substring(0, 10),
   loading: false
 });
 
-const dateFormatted = computed(() => {
-  return format(state.selectedDate, "dd.MM.yyyy.");
-});
+const dateFormatted = computed(() => format(state.selectedDate, "dd.MM.yyyy."));
+
+const setToday = () => {
+  state.selectedDate = new Date().toISOString().substring(0, 10);
+};
 
 const memos = computed(() => {
-  const date = state.selectedDate;
+  const date = new Date(state.selectedDate);
   date.setHours(0, 0, 0, 0);
   return memoStore.memos.filter((m) => {
     const d = new Date(m.createdAt);
