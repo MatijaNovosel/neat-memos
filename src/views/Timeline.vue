@@ -11,37 +11,35 @@
         v-if="smAndDown"
         activator="parent"
       >
-        <template #default="{ isActive }">
-          <div class="bg-white d-flex flex-column rounded-lg">
-            <m-date-picker
-              show-adjacent-months
-              color="orange"
-              class="pb-0"
-              full-width
-              v-model="state.selectedDate"
-            />
-            <v-btn
-              size="small"
-              rounded="12"
-              color="orange-darken-1"
-              class="w-fit-content mx-auto mb-3 mt-1"
-              @click="setToday"
-            >
-              Today
-            </v-btn>
-          </div>
-        </template>
+        <div class="bg-white d-flex flex-column rounded-lg">
+          <m-date-picker
+            color="orange"
+            class="pb-0"
+            full-width
+            :events="memoStore.memoDates"
+            v-model="state.selectedDate"
+          />
+          <v-btn
+            size="small"
+            rounded="12"
+            color="orange-darken-1"
+            class="w-fit-content mx-auto mb-3 mt-1"
+            @click="setToday"
+          >
+            Today
+          </v-btn>
+        </div>
       </v-dialog>
       <v-menu
         v-else
         :close-on-content-click="false"
         activator="parent"
       >
-        <div class="bg-white w-fit-content border d-flex flex-column">
+        <div class="bg-white border d-flex flex-column w-fit-content">
           <m-date-picker
-            show-adjacent-months
             color="orange"
             class="pb-0"
+            :events="memoStore.memoDates"
             v-model="state.selectedDate"
           />
           <v-btn
@@ -126,3 +124,10 @@ const memos = computed(() => {
   });
 });
 </script>
+
+<style scoped lang="scss">
+:deep(.v-overlay__content) {
+  width: 0px !important;
+  min-width: 0px !important;
+}
+</style>

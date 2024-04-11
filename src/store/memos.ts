@@ -296,24 +296,16 @@ export const useMemoStore = defineStore(
 
     const tagCount = computed(() => tags.value.length);
 
-    const dayCount = computed(() => {
+    const dayCount = computed(() => memoDates.value.length);
+
+    const memoDates = computed(() => {
       if (memos.value.length) {
-        return [
-          ...new Set(
-            memos.value.map((m) => {
-              const d = new Date(m.createdAt);
-              d.setHours(0, 0, 0, 0);
-              return d.getTime();
-            })
-          )
-        ].length;
+        return [...new Set(memos.value.map((m) => m.createdAt.substring(0, 10)))];
       }
-      return 0;
+      return [];
     });
 
-    const filterActive = computed(() => {
-      return searchText.value || filterTags.value.length;
-    });
+    const filterActive = computed(() => searchText.value || filterTags.value.length);
 
     return {
       memos,
@@ -354,7 +346,8 @@ export const useMemoStore = defineStore(
       uploadFile,
       getFile,
       deleteFile,
-      clearFilters
+      clearFilters,
+      memoDates
     };
   },
   {
