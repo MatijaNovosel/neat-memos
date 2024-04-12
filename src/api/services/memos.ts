@@ -19,13 +19,8 @@ export class MemoService implements IMemoService {
       )
       .eq("id", id);
 
-    if (error) {
-      throw error;
-    }
-
-    if (!data) {
-      return null;
-    }
+    if (error) throw error;
+    if (!data) return null;
 
     return data.map<MemoModel>((memo) => ({
       ...memo,
@@ -44,9 +39,7 @@ export class MemoService implements IMemoService {
       ])
       .eq("id", data.id);
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
 
     // Tag updating
 
@@ -59,9 +52,7 @@ export class MemoService implements IMemoService {
         .delete()
         .eq("tagId", idsToRemove[i])
         .eq("memoId", data.id);
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
     }
 
     for (let i = 0; i < idsToAdd.length; i++) {
@@ -71,9 +62,7 @@ export class MemoService implements IMemoService {
           memoId: data.id
         }
       ]);
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
     }
 
     // File updating
@@ -114,9 +103,7 @@ export class MemoService implements IMemoService {
       ])
       .eq("id", id);
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
   }
 
   async saveMemo(data: CreateMemoModel): Promise<number> {
@@ -132,9 +119,7 @@ export class MemoService implements IMemoService {
 
     const id = response![0].id;
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
 
     for (let i = 0; i < data.tagIds.length; i++) {
       const { error } = await supabase
@@ -146,9 +131,7 @@ export class MemoService implements IMemoService {
           }
         ])
         .select();
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
     }
 
     return id;
@@ -156,16 +139,10 @@ export class MemoService implements IMemoService {
 
   async deleteMemo(id: number, fileIds: string[]): Promise<void> {
     const { error } = await supabase.from("memos").delete().eq("id", id);
-    if (error) {
-      throw error;
-    }
-
+    if (error) throw error;
     if (fileIds.length) {
       const { error: fileDeleteError } = await supabase.storage.from("neatMemos").remove(fileIds);
-
-      if (fileDeleteError) {
-        throw fileDeleteError;
-      }
+      if (fileDeleteError) throw fileDeleteError;
     }
   }
 
@@ -177,13 +154,8 @@ export class MemoService implements IMemoService {
       )
       .eq("userId", userId);
 
-    if (error) {
-      throw error;
-    }
-
-    if (!data) {
-      return [];
-    }
+    if (error) throw error;
+    if (!data) return [];
 
     return data.map<MemoModel>((memo) => ({
       content: memo.content,

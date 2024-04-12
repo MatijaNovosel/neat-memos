@@ -10,20 +10,46 @@
         <div class="text-grey">
           {{ i18n.t("userData") }}
         </div>
-        <v-text-field
-          prepend-inner-icon="mdi-account-outline"
-          hide-details
-          v-model="state.username"
-          density="compact"
-          :placeholder="i18n.t('username')"
-        />
+        <vv-form
+          class="d-flex flex-column align-end"
+          ref="userDataForm"
+          as="v-form"
+          @submit="updateUserData"
+        >
+          <vv-field
+            v-slot="{ field, errors }"
+            v-model="state.username"
+            name="username"
+            rules="required|min:3"
+            :label="i18n.t('username')"
+          >
+            <v-text-field
+              v-bind="field"
+              class="w-100"
+              hide-details="auto"
+              :error-messages="errors"
+              prepend-icon="mdi-account"
+              v-model="state.username"
+              density="compact"
+              :placeholder="i18n.t('username')"
+            />
+          </vv-field>
+          <v-btn
+            class="mt-4"
+            rounded="12"
+            type="submit"
+            color="orange-darken-1"
+          >
+            Save
+          </v-btn>
+        </vv-form>
       </v-card-text>
       <v-card-text class="d-flex flex-column flex-gap pt-0">
         <div class="text-grey">
           {{ i18n.t("appPreferences") }}
         </div>
         <v-select
-          prepend-inner-icon="mdi-earth"
+          prepend-icon="mdi-earth"
           hide-details
           density="compact"
           v-model="state.language"
@@ -32,7 +58,7 @@
           @update:model-value="updateLanguage"
         />
         <v-select
-          prepend-inner-icon="mdi-moon-waning-crescent"
+          prepend-icon="mdi-moon-waning-crescent"
           hide-details
           density="compact"
           v-model="state.theme"
@@ -48,9 +74,10 @@
 <script setup lang="ts">
 import MobileDrawerControls from "@/components/mobileDrawerControls/MobileDrawerControls.vue";
 import { LANGUAGE_OPTIONS, THEME_OPTIONS } from "@/constants/app";
+import { IVuetifyForm } from "@/models/common";
 import { useAppStore } from "@/store/app";
 import { useUserStore } from "@/store/user";
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 interface State {
@@ -62,6 +89,8 @@ interface State {
 const i18n = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
+
+const userDataForm = ref<IVuetifyForm>();
 
 const state: State = reactive({
   theme: null,
@@ -75,6 +104,10 @@ const updateTheme = () => {
 
 const updateLanguage = () => {
   appStore.setLanguage(state.language || "en");
+};
+
+const updateUserData = async () => {
+  await userStore.updateUsername(state.username || "");
 };
 
 onMounted(() => {

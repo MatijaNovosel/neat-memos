@@ -7,37 +7,22 @@ import { IResourcesService } from "../interfaces/resources";
 export class ResourcesService implements IResourcesService {
   async getFiles(userId: string): Promise<MemoFile[]> {
     const { data, error } = await supabase.from("resources").select("*").eq("userId", userId);
-
-    if (error) {
-      throw error;
-    }
-
+    if (error) throw error;
     return data;
   }
 
   async deleteFile(id: string): Promise<void> {
     const { error: fileDeleteError } = await supabase.storage.from("neatMemos").remove([id]);
-
-    if (fileDeleteError) {
-      throw fileDeleteError;
-    }
-
+    if (fileDeleteError) throw fileDeleteError;
     const { error } = await supabase.from("resources").delete().eq("id", id);
-
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
   }
 
   async getFile(id: string): Promise<string> {
     const { data: filePath, error } = await supabase.storage
       .from("neatMemos")
       .createSignedUrl(id, 3.156e8); // 10 years
-
-    if (error) {
-      throw error;
-    }
-
+    if (error) throw error;
     return filePath?.signedUrl;
   }
 
@@ -52,13 +37,8 @@ export class ResourcesService implements IResourcesService {
       upsert: false
     });
 
-    if (error) {
-      throw error;
-    }
-
-    if (!data) {
-      return null;
-    }
+    if (error) throw error;
+    if (!data) return null;
 
     const url = await this.getFile(id);
 
@@ -73,9 +53,7 @@ export class ResourcesService implements IResourcesService {
       }
     ]);
 
-    if (fileSaveError) {
-      throw fileSaveError;
-    }
+    if (fileSaveError) throw fileSaveError;
 
     return {
       url,

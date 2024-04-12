@@ -17,9 +17,7 @@ export class AuthService implements IAuthService {
       password
     });
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
 
     // Create data table
     const { error: dataTableError } = await supabase.from("userData").insert([
@@ -29,9 +27,7 @@ export class AuthService implements IAuthService {
       }
     ]);
 
-    if (dataTableError) {
-      throw dataTableError;
-    }
+    if (dataTableError) throw dataTableError;
   }
 
   async signInWithEmailAndPassword(email: string, password: string): Promise<TokenModel> {
@@ -40,9 +36,7 @@ export class AuthService implements IAuthService {
       password
     });
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
 
     return {
       userId: data.user.id,

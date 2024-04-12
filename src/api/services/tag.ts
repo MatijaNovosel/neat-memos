@@ -12,13 +12,8 @@ export class TagService implements ITagService {
         ascending: false
       });
 
-    if (error) {
-      throw error;
-    }
-
-    if (!data) {
-      return [];
-    }
+    if (error) throw error;
+    if (!data) return [];
 
     return data.map<TagModel>((tag) => ({ ...tag }));
   }
@@ -35,9 +30,7 @@ export class TagService implements ITagService {
       ])
       .select();
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
 
     const id = response![0].id;
     return id;

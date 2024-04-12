@@ -1,5 +1,6 @@
 import { AccountService } from "@/api/services/account";
 import { AuthService } from "@/api/services/auth";
+import { useNotifications } from "@/composables/useNotifications";
 import supabase from "@/helpers/supabase";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -23,6 +24,10 @@ export const useUserStore = defineStore(
     // Stores
     const memoStore = useMemoStore();
     const appStore = useAppStore();
+    const userStore = useUserStore();
+
+    // Composables
+    const { alert } = useNotifications();
 
     const login = async (email: string, password: string): Promise<void> => {
       const response = await authService.signInWithEmailAndPassword(email, password);
@@ -46,6 +51,17 @@ export const useUserStore = defineStore(
     const getUserData = async (id: string) => {
       const userData = await accountService.getUserData(id);
       return userData;
+    };
+
+    const updateUsername = async (value: string) => {
+      const userId = userStore.user?.id as string;
+      await accountService.changeUsername(userId, value);
+      alert({
+        text: "User data updated!"
+      });
+      if (user.value) {
+        user.value.userName = value;
+      }
     };
 
     const logOut = async () => {
@@ -73,7 +89,8 @@ export const useUserStore = defineStore(
       getUserData,
       logOut,
       register,
-      deleteAccount
+      deleteAccount,
+      updateUsername
     };
   },
   {
