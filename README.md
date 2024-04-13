@@ -5,6 +5,8 @@
 <h1 align=center>Neat memos</h1>
 <p align=center>A simple app for taking notes on the go.</p>
 
+![image](https://github.com/MatijaNovosel/neat-memos/assets/36193643/6f9f01c1-03f0-48fc-9f96-5ac8896b96e3)
+
 ## 🔨 Built With
 
 - [Vue 3](https://vuejs.org/)
