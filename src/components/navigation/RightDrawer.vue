@@ -83,10 +83,10 @@
         >
           <v-icon
             class="mr-2"
-            size="15"
+            size="18"
             :color="isInTagFilter(tag) ? tag.color : 'grey'"
           >
-            mdi-pound
+            {{ isInTagFilter(tag) ? "mdi-pound-box" : "mdi-pound-box-outline" }}
           </v-icon>
           <span> {{ tag.content }} </span>
         </v-chip>
