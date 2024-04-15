@@ -83,7 +83,6 @@ export const useMemoStore = defineStore(
       const id = activeMemo.value!.id;
       const memo = memos.value.find((m) => m.id === id);
       if (memo) {
-        console.log(memo.files);
         const newFiles = await memoService.editMemo({
           content,
           id,
