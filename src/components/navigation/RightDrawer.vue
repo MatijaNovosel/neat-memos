@@ -17,60 +17,60 @@
         :bg-color="theme.current.value.dark ? '' : 'white'"
         v-model="memoStore.searchText"
       />
+      <v-card
+        class="mt-4"
+        border
+        flat
+      >
+        <v-card-title class="text-subtitle-1 font-weight-bold text-grey pb-1">
+          {{ i18n.t("statistics") }}
+        </v-card-title>
+        <v-card-text class="px-0">
+          <v-list-item density="compact">
+            <v-icon
+              color="grey"
+              class="mr-2"
+            >
+              mdi-calendar
+            </v-icon>
+            {{ i18n.t("days") }}
+            <template #append> {{ memoStore.dayCount }} </template>
+          </v-list-item>
+          <v-list-item density="compact">
+            <v-icon
+              color="grey"
+              class="mr-2"
+            >
+              mdi-bookshelf
+            </v-icon>
+            {{ i18n.t("memos") }}
+            <template #append> {{ memoStore.memoCount }} </template>
+          </v-list-item>
+          <v-list-item density="compact">
+            <v-icon
+              color="grey"
+              class="mr-2"
+            >
+              mdi-tag-outline
+            </v-icon>
+            {{ i18n.t("tags") }}
+            <template #append> {{ memoStore.tagCount }} </template>
+          </v-list-item>
+        </v-card-text>
+      </v-card>
+      <div class="d-flex items-center align-center my-3 ml-2">
+        <span class="text-subtitle-1 text-grey"> {{ i18n.t("tags") }} </span>
+        <v-btn
+          class="ml-2"
+          variant="text"
+          icon="mdi-plus-box"
+          density="compact"
+          color="grey"
+          @click="memoStore.openTagDialog"
+        />
+      </div>
     </template>
-    <v-card
-      class="mt-4"
-      border
-      flat
-    >
-      <v-card-title class="text-subtitle-1 font-weight-bold text-grey pb-1">
-        {{ i18n.t("statistics") }}
-      </v-card-title>
-      <v-card-text class="px-0 pb-3">
-        <v-list-item density="compact">
-          <v-icon
-            color="grey"
-            class="mr-2"
-          >
-            mdi-calendar
-          </v-icon>
-          {{ i18n.t("days") }}
-          <template #append> {{ memoStore.dayCount }} </template>
-        </v-list-item>
-        <v-list-item density="compact">
-          <v-icon
-            color="grey"
-            class="mr-2"
-          >
-            mdi-bookshelf
-          </v-icon>
-          {{ i18n.t("memos") }}
-          <template #append> {{ memoStore.memoCount }} </template>
-        </v-list-item>
-        <v-list-item density="compact">
-          <v-icon
-            color="grey"
-            class="mr-2"
-          >
-            mdi-tag-outline
-          </v-icon>
-          {{ i18n.t("tags") }}
-          <template #append> {{ memoStore.tagCount }} </template>
-        </v-list-item>
-      </v-card-text>
-    </v-card>
-    <div class="d-flex items-center align-center mt-3 ml-2">
-      <span class="text-subtitle-1 text-grey"> {{ i18n.t("tags") }} </span>
-      <v-btn
-        class="ml-2"
-        variant="text"
-        icon="mdi-plus-box"
-        density="compact"
-        color="grey"
-        @click="memoStore.openTagDialog"
-      />
-    </div>
-    <div class="mt-4 ml-2 overflow-auto">
+    <div class="ml-2 flex-grow-1">
       <div
         class="d-flex flex-column flex-gap"
         v-if="memoStore.tags.length"
