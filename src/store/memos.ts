@@ -263,7 +263,7 @@ export const useMemoStore = defineStore(
     };
 
     const setTags = (data: TagModel[]) => {
-      tags.value = data;
+      tags.value = data.sort((a, b) => a.content.localeCompare(b.content));
     };
 
     const addToTagFilter = (tag: TagModel) => {
