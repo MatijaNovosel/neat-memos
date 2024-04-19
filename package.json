@@ -25,6 +25,7 @@
     "date-fns": "^3.6.0",
     "markdown-it": "^14.1.0",
     "markdown-it-highlightjs": "^4.0.1",
+    "markdown-it-multimd-table": "^4.2.3",
     "markdown-it-task-lists": "^2.1.1",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
