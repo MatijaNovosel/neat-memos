@@ -119,7 +119,7 @@ export const useMemoStore = defineStore(
           uploadedFiles.push({
             id: uploadedFile.id,
             url: uploadedFile.url,
-            createdAt: new Date().toString(),
+            createdAt: new Date().toISOString(),
             name: files[i].name,
             size: files[i].size,
             memoId: id
@@ -131,13 +131,13 @@ export const useMemoStore = defineStore(
         {
           content,
           id,
-          createdAt: new Date().toString(),
+          createdAt: new Date().toISOString(),
           userId,
           tags,
           pinned: false,
           files: uploadedFiles,
           private: false,
-          updatedAt: new Date().toString()
+          updatedAt: new Date().toISOString()
         },
         ...memos.value
       ]);
