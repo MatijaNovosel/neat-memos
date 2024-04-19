@@ -59,115 +59,146 @@ export const useMemoStore = defineStore(
     };
 
     const saveTag = async (content: string, color: string) => {
-      const userId = userStore.user?.id as string;
-      const id = await tagService.saveTag({
-        content,
-        userId,
-        color
-      });
-      setTags([
-        {
-          color,
+      try {
+        const userId = userStore.user?.id as string;
+        const id = await tagService.saveTag({
           content,
-          id
-        },
-        ...tags.value
-      ]);
-      alert({
-        text: i18n.global.t("tagSaved")
-      });
+          userId,
+          color
+        });
+        setTags([
+          {
+            color,
+            content,
+            id
+          },
+          ...tags.value
+        ]);
+        alert({
+          text: i18n.global.t("tagSaved")
+        });
+      } catch (e) {
+        alert({
+          text: JSON.stringify(e)
+        });
+      }
     };
 
     const editMemo = async (content: string, tags: TagModel[], files: Array<MemoFile | File>) => {
-      const userId = userStore.user?.id as string;
-      const id = activeMemo.value!.id;
-      const memo = memos.value.find((m) => m.id === id);
-      if (memo) {
-        const newFiles = await memoService.editMemo({
-          content,
-          id,
-          userId,
-          initialTagIds: memo.tags?.map((x) => x.id) || [],
-          tagIds: tags.map((x) => x.id),
-          initialFiles: memo.files ? (memo.files as MemoFile[]) : [],
-          files
-        });
-        memo.content = content;
-        memo.tags = tags;
-        memo.updatedAt = new Date().toISOString();
-        memo.files = newFiles;
+      try {
+        const userId = userStore.user?.id as string;
+        const id = activeMemo.value!.id;
+        const memo = memos.value.find((m) => m.id === id);
+        if (memo) {
+          const newFiles = await memoService.editMemo({
+            content,
+            id,
+            userId,
+            initialTagIds: memo.tags?.map((x) => x.id) || [],
+            tagIds: tags.map((x) => x.id),
+            initialFiles: memo.files ? (memo.files as MemoFile[]) : [],
+            files
+          });
+          memo.content = content;
+          memo.tags = tags;
+          memo.updatedAt = new Date().toISOString();
+          memo.files = newFiles;
+          alert({
+            text: i18n.global.t("memoSaved")
+          });
+          setActiveMemo(null);
+          closeEditDialog();
+        }
+      } catch (e) {
         alert({
-          text: i18n.global.t("memoSaved")
+          text: JSON.stringify(e)
         });
-        setActiveMemo(null);
-        closeEditDialog();
       }
     };
 
     const saveMemo = async (content: string, tags: TagModel[], files: File[]) => {
-      const userId = userStore.user?.id as string;
-      const id = await memoService.saveMemo({
-        content,
-        userId,
-        tagIds: tags.map((x) => x.id)
-      });
-      const uploadedFiles: MemoFile[] = [];
-
-      for (let i = 0; i < files.length; i++) {
-        const uploadedFile = await resourcesService.uploadFile(files[i], id, userStore.user!.id);
-        if (uploadedFile) {
-          uploadedFiles.push({
-            id: uploadedFile.id,
-            url: uploadedFile.url,
-            createdAt: new Date().toISOString(),
-            name: files[i].name,
-            size: files[i].size,
-            memoId: id
-          });
-        }
-      }
-
-      setMemos([
-        {
+      try {
+        const userId = userStore.user?.id as string;
+        const id = await memoService.saveMemo({
           content,
-          id,
-          createdAt: new Date().toISOString(),
           userId,
-          tags,
-          pinned: false,
-          files: uploadedFiles,
-          private: false,
-          updatedAt: new Date().toISOString()
-        },
-        ...memos.value
-      ]);
-      alert({
-        text: i18n.global.t("memoSaved")
-      });
+          tagIds: tags.map((x) => x.id)
+        });
+        const uploadedFiles: MemoFile[] = [];
+
+        for (let i = 0; i < files.length; i++) {
+          const uploadedFile = await resourcesService.uploadFile(files[i], id, userStore.user!.id);
+          if (uploadedFile) {
+            uploadedFiles.push({
+              id: uploadedFile.id,
+              url: uploadedFile.url,
+              createdAt: new Date().toISOString(),
+              name: files[i].name,
+              size: files[i].size,
+              memoId: id
+            });
+          }
+        }
+
+        setMemos([
+          {
+            content,
+            id,
+            archived: false,
+            createdAt: new Date().toISOString(),
+            userId,
+            tags,
+            pinned: false,
+            files: uploadedFiles,
+            private: false,
+            updatedAt: new Date().toISOString()
+          },
+          ...memos.value
+        ]);
+        alert({
+          text: i18n.global.t("memoSaved")
+        });
+      } catch (e) {
+        alert({
+          text: JSON.stringify(e)
+        });
+      }
     };
 
     const deleteMemo = async (id: number) => {
-      const fileIds: string[] = [];
-      const memo = memos.value.find((m) => m.id === id);
-      if (memo) {
-        (memo.files as MemoFile[]).forEach((f) => fileIds.push(f.id));
+      try {
+        const fileIds: string[] = [];
+        const memo = memos.value.find((m) => m.id === id);
+        if (memo) {
+          (memo.files as MemoFile[]).forEach((f) => fileIds.push(f.id));
+        }
+        await memoService.deleteMemo(id, fileIds);
+        memos.value = memos.value.filter((m) => m.id !== id);
+        alert({
+          text: i18n.global.t("memoDeleted")
+        });
+      } catch (e) {
+        alert({
+          text: JSON.stringify(e)
+        });
       }
-      await memoService.deleteMemo(id, fileIds);
-      memos.value = memos.value.filter((m) => m.id !== id);
-      alert({
-        text: i18n.global.t("memoDeleted")
-      });
     };
 
     const deleteFile = async (memoId: number, id: string) => {
-      await resourcesService.deleteFile(id);
-      const memo = memos.value.find((m) => m.id === memoId);
-      if (memo && memo.files) {
-        memo.files = (memo.files as MemoFile[]).filter((f) => f.id !== id);
+      try {
+        await resourcesService.deleteFile(id);
+        const memo = memos.value.find((m) => m.id === memoId);
+        if (memo && memo.files) {
+          memo.files = (memo.files as MemoFile[]).filter((f) => f.id !== id);
+        }
+        alert({
+          text: "File deleted!"
+        });
+      } catch (e) {
+        alert({
+          text: JSON.stringify(e)
+        });
       }
-      alert({
-        text: "File deleted!"
-      });
     };
 
     const deleteTag = async (id: number) => {
@@ -191,6 +222,23 @@ export const useMemoStore = defineStore(
           memo.pinned = !memo.pinned;
           alert({
             text: `Memo ${memo.pinned ? "pinned" : "unpinned"}!`
+          });
+        } catch (e) {
+          alert({
+            text: JSON.stringify(e)
+          });
+        }
+      }
+    };
+
+    const archiveMemo = async (id: number) => {
+      const memo = memos.value.find((m) => m.id === id);
+      if (memo) {
+        try {
+          await memoService.archiveMemo(id);
+          memo.archived = true;
+          alert({
+            text: "Memo archived!"
           });
         } catch (e) {
           alert({
@@ -293,8 +341,9 @@ export const useMemoStore = defineStore(
         .sort((a, b) => Number(b.pinned) - Number(a.pinned));
     });
 
+    const filteredMemosNormal = computed(() => filteredMemos.value.filter((m) => !m.archived));
+    const filteredMemosArchived = computed(() => filteredMemos.value.filter((m) => m.archived));
     const tagCount = computed(() => tags.value.length);
-
     const dayCount = computed(() => memoDates.value.length);
 
     const memoDates = computed(() => {
@@ -346,7 +395,10 @@ export const useMemoStore = defineStore(
       getFile,
       deleteFile,
       clearFilters,
-      memoDates
+      memoDates,
+      archiveMemo,
+      filteredMemosArchived,
+      filteredMemosNormal
     };
   },
   {

@@ -11,11 +11,24 @@ export class MemoService implements IMemoService {
     this.resourcesService = new ResourcesService();
   }
 
+  async archiveMemo(id: number): Promise<void> {
+    const { error } = await supabase
+      .from("memos")
+      .update([
+        {
+          archived: true
+        }
+      ])
+      .eq("id", id);
+
+    if (error) throw error;
+  }
+
   async getMemo(id: number): Promise<MemoModel | null> {
     const { data, error } = await supabase
       .from("memos")
       .select(
-        "id, createdAt, content, updatedAt, userId, pinned, private, tags ( id, content, color), resources (*)"
+        "id, createdAt, archived, content, updatedAt, userId, pinned, private, tags ( id, content, color), resources (*)"
       )
       .eq("id", id);
 
@@ -150,7 +163,7 @@ export class MemoService implements IMemoService {
     const { data, error } = await supabase
       .from("memos")
       .select(
-        "id, createdAt, content, updatedAt, userId, pinned, private, tags ( id, content, color), resources (*)"
+        "id, archived, createdAt, content, updatedAt, userId, pinned, private, tags ( id, content, color), resources (*)"
       )
       .eq("userId", userId);
 
@@ -166,7 +179,8 @@ export class MemoService implements IMemoService {
       userId: memo.userId,
       updatedAt: memo.updatedAt,
       files: memo.resources,
-      tags: memo.tags
+      tags: memo.tags,
+      archived: memo.archived
     }));
   }
 }

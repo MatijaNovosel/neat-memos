@@ -8,6 +8,7 @@ export interface MemoModel {
   content: string;
   pinned: boolean;
   private: boolean;
+  archived: boolean;
   tags?: TagModel[];
   files?: File[] | MemoFile[];
 }

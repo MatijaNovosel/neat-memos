@@ -25,33 +25,6 @@ export const MEMO_ACTIONS = {
   SHARE: "share"
 };
 
-export const memoActionItems = computed(() => [
-  {
-    icon: "mdi-pin",
-    text: i18n.global.t("pin"),
-    type: MEMO_ACTIONS.PIN,
-    color: "grey"
-  },
-  {
-    icon: "mdi-delete-outline",
-    text: i18n.global.t("delete"),
-    type: MEMO_ACTIONS.DELETE,
-    color: "red"
-  },
-  {
-    icon: "mdi-pencil",
-    text: i18n.global.t("edit"),
-    type: MEMO_ACTIONS.EDIT,
-    color: "grey"
-  },
-  {
-    icon: "mdi-share",
-    text: i18n.global.t("share"),
-    type: MEMO_ACTIONS.SHARE,
-    color: "grey"
-  }
-]);
-
 export const MEMO_ADDITIONAL_ACTIONS = {
   PREVIEW: "preview",
   ADD_CODE_BLOCK: "addCodeBlock",

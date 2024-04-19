@@ -3,14 +3,13 @@ export default class ROUTE_NAMES {
 
   static readonly LOGIN = "login";
   static readonly REGISTER = "register";
-  static readonly CONFIRM_ACCOUNT = "confirm-account";
-  static readonly FORGOT_PASSWORD = "forgot-password";
-  static readonly RESET_PASSWORD = "reset-password";
+
   static readonly SETTINGS = "settings";
   static readonly MEMO = "memo";
   static readonly PRIVACY = "privacy";
   static readonly RESOURCES = "resources";
   static readonly TIMELINE = "timeline";
+  static readonly ARCHIVE = "archive";
 
   static readonly HOME = "home";
 }

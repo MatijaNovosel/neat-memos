@@ -78,6 +78,15 @@ const routes: RouteRecordRaw[] = [
         }
       },
       {
+        path: "archive",
+        name: ROUTE_NAMES.ARCHIVE,
+        component: () => import("../views/Archive.vue"),
+        meta: {
+          title: "archive.title",
+          auth: true
+        }
+      },
+      {
         path: "/:pathMatch(.*)*",
         name: "NotFound",
         component: () => import("../views/NotFound.vue")

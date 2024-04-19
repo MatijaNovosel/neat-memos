@@ -15,19 +15,19 @@
     </v-row>
     <div
       class="d-flex flex-column align-center mt-10"
-      v-if="!memoStore.filteredMemos.length && !state.loading"
+      v-if="!memoStore.filteredMemosNormal.length && !state.loading"
     >
       <span class="text-h1 mb-5"> 😿 </span>
       <span class="text-h6"> {{ i18n.t("noDataFound") }}. </span>
     </div>
     <v-row
-      v-if="!state.loading && memoStore.filteredMemos.length"
+      v-if="!state.loading && memoStore.filteredMemosNormal.length"
       class="pb-6"
     >
       <v-col
         class="py-1"
         cols="12"
-        v-for="memo in memoStore.filteredMemos"
+        v-for="memo in memoStore.filteredMemosNormal"
         :key="memo.id"
       >
         <memo :data="memo" />

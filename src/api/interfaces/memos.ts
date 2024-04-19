@@ -7,4 +7,5 @@ export interface IMemoService {
   editMemo(data: UpdateMemoModel): Promise<MemoFile[]>;
   deleteMemo(id: number, fileIds: string[]): Promise<void>;
   pinMemo(id: number, pinStatus: boolean): Promise<void>;
+  archiveMemo(id: number): Promise<void>;
 }

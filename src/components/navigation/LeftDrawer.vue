@@ -91,6 +91,13 @@ const navItems = computed(() => [
     }
   },
   {
+    title: "Archive",
+    icon: "mdi-archive",
+    to: {
+      name: ROUTE_NAMES.ARCHIVE
+    }
+  },
+  {
     title: "Privacy",
     icon: "mdi-eye",
     to: {

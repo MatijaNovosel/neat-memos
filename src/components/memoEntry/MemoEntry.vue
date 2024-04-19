@@ -319,6 +319,7 @@ const handleAction = (action: string) => {
         id: -1,
         createdAt: new Date().toISOString(),
         pinned: false,
+        archived: false,
         userId: "",
         tags: state.selectedTags,
         files: state.files as File[],

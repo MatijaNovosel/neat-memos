@@ -102,7 +102,7 @@
         <v-chip
           @click="downloadFile(file)"
           color="orange"
-          :closable="!props.readonly"
+          :closable="!props.readonly && !props.data.archived"
           @click:close="deleteFile(file)"
           density="compact"
           v-for="(file, i) in props.data.files"
@@ -125,7 +125,7 @@
 import MarkdownRenderer from "@/components/markdownRenderer/MarkdownRenderer.vue";
 import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
 import { useNotifications } from "@/composables/useNotifications";
-import { MEMO_ACTIONS, memoActionItems } from "@/constants/memo";
+import { MEMO_ACTIONS } from "@/constants/memo";
 import { downloadFileFromUrl, fileSizeReadable } from "@/helpers/file";
 import { capitalize } from "@/helpers/string";
 import { MemoFile, MemoModel } from "@/models/memo";
@@ -133,6 +133,7 @@ import ROUTE_NAMES from "@/router/routeNames";
 import { useMemoStore } from "@/store/memos";
 import { format, formatRelative, isToday } from "date-fns";
 import { computed, reactive } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useTheme } from "vuetify";
 
@@ -155,18 +156,66 @@ const router = useRouter();
 const { alert } = useNotifications();
 const createConfirmationDialog = useConfirmationDialog();
 
+const i18n = useI18n();
+
 const state: State = reactive({
   loading: false
+});
+
+const memoActionItems = computed(() => {
+  const res = [
+    {
+      icon: "mdi-delete-outline",
+      text: i18n.t("delete"),
+      type: MEMO_ACTIONS.DELETE,
+      color: "red"
+    }
+  ];
+
+  if (!props.data.archived) {
+    res.push(
+      ...[
+        {
+          icon: "mdi-pin",
+          text: i18n.t("pin"),
+          type: MEMO_ACTIONS.PIN,
+          color: "grey"
+        },
+        {
+          icon: "mdi-pencil",
+          text: i18n.t("edit"),
+          type: MEMO_ACTIONS.EDIT,
+          color: "grey"
+        },
+        {
+          icon: "mdi-share",
+          text: i18n.t("share"),
+          type: MEMO_ACTIONS.SHARE,
+          color: "grey"
+        },
+        {
+          icon: "mdi-archive",
+          text: "Archive",
+          type: MEMO_ACTIONS.ARCHIVE,
+          color: "grey"
+        }
+      ]
+    );
+  }
+
+  return res;
 });
 
 const handleAction = async (action: string) => {
   state.loading = true;
   switch (action) {
     case MEMO_ACTIONS.DELETE:
-      const answer = await createConfirmationDialog();
-      if (answer) {
-        await memoStore.deleteMemo(props.data.id);
-      }
+      const answerDelete = await createConfirmationDialog();
+      if (answerDelete) await memoStore.deleteMemo(props.data.id);
+      break;
+    case MEMO_ACTIONS.ARCHIVE:
+      const answerArchive = await createConfirmationDialog();
+      if (answerArchive) await memoStore.archiveMemo(props.data.id);
       break;
     case MEMO_ACTIONS.PIN:
       await memoStore.pinMemo(props.data.id);
