@@ -14,7 +14,7 @@
       <vv-form
         ref="registerForm"
         as="v-form"
-        @submit="login"
+        @submit="register"
       >
         <v-row no-gutters>
           <v-col
@@ -165,7 +165,7 @@ const resetForm = () => {
   }
 };
 
-const login = async () => {
+const register = async () => {
   if (!registerForm.value || !(await registerForm.value.validate()).valid) {
     return;
   }
