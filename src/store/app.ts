@@ -46,15 +46,15 @@ export const useAppStore = defineStore(
 
     return {
       loading,
-      setLoading,
-      triggerLeftDrawer,
-      triggerRightDrawer,
       leftDrawer,
       rightDrawer,
       darkMode,
+      language,
+      triggerRightDrawer,
+      triggerLeftDrawer,
+      setLoading,
       toggleDarkMode,
       setTheme,
-      language,
       setLanguage
     };
   },

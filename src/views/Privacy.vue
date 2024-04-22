@@ -352,7 +352,6 @@
 </template>
 
 <script setup lang="ts">
-import MobileDrawerControls from "@/components/mobileDrawerControls/MobileDrawerControls.vue";
 import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
 
 const createConfirmationDialog = useConfirmationDialog();

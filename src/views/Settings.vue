@@ -72,7 +72,6 @@
 </template>
 
 <script setup lang="ts">
-import MobileDrawerControls from "@/components/mobileDrawerControls/MobileDrawerControls.vue";
 import { LANGUAGE_OPTIONS, THEME_OPTIONS } from "@/constants/app";
 import { IVuetifyForm } from "@/models/common";
 import { useAppStore } from "@/store/app";

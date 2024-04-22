@@ -40,7 +40,6 @@
 import ActiveFilters from "@/components/activeFilters/ActiveFilters.vue";
 import Memo from "@/components/memo/Memo.vue";
 import MemoEntry from "@/components/memoEntry/MemoEntry.vue";
-import MobileDrawerControls from "@/components/mobileDrawerControls/MobileDrawerControls.vue";
 import { useMemoStore } from "@/store/memos";
 import { onMounted, reactive } from "vue";
 import { useI18n } from "vue-i18n";

@@ -42,7 +42,6 @@
 <script lang="ts" setup>
 import { MemoService } from "@/api/services/memos";
 import Memo from "@/components/memo/Memo.vue";
-import MobileDrawerControls from "@/components/mobileDrawerControls/MobileDrawerControls.vue";
 import { MemoModel } from "@/models/memo";
 import ROUTE_NAMES from "@/router/routeNames";
 import { useUserStore } from "@/store/user";

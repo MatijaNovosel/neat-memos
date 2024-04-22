@@ -128,7 +128,6 @@
 
 <script setup lang="ts">
 import { ResourcesService } from "@/api/services/resources";
-import MobileDrawerControls from "@/components/mobileDrawerControls/MobileDrawerControls.vue";
 import {
   downloadFileFromUrl,
   fileSizeReadable,
