@@ -230,7 +230,7 @@ import {
   memoVisibilityItems
 } from "@/constants/memo";
 import { fileSizeReadable } from "@/helpers/file";
-import { IVuetifyForm } from "@/models/common";
+import { IForm } from "@/models/common";
 import { MemoFile } from "@/models/memo";
 import { TagModel } from "@/models/tag";
 import { useMemoStore } from "@/store/memos";
@@ -263,7 +263,7 @@ interface State {
 
 const theme = useTheme();
 
-const memoForm = ref<IVuetifyForm>();
+const memoForm = ref<IForm>();
 
 const memoStore = useMemoStore();
 const i18n = useI18n();

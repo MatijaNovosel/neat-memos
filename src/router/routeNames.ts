@@ -1,5 +1,5 @@
 export default class ROUTE_NAMES {
-  static readonly NO_PERMISSIONS = "no-permissions";
+  static readonly NOT_FOUND = "not-found";
 
   static readonly LOGIN = "login";
   static readonly REGISTER = "register";

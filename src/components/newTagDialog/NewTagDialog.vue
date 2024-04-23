@@ -105,7 +105,7 @@
 </template>
 
 <script setup lang="ts">
-import { IVuetifyForm } from "@/models/common";
+import { IForm } from "@/models/common";
 import { useMemoStore } from "@/store/memos";
 import { computed, reactive, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
@@ -116,7 +116,7 @@ interface State {
   tagColor: string | null;
 }
 
-const tagForm = ref<IVuetifyForm | null>(null);
+const tagForm = ref<IForm | null>(null);
 
 const theme = useTheme();
 const memoStore = useMemoStore();

@@ -73,7 +73,7 @@
 
 <script setup lang="ts">
 import { LANGUAGE_OPTIONS, THEME_OPTIONS } from "@/constants/app";
-import { IVuetifyForm } from "@/models/common";
+import { IForm } from "@/models/common";
 import { useAppStore } from "@/store/app";
 import { useUserStore } from "@/store/user";
 import { onMounted, reactive, ref } from "vue";
@@ -89,7 +89,7 @@ const i18n = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
 
-const userDataForm = ref<IVuetifyForm>();
+const userDataForm = ref<IForm>();
 
 const state: State = reactive({
   theme: null,

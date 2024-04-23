@@ -111,7 +111,7 @@
 import BottomOptions from "@/components/bottomOptions/BottomOptions.vue";
 import LogoHeader from "@/components/logoHeader/LogoHeader.vue";
 import { useNotifications } from "@/composables/useNotifications";
-import { IVuetifyForm } from "@/models/common";
+import { IForm } from "@/models/common";
 import ROUTE_NAMES from "@/router/routeNames";
 import { useAppStore } from "@/store/app";
 import { useUserStore } from "@/store/user";
@@ -126,7 +126,7 @@ interface State {
   password: string | null;
 }
 
-const loginForm = ref<IVuetifyForm>();
+const loginForm = ref<IForm>();
 const userStore = useUserStore();
 const appStore = useAppStore();
 const i18n = useI18n();
