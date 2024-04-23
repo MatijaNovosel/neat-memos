@@ -3,6 +3,10 @@ import { TokenModel } from "@/models/user";
 import { IAuthService } from "../interfaces/auth";
 
 export class AuthService implements IAuthService {
+  async signOut(): Promise<void> {
+    await supabase.auth.signOut();
+  }
+
   deleteAccount(): Promise<void> {
     throw new Error("Method not implemented.");
   }

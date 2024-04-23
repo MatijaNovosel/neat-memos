@@ -4,4 +4,5 @@ export interface IAuthService {
   signInWithEmailAndPassword(email: string, password: string): Promise<TokenModel>;
   registerWithEmailAndPassword(email: string, password: string, username: string): Promise<void>;
   deleteAccount(): Promise<void>;
+  signOut(): Promise<void>;
 }

@@ -1,7 +1,6 @@
 import { AccountService } from "@/api/services/account";
 import { AuthService } from "@/api/services/auth";
 import { useNotifications } from "@/composables/useNotifications";
-import supabase from "@/helpers/supabase";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { IUserAccount, TokenModel } from "../models/user";
@@ -72,7 +71,10 @@ export const useUserStore = defineStore(
       memoStore.setMemos([]);
       memoStore.setTags([]);
       memoStore.clearFilters();
-      await supabase.auth.signOut();
+      await authService.signOut();
+      alert({
+        text: "Signed out!"
+      });
     };
 
     const deleteAccount = async () => {
