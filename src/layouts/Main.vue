@@ -1,8 +1,10 @@
 <template>
   <v-layout>
     <alerts />
-    <left-drawer v-if="isAuthenticated" />
-    <right-drawer v-if="isAuthenticated" />
+    <template v-if="isAuthenticated">
+      <left-drawer />
+      <right-drawer />
+    </template>
     <v-main
       class="main"
       :class="theme.current.value.dark ? '' : 'bg-grey-lighten-4'"
@@ -18,13 +20,13 @@
 <script setup lang="ts">
 import { useUserStore } from "@/store/user";
 import { storeToRefs } from "pinia";
+import { useTheme } from "vuetify";
+import EditMemoDialog from "../components/editMemoDialog/EditMemoDialog.vue";
 import LeftDrawer from "../components/navigation/LeftDrawer.vue";
 import RightDrawer from "../components/navigation/RightDrawer.vue";
-import Alerts from "../components/notifications/Alerts.vue";
-import EditMemoDialog from "../components/editMemoDialog/EditMemoDialog.vue";
-import PreviewMemoDialog from "../components/previewMemoDialog/PreviewMemoDialog.vue";
 import NewTagDialog from "../components/newTagDialog/NewTagDialog.vue";
-import { useTheme } from "vuetify";
+import Alerts from "../components/notifications/Alerts.vue";
+import PreviewMemoDialog from "../components/previewMemoDialog/PreviewMemoDialog.vue";
 
 const userStore = useUserStore();
 const { isAuthenticated } = storeToRefs(userStore);
