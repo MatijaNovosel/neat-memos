@@ -12,7 +12,6 @@ export const useUserStore = defineStore(
   () => {
     // Data
     const user = ref<IUserAccount | null>(null);
-    const permissions = ref<number[]>([]);
     const token = ref<TokenModel | null>(null);
     const isAuthenticated = computed(() => user.value != null);
 
@@ -65,7 +64,6 @@ export const useUserStore = defineStore(
     const logOut = async () => {
       user.value = null;
       token.value = null;
-      permissions.value = [];
       appStore.setTheme("light");
       memoStore.setMemos([]);
       memoStore.setTags([]);
@@ -82,7 +80,6 @@ export const useUserStore = defineStore(
 
     return {
       user,
-      permissions,
       token,
       isAuthenticated,
       login,
