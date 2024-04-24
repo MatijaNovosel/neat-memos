@@ -23,7 +23,6 @@ export const useUserStore = defineStore(
     // Stores
     const memoStore = useMemoStore();
     const appStore = useAppStore();
-    const userStore = useUserStore();
 
     // Composables
     const { alert } = useNotifications();
@@ -53,7 +52,7 @@ export const useUserStore = defineStore(
     };
 
     const updateUsername = async (value: string) => {
-      const userId = userStore.user?.id as string;
+      const userId = user.value?.id as string;
       await accountService.changeUsername(userId, value);
       alert({
         text: "User data updated!"
