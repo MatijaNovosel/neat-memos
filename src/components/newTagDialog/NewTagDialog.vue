@@ -69,6 +69,7 @@
           </vv-field>
         </vv-form>
       </v-card-text>
+      <v-divider class="my-3" />
       <v-card-text class="pt-2 pb-4">
         <span class="text-grey text-subtitle-2"> {{ i18n.t("allTags") }} </span>
         <div

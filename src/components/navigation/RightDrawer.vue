@@ -25,7 +25,7 @@
         <v-card-title class="text-subtitle-1 font-weight-bold text-grey pb-1">
           {{ i18n.t("statistics") }}
         </v-card-title>
-        <v-card-text class="px-0">
+        <v-card-text class="px-0 pb-2">
           <v-list-item density="compact">
             <v-icon
               color="grey"
