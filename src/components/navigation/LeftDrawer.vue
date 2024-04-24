@@ -16,10 +16,12 @@
       </v-list-item>
     </template>
     <template #prepend>
-      <v-list-item
-        class="text-subtitle-2"
-        prepend-avatar="/plenky.jpg"
-      >
+      <v-list-item class="text-subtitle-2">
+        <template #prepend>
+          <v-avatar color="orange">
+            {{ acronym(userStore.user?.userName || "Undefined") }}
+          </v-avatar>
+        </template>
         {{ userStore.user?.userName || "Undefined" }}
       </v-list-item>
     </template>
@@ -48,6 +50,7 @@
 </template>
 
 <script lang="ts" setup>
+import { acronym } from "@/helpers/string";
 import ROUTE_NAMES from "@/router/routeNames";
 import { useAppStore } from "@/store/app";
 import { useUserStore } from "@/store/user";
