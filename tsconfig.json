@@ -5,7 +5,7 @@
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Node16",
     "skipLibCheck": true,
     "noImplicitAny": false,
     "emitDecoratorMetadata": false,
