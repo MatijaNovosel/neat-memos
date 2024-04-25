@@ -80,7 +80,10 @@
         v-for="memo in memos"
         :key="memo.id"
       >
-        <memo :data="memo" />
+        <memo
+          readonly
+          :data="memo"
+        />
       </v-col>
     </v-row>
   </v-container>
