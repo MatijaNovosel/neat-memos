@@ -118,7 +118,7 @@ export function getIconFromExtension(extension: string): string {
  * Downloads a file provided in the function parameters as a public url.
  * @param {string} url - File url.
  */
-export async function downloadFileFromUrl(url: string, fileName: string) {
+export async function downloadFileFromUrl(url: string, fileName: string): Promise<void> {
   const resp = await axios.get(url, {
     responseType: "blob"
   });

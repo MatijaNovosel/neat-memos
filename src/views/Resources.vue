@@ -96,6 +96,7 @@
                 <v-divider />
                 <div class="d-flex justify-end py-1 pr-3">
                   <v-btn
+                    :loading="file.downloading"
                     size="x-small"
                     variant="text"
                     rounded="12"
@@ -135,7 +136,7 @@ import {
   getIconFromExtension
 } from "@/helpers/file";
 import { capitalize } from "@/helpers/string";
-import { MemoFile } from "@/models/memo";
+import { MemoFileDetailed } from "@/models/memo";
 import ROUTE_NAMES from "@/router/routeNames";
 import { useUserStore } from "@/store/user";
 import { format, formatRelative, isToday } from "date-fns";
@@ -144,7 +145,7 @@ import { useI18n } from "vue-i18n";
 import { useTheme } from "vuetify";
 
 interface State {
-  files: MemoFile[];
+  files: MemoFileDetailed[];
   loading: boolean;
   searchText: string | null;
   filterExtensions: string[];
@@ -166,7 +167,7 @@ const extensions = computed(() => {
   return new Set(state.files.map((f) => getExtensionFromFileName(f.name)));
 });
 
-const groupedFiles = computed<Record<string, MemoFile[]>>(() => {
+const groupedFiles = computed<Record<string, MemoFileDetailed[]>>(() => {
   const groups = {};
   const extensions = new Set(state.files.map((f) => getExtensionFromFileName(f.name)));
 
@@ -202,8 +203,10 @@ const formatDate = (date: string) => {
   }
 };
 
-const downloadFile = (file: MemoFile) => {
-  downloadFileFromUrl(file.url, file.name);
+const downloadFile = async (file: MemoFileDetailed) => {
+  file.downloading = true;
+  await downloadFileFromUrl(file.url, file.name);
+  file.downloading = false;
 };
 
 const selectTag = (tag: string) => {
@@ -217,7 +220,7 @@ const selectTag = (tag: string) => {
 onMounted(async () => {
   state.loading = true;
   const files = await resourcesService.getFiles(userStore.user!.id);
-  state.files = files;
+  state.files = files.map((f) => ({ ...f, downloading: false }));
   state.loading = false;
 });
 </script>

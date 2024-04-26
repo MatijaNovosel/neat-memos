@@ -37,3 +37,7 @@ export interface MemoFile {
   createdAt: string;
   memoId: number;
 }
+
+export interface MemoFileDetailed extends MemoFile {
+  downloading: boolean;
+}
