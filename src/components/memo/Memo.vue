@@ -245,7 +245,8 @@ const handleAction = async (action: string) => {
 
 const dateFormatFn = (date: Date) => {
   if (isToday(date)) {
-    return capitalize(formatRelative(date, new Date()));
+    // formatRelative ima jako glupe opcije za lokaliziranje pa se držim ovog
+    return capitalize(formatRelative(date, new Date()))!.replace("am", "");
   } else {
     return format(date, "dd.MM.yyyy. HH:mm");
   }
