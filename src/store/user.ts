@@ -78,10 +78,18 @@ export const useUserStore = defineStore(
       await authService.deleteAccount();
     };
 
+    const tokenExpired = computed(() => {
+      if (token.value && token.value.expiresAt) {
+        return new Date().getTime() >= token.value.expiresAt * 1000;
+      }
+      return true;
+    });
+
     return {
       user,
       token,
       isAuthenticated,
+      tokenExpired,
       login,
       setToken,
       getUserData,

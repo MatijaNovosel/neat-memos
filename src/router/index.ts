@@ -103,6 +103,11 @@ const router = createRouter({
 
 router.beforeEach((to, _, next) => {
   const userStore = useUserStore();
+
+  if (userStore.tokenExpired && userStore.user) {
+    userStore.logOut();
+  }
+
   if (userStore.user && to.name === ROUTE_NAMES.LOGIN) {
     next({
       name: ROUTE_NAMES.HOME
