@@ -87,6 +87,15 @@ const routes: RouteRecordRaw[] = [
         }
       },
       {
+        path: "kanban",
+        name: ROUTE_NAMES.KANBAN,
+        component: () => import("../views/Kanban.vue"),
+        meta: {
+          title: "kanban.title",
+          auth: true
+        }
+      },
+      {
         path: "/:pathMatch(.*)*",
         name: ROUTE_NAMES.NOT_FOUND,
         component: () => import("../views/NotFound.vue")

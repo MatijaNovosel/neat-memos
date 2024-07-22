@@ -10,6 +10,7 @@ export default class ROUTE_NAMES {
   static readonly RESOURCES = "resources";
   static readonly TIMELINE = "timeline";
   static readonly ARCHIVE = "archive";
+  static readonly KANBAN = "kanban";
 
   static readonly HOME = "home";
 }

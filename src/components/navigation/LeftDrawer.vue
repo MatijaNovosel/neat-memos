@@ -16,13 +16,16 @@
       </v-list-item>
     </template>
     <template #prepend>
-      <v-list-item class="text-subtitle-2">
+      <v-list-item
+        :title="userStore.user?.userName || 'Undefined'"
+        :subtitle="leftDrawerSubtitle"
+        class="text-subtitle-2"
+      >
         <template #prepend>
           <v-avatar color="orange">
             {{ acronym(userStore.user?.userName || "Undefined") }}
           </v-avatar>
         </template>
-        {{ userStore.user?.userName || "Undefined" }}
       </v-list-item>
     </template>
     <v-list
@@ -58,6 +61,7 @@ import { computed, reactive, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useDisplay, useTheme } from "vuetify";
+import { version } from "../../../package.json";
 
 const userStore = useUserStore();
 const appStore = useAppStore();
@@ -101,6 +105,13 @@ const navItems = computed(() => [
     }
   },
   {
+    title: "Kanban",
+    icon: "mdi-view-dashboard",
+    to: {
+      name: ROUTE_NAMES.KANBAN
+    }
+  },
+  {
     title: "Privacy",
     icon: "mdi-eye",
     to: {
@@ -122,6 +133,10 @@ const logOut = () => {
     name: ROUTE_NAMES.LOGIN
   });
 };
+
+const leftDrawerSubtitle = computed(() => {
+  return `Neat memos ${version}`;
+});
 
 watch(
   () => appStore.leftDrawer,
