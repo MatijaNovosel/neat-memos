@@ -1,35 +1,54 @@
 <template>
   <v-container class="main-ctr">
     <mobile-drawer-controls hide-right />
-    <div
-      class="bg-grey-lighten-3 outline mt-5 mx-0 pt-5 px-5 pb-2 d-flex kanban-projects"
-      v-for="project in state.projects"
-      :key="project.id"
+    <v-tabs
+      v-model="state.tab"
+      align-tabs="center"
+      color="orange"
     >
-      <container
-        v-for="column in project.columns"
-        class="kanban-column"
-        :key="column.id"
-        orientation="vertical"
-        :group-name="project.name"
-        @drop="(result) => onDrop(project.id, column.id, result)"
-        drag-class="card-ghost"
-        drop-class="card-ghost-drop"
-        :drop-placeholder="dropPlaceholderOptions"
+      <v-tab
+        v-for="project in state.projects"
+        :key="project.id"
+        rounded="0"
+        :value="project.id"
       >
-        <draggable
-          v-for="card in column.cards"
-          :key="card.id"
-        >
-          <kanban-card :data="card" />
-        </draggable>
-      </container>
-    </div>
+        {{ project.name }}
+      </v-tab>
+    </v-tabs>
+    <v-window v-model="state.tab">
+      <v-window-item
+        v-for="project in state.projects"
+        :key="`tabItem_${project.id}`"
+        :value="project.id"
+      >
+        <div class="bg-grey-lighten-3 outline mt-5 mx-0 pt-5 px-5 pb-2 d-flex kanban-projects">
+          <container
+            v-for="column in project.columns"
+            class="kanban-column"
+            :key="column.id"
+            orientation="vertical"
+            :group-name="project.name"
+            @drop="(result) => onDrop(project.id, column.id, result)"
+            drag-class="card-ghost"
+            drop-class="card-ghost-drop"
+            :drop-placeholder="dropPlaceholderOptions"
+          >
+            <draggable
+              v-for="card in column.cards"
+              :key="card.id"
+            >
+              <kanban-card :data="card" />
+            </draggable>
+          </container>
+        </div>
+      </v-window-item>
+    </v-window>
   </v-container>
 </template>
 
 <script setup lang="ts">
 import KanbanCard from "@/components/kanban/KanbanCard.vue";
+import { KANBAN_PROJECTS } from "@/constants/kanban";
 import { DropResult } from "@/models/common";
 import { Card, Project } from "@/models/kanban";
 import { reactive } from "vue";
@@ -37,6 +56,7 @@ import { Container, Draggable } from "vue3-smooth-dnd";
 
 interface State {
   projects: Project[];
+  tab: number;
 }
 
 const dropPlaceholderOptions = {
@@ -46,86 +66,8 @@ const dropPlaceholderOptions = {
 };
 
 const state: State = reactive({
-  projects: [
-    {
-      columns: [
-        {
-          cards: [
-            {
-              id: 1,
-              name: "Card 1"
-            },
-            {
-              id: 2,
-              name: "Card 2"
-            },
-            {
-              id: 3,
-              name: "Card 3"
-            }
-          ],
-          id: 1,
-          name: "Column 1"
-        },
-        {
-          cards: [
-            {
-              id: 1,
-              name: "Card 1"
-            },
-            {
-              id: 2,
-              name: "Card 2"
-            },
-            {
-              id: 3,
-              name: "Card 3"
-            }
-          ],
-          id: 2,
-          name: "Column 2"
-        },
-        {
-          cards: [
-            {
-              id: 1,
-              name: "Card 1"
-            },
-            {
-              id: 2,
-              name: "Card 2"
-            },
-            {
-              id: 3,
-              name: "Card 3"
-            }
-          ],
-          id: 3,
-          name: "Column 3"
-        },
-        {
-          cards: [
-            {
-              id: 1,
-              name: "Card 1"
-            },
-            {
-              id: 2,
-              name: "Card 2"
-            },
-            {
-              id: 3,
-              name: "Card 3"
-            }
-          ],
-          id: 4,
-          name: "Column 4"
-        }
-      ],
-      id: 1,
-      name: "Project 1"
-    }
-  ]
+  projects: [...KANBAN_PROJECTS],
+  tab: KANBAN_PROJECTS[0].id
 });
 
 const applyDrag = (arr: Card[], dropResult: DropResult<Card>) => {
