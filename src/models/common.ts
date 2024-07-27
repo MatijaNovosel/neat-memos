@@ -24,3 +24,9 @@ export interface IForm {
   resetValidation: () => void;
   resetForm: () => void;
 }
+
+export interface DropResult<T> {
+  removedIndex: number;
+  addedIndex: number;
+  payload: T;
+}

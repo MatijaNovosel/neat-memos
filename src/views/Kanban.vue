@@ -6,43 +6,38 @@
       v-for="project in state.projects"
       :key="project.id"
     >
-      <div
+      <container
         v-for="column in project.columns"
         class="kanban-column"
         :key="column.id"
+        orientation="vertical"
+        :group-name="project.name"
+        @drop="(result) => onDrop(project.id, column.id, result)"
+        drag-class="card-ghost"
+        drop-class="card-ghost-drop"
+        :drop-placeholder="dropPlaceholderOptions"
       >
         <draggable
-          v-model="column.cards"
-          group="people"
-          @start="drag = true"
-          @end="drag = false"
-          item-key="id"
+          v-for="card in column.cards"
+          :key="card.id"
         >
-          <template #item="{ element }">
-            <v-card
-              class="pa-5 mb-3"
-              flat
-              border
-            >
-              {{ element.id }}
-            </v-card>
-          </template>
+          <kanban-card :data="card" />
         </draggable>
-      </div>
+      </container>
     </div>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import { Project } from "@/models/kanban";
-import { reactive, ref } from "vue";
-import draggable from "vuedraggable";
+import KanbanCard from "@/components/kanban/KanbanCard.vue";
+import { DropResult } from "@/models/common";
+import { Card, Project } from "@/models/kanban";
+import { reactive } from "vue";
+import { Container, Draggable } from "vue3-smooth-dnd";
 
 interface State {
   projects: Project[];
 }
-
-const drag = ref(false);
 
 const dropPlaceholderOptions = {
   className: "drop-preview",
@@ -132,15 +127,53 @@ const state: State = reactive({
     }
   ]
 });
+
+const applyDrag = (arr: Card[], dropResult: DropResult<Card>) => {
+  const { removedIndex, addedIndex, payload } = dropResult;
+
+  if (removedIndex === null && addedIndex === null) return arr;
+
+  const result = [...arr];
+
+  let itemToAdd = payload;
+
+  if (removedIndex !== null) {
+    itemToAdd = result.splice(removedIndex, 1)[0];
+  }
+
+  if (addedIndex !== null) {
+    result.splice(addedIndex, 0, itemToAdd);
+  }
+
+  return result;
+};
+
+const onDrop = (projectId: number, columnId: number, dropResult: DropResult<Card>) => {
+  const project = state.projects.find((p) => p.id === projectId);
+  if (project) {
+    const column = project.columns.find((c) => c.id === columnId);
+    if (column) {
+      column.cards = applyDrag(column.cards, dropResult);
+    }
+  }
+};
 </script>
 
 <style scoped>
 .kanban-column {
-  width: 500px;
+  width: 300px;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .kanban-projects {
   gap: 20px;
-  overflow-x: auto;
+  overflow: auto;
+}
+
+.ghost {
+  background: #2e3f47;
+  opacity: 1;
+  transform: rotate(30);
 }
 </style>
