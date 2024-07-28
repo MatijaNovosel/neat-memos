@@ -21,7 +21,7 @@
         :key="`tabItem_${project.id}`"
         :value="project.id"
       >
-        <div class="bg-grey-lighten-3 outline mt-5 mx-0 pt-5 px-5 pb-2 d-flex kanban-projects">
+        <div class="bg-grey-lighten-3 mt-5 mx-0 pt-5 px-5 pb-2 d-flex kanban-projects rounded-lg">
           <container
             v-for="column in project.columns"
             class="kanban-column"
@@ -51,7 +51,7 @@ import KanbanCard from "@/components/kanban/KanbanCard.vue";
 import { KANBAN_PROJECTS } from "@/constants/kanban";
 import { DropResult } from "@/models/common";
 import { Card, Project } from "@/models/kanban";
-import { reactive } from "vue";
+import { onMounted, reactive } from "vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 
 interface State {
@@ -99,6 +99,15 @@ const onDrop = (projectId: number, columnId: number, dropResult: DropResult<Card
     }
   }
 };
+
+onMounted(() => {
+  document.querySelectorAll(".kanban-projects").forEach((n) => {
+    n.addEventListener("wheel", (e: any) => {
+      e.preventDefault();
+      n.scrollLeft += e.deltaY;
+    });
+  });
+});
 </script>
 
 <style scoped>
