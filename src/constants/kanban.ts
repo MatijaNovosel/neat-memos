@@ -14,6 +14,18 @@ export const KANBAN_PROJECTS = [
           {
             id: 344,
             name: "Card 3"
+          },
+          {
+            id: 16662,
+            name: "Card 4"
+          },
+          {
+            id: 231603,
+            name: "Card 5"
+          },
+          {
+            id: 34121654,
+            name: "Card 6"
           }
         ],
         id: 152,
