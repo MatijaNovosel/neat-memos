@@ -1,7 +1,6 @@
 <template>
   <v-card
-    @click="openDetailsDialog"
-    rounded="md"
+    rounded
     class="pa-0 mb-3 kanban-card"
     flat
   >
@@ -25,7 +24,10 @@
         Movies
       </v-chip>
     </v-card-title>
-    <v-card-text class="mt-1">
+    <v-card-text
+      @click="openDetailsDialog"
+      class="mt-1"
+    >
       {{ props.data.name }}
     </v-card-text>
   </v-card>

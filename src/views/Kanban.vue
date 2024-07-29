@@ -24,28 +24,42 @@
         <div
           @wheel="(e) => scrollProject(e, project.id)"
           :id="`project-${project.id}`"
-          class="bg-grey-lighten-3 mt-5 mx-0 pt-5 px-5 pb-2 d-flex kanban-projects rounded-lg"
+          class="bg-grey-lighten-3 mt-5 mx-0 pt-5 px-5 pb-4 d-flex kanban-projects rounded-lg"
         >
           <container
-            v-for="column in project.columns"
-            class="kanban-column"
-            :get-child-payload="getCardPayload(project.id, column.id)"
-            :key="column.id"
-            orientation="vertical"
-            :group-name="project.name"
-            @drop="(result) => onDrop(project.id, column.id, result)"
-            drag-class="card-ghost"
-            drop-class="card-ghost-drop"
-            :drop-placeholder="dropPlaceholderOptions"
+            tag="div"
+            class="d-flex flex-gap h-fit-content"
+            group-name="cols"
+            orientation="horizontal"
+            @drop="(e) => onColumnDrop(project.id, e)"
+            drag-class="column-ghost"
+            drop-class="column-ghost-drop"
           >
             <draggable
-              v-for="card in column.cards"
-              :key="card.id"
+              v-for="column in project.columns"
+              :key="column.id"
+              class="column-ctr"
             >
-              <kanban-card
-                v-if="card"
-                :data="card"
-              />
+              <container
+                class="kanban-column bg-orange-lighten-3 px-3 pt-4 rounded"
+                :get-child-payload="getCardPayload(project.id, column.id)"
+                orientation="vertical"
+                :group-name="project.name"
+                @drop="(result) => onDrop(project.id, column.id, result)"
+                drag-class="card-ghost"
+                drop-class="card-ghost-drop"
+                :drop-placeholder="dropPlaceholderOptions"
+              >
+                <draggable
+                  v-for="card in column.cards"
+                  :key="card.id"
+                >
+                  <kanban-card
+                    v-if="card"
+                    :data="card"
+                  />
+                </draggable>
+              </container>
             </draggable>
           </container>
         </div>
@@ -60,7 +74,7 @@ import DetailsDialog from "@/components/kanban/DetailsDialog.vue";
 import KanbanCard from "@/components/kanban/KanbanCard.vue";
 import { KANBAN_PROJECTS } from "@/constants/kanban";
 import { DropResult } from "@/models/common";
-import { Card, Project } from "@/models/kanban";
+import { Card, Column, Project } from "@/models/kanban";
 import { reactive } from "vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 
@@ -80,12 +94,7 @@ const state: State = reactive({
   tab: KANBAN_PROJECTS[0].id
 });
 
-const applyDrag = (
-  projectId: number,
-  columnId: number,
-  arr: Card[],
-  dropResult: DropResult<Card>
-) => {
+const applyDrag = <T>(arr: T[], dropResult: DropResult<T>): T[] => {
   const { removedIndex, addedIndex, payload } = dropResult;
   if (removedIndex === null && addedIndex === null) return arr;
   const result = [...arr];
@@ -99,14 +108,14 @@ const applyDrag = (
   return result;
 };
 
-const onDrop = (projectId: number, columnId: number, dropResult: DropResult<Card>) => {
+const onDrop = <T extends Card>(projectId: number, columnId: number, dropResult: DropResult<T>) => {
   if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
     const project = state.projects.find((p) => p.id === projectId);
     if (project) {
       const column = project.columns.filter((p) => p.id === columnId)[0];
       const itemIndex = project.columns.indexOf(column);
       const newColumn = Object.assign({}, column);
-      newColumn.cards = applyDrag(projectId, columnId, newColumn.cards, dropResult);
+      newColumn.cards = applyDrag<Card>(newColumn.cards, dropResult);
       project.columns.splice(itemIndex, 1, newColumn);
     }
   }
@@ -117,6 +126,13 @@ const getCardPayload = (projectId: number, columnId: number) => {
     const project = state.projects.find((p) => p.id === projectId);
     return project?.columns.filter((p) => p.id === columnId)[0].cards[index];
   };
+};
+
+const onColumnDrop = (projectId: number, dropResult: DropResult<Column>) => {
+  const project = state.projects.find((p) => p.id === projectId);
+  if (project) {
+    project.columns = applyDrag(project.columns, dropResult);
+  }
 };
 
 const scrollProject = function (e: WheelEvent, projectId: number) {
@@ -142,5 +158,10 @@ const scrollProject = function (e: WheelEvent, projectId: number) {
   background: #2e3f47;
   opacity: 1;
   transform: rotate(30);
+}
+
+.column-ctr {
+  cursor: pointer;
+  height: fit-content;
 }
 </style>
