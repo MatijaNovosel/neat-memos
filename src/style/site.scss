@@ -213,9 +213,10 @@ input:-webkit-autofill:focus {
 }
 
 .drop-preview {
-  background-color: rgba(150, 150, 200, 0.1);
-  border: 1px dashed #abc;
+  background-color: #d0922e33;
+  border: 1px dashed #cb8421;
   border-radius: 6px;
   margin-top: 5px;
-  margin-bottom: 5px;
+  margin-bottom: 12px;
+  margin-right: 40px;
 }

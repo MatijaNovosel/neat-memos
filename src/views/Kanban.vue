@@ -28,20 +28,22 @@
         >
           <container
             tag="div"
-            class="d-flex flex-gap h-fit-content"
+            class="d-flex flex-gap h-fit-content w-fit-content"
             group-name="cols"
             orientation="horizontal"
             @drop="(e) => onColumnDrop(project.id, e)"
-            drag-class="column-ghost"
-            drop-class="column-ghost-drop"
           >
             <draggable
               v-for="column in project.columns"
               :key="column.id"
               class="column-ctr"
             >
+              <div class="text-center font-weight-bold text-white bg-orange-lighten-3 pb-4 pt-5">
+                {{ column.name }}
+              </div>
               <container
-                class="kanban-column bg-orange-lighten-3 px-3 pt-4 rounded"
+                tag="div"
+                class="kanban-column bg-orange-lighten-3 px-5"
                 :get-child-payload="getCardPayload(project.id, column.id)"
                 orientation="vertical"
                 :group-name="project.name"
@@ -152,12 +154,6 @@ const scrollProject = function (e: WheelEvent, projectId: number) {
 .kanban-projects {
   gap: 20px;
   overflow: auto;
-}
-
-.ghost {
-  background: #2e3f47;
-  opacity: 1;
-  transform: rotate(30);
 }
 
 .column-ctr {
