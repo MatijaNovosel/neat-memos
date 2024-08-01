@@ -44,17 +44,15 @@
             variant="flat"
             rounded="lg"
             @click="cancel"
-          >
-            {{ i18n.t("no") }}
-          </v-btn>
+            :text="i18n.t('no')"
+          />
           <v-btn
             color="success"
             variant="flat"
             rounded="lg"
             @click="agree"
-          >
-            {{ i18n.t("yes") }}
-          </v-btn>
+            :text="i18n.t('yes')"
+          />
         </v-card-actions>
       </v-card>
     </v-dialog>
