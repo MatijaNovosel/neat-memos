@@ -1,15 +1,24 @@
-export const KANBAN_PROJECTS = [
+import { Project } from "@/models/kanban";
+
+export const KANBAN_PROJECTS: Project[] = [
   {
     columns: [
       {
         cards: [
           {
             id: 122,
-            name: "Card 1"
+            name: "Card 1",
+            cover: {
+              color: "#1fba28"
+            }
           },
           {
             id: 233,
-            name: "Card 2"
+            name: "Card 2",
+            cover: {
+              imageUrl:
+                "https://i0.wp.com/nftartwithlauren.com/wp-content/uploads/2023/11/laurenmcdonaghpereiraphoto_A_field_of_blooming_sunflowers_und_40d30d23-9ecd-489f-a2b9-5a8f7293af9a_0.png?fit=1024%2C574&ssl=1"
+            }
           },
           {
             id: 344,
@@ -26,6 +35,22 @@ export const KANBAN_PROJECTS = [
           {
             id: 34121654,
             name: "Card 6"
+          },
+          {
+            id: 34455433,
+            name: "Card 7"
+          },
+          {
+            id: 166620000,
+            name: "Card 8"
+          },
+          {
+            id: 2310006033,
+            name: "Card 9"
+          },
+          {
+            id: 341216540001,
+            name: "Card 10"
           }
         ],
         id: 152,

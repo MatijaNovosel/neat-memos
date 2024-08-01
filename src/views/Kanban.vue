@@ -15,20 +15,23 @@
         {{ project.name }}
       </v-tab>
     </v-tabs>
-    <v-window v-model="state.tab">
+    <v-window
+      v-model="state.tab"
+      class="project-window mt-5"
+    >
       <v-window-item
         v-for="project in state.projects"
         :key="`tabItem_${project.id}`"
         :value="project.id"
+        class="h-100"
       >
         <div
-          @wheel="(e) => scrollProject(e, project.id)"
           :id="`project-${project.id}`"
-          class="bg-grey-lighten-3 mt-5 mx-0 pt-5 px-5 pb-4 d-flex kanban-projects rounded-lg"
+          class="bg-grey-lighten-3 mx-0 pt-5 px-5 pb-4 d-flex kanban-projects rounded-lg h-100"
         >
           <container
             tag="div"
-            class="d-flex flex-gap h-fit-content w-fit-content"
+            class="d-flex flex-gap h-fit-content"
             group-name="cols"
             orientation="horizontal"
             @drop="(e) => onColumnDrop(project.id, e)"
@@ -38,12 +41,23 @@
               :key="column.id"
               class="column-ctr"
             >
-              <div class="text-center font-weight-bold text-white bg-orange-lighten-3 pb-4 pt-5">
-                {{ column.name }}
+              <div
+                class="d-flex font-weight-bold justify-start text-white bg-orange-lighten-3 pb-4 pt-5 pos-rel rounded-t"
+              >
+                <span class="pl-5">
+                  {{ column.name }}
+                </span>
+                <v-btn
+                  class="top-right-btn"
+                  variant="text"
+                  size="small"
+                  color="white"
+                  icon="mdi-dots-horizontal"
+                />
               </div>
               <container
                 tag="div"
-                class="kanban-column bg-orange-lighten-3 px-5"
+                class="kanban-column bg-orange-lighten-3 px-5 rounded-b pb-2"
                 :get-child-payload="getCardPayload(project.id, column.id)"
                 orientation="vertical"
                 :group-name="project.name"
@@ -136,12 +150,6 @@ const onColumnDrop = (projectId: number, dropResult: DropResult<Column>) => {
     project.columns = applyDrag(project.columns, dropResult);
   }
 };
-
-const scrollProject = function (e: WheelEvent, projectId: number) {
-  e.preventDefault();
-  const element = document.getElementById(`project-${projectId}`);
-  if (element) element.scrollLeft += e.deltaY;
-};
 </script>
 
 <style scoped>
@@ -159,5 +167,16 @@ const scrollProject = function (e: WheelEvent, projectId: number) {
 .column-ctr {
   cursor: pointer;
   height: fit-content;
+}
+
+.top-right-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+}
+
+.project-window {
+  height: calc(100vh - 110px);
+  overflow: auto;
 }
 </style>

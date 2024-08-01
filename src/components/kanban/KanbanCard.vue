@@ -4,6 +4,24 @@
     class="pa-0 mb-3 kanban-card"
     flat
   >
+    <v-toolbar
+      v-if="props.data.cover && props.data.cover.color"
+      :style="{
+        backgroundColor: props.data.cover.color
+      }"
+      class="mb-1"
+      height="15"
+    />
+    <div
+      v-if="props.data.cover && props.data.cover.imageUrl"
+      class="mb-1"
+      :style="{
+        height: '110px',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundImage: `url(${props.data.cover?.imageUrl})`
+      }"
+    />
     <v-card-title class="d-flex labels">
       <v-chip
         size="x-small"
@@ -57,10 +75,5 @@ const openDetailsDialog = () => {
 
 .kanban-card {
   cursor: pointer;
-  border: 1px solid white;
-}
-
-.kanban-card:hover {
-  border: 1px solid #e48435;
 }
 </style>
