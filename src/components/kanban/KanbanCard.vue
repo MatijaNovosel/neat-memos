@@ -22,24 +22,17 @@
         backgroundImage: `url(${props.data.cover?.imageUrl})`
       }"
     />
-    <v-card-title class="d-flex labels">
+    <v-card-title
+      class="d-flex labels"
+      v-if="props.data.tags.length"
+    >
       <v-chip
+        v-for="label in props.data.tags"
+        :key="label.id"
         size="x-small"
-        color="orange"
+        :color="label.color"
       >
-        Todo
-      </v-chip>
-      <v-chip
-        size="x-small"
-        color="red"
-      >
-        Media
-      </v-chip>
-      <v-chip
-        size="x-small"
-        color="blue"
-      >
-        Movies
+        {{ label.content }}
       </v-chip>
     </v-card-title>
     <v-card-text

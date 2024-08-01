@@ -7,7 +7,15 @@
     :model-value="kanbanStore.detailsDialog"
   >
     <v-card v-if="kanbanStore.activeCard">
-      <v-card-title class="d-flex items-center align-center pt-2 px-6">
+      <v-card-title
+        class="d-flex items-center align-center pt-2 px-6"
+        :style="{
+          backgroundColor:
+            kanbanStore.activeCard.cover && kanbanStore.activeCard.cover.color
+              ? kanbanStore.activeCard.cover.color
+              : null
+        }"
+      >
         <v-text-field
           hide-details
           v-model="state.title"
@@ -17,37 +25,28 @@
         <v-btn
           icon="mdi-close"
           variant="text"
+          color="black"
           @click="close"
         />
       </v-card-title>
       <v-divider />
       <v-row
         no-gutters
-        class="mt-3 pr-3"
+        class="my-3 pr-3"
       >
         <v-col
           cols="8"
           class="px-4 pb-4"
         >
           <div class="text-grey-lighten-1 text-subtitle-2">Labels</div>
-          <div class="d-flex flex-gap flex-wrap align-center">
+          <div class="d-flex flex-gap flex-wrap align-center mt-2">
             <v-chip
+              v-for="tag in kanbanStore.activeCard.tags"
+              :key="tag.id"
               size="small"
-              color="red"
+              :color="tag.color"
             >
-              Media
-            </v-chip>
-            <v-chip
-              size="small"
-              color="orange"
-            >
-              Todo
-            </v-chip>
-            <v-chip
-              size="small"
-              color="blue"
-            >
-              Movies
+              {{ tag.content }}
             </v-chip>
             <v-btn
               icon
@@ -59,7 +58,10 @@
               rounded="0"
             >
               <v-icon> mdi-plus </v-icon>
-              <v-menu activator="parent">
+              <v-menu
+                :close-on-content-click="false"
+                activator="parent"
+              >
                 <v-card
                   rounded="8"
                   width="400"
@@ -117,9 +119,28 @@
             color="orange"
             rounded="8"
             variant="tonal"
-            prepend-icon="mdi-credit-card"
-            text="Cover"
-          />
+          >
+            <v-icon class="mr-2"> mdi-credit-card </v-icon>
+            <span> Cover </span>
+            <v-menu
+              :close-on-content-click="false"
+              activator="parent"
+            >
+              <v-card
+                rounded="8"
+                class="pa-3 d-flex flex-column"
+                flat
+              >
+                <div class="text-grey-lighten-1 text-subtitle-2 w-100 mb-2">Color</div>
+                <v-color-picker
+                  hide-inputs
+                  hide-sliders
+                  v-model="state.coverColor"
+                  class="elevation-0 pa-0"
+                />
+              </v-card>
+            </v-menu>
+          </v-btn>
           <v-btn
             size="small"
             color="blue"
@@ -160,6 +181,7 @@ import { useDisplay } from "vuetify";
 interface State {
   title: string;
   description: string;
+  coverColor: string;
 }
 
 const { smAndDown } = useDisplay();
@@ -169,7 +191,8 @@ const kanbanStore = useKanbanStore();
 
 const state: State = reactive({
   title: "",
-  description: ""
+  description: "",
+  coverColor: "#ffffff"
 });
 
 const close = () => {
@@ -181,6 +204,8 @@ watch(
   (val) => {
     console.log(val);
     state.title = val?.name || "";
+    state.description = val?.description || "";
+    state.coverColor = val?.cover?.color || "#ffffff";
   }
 );
 </script>

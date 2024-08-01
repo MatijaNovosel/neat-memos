@@ -1,3 +1,5 @@
+import { TagModel } from "./tag";
+
 export interface CardCover {
   imageUrl?: string;
   color?: string;
@@ -6,7 +8,9 @@ export interface CardCover {
 export interface Card {
   id: number;
   name: string;
+  tags: TagModel[];
   cover?: CardCover;
+  description?: string;
 }
 
 export interface Column {
