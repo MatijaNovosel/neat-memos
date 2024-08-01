@@ -1,20 +1,29 @@
 <template>
   <v-container class="main-ctr">
     <mobile-drawer-controls hide-right />
-    <v-tabs
-      v-model="state.tab"
-      align-tabs="center"
-      color="orange"
-    >
-      <v-tab
-        v-for="project in state.projects"
-        :key="project.id"
-        rounded="0"
-        :value="project.id"
+    <div class="d-flex justify-space-between align-center">
+      <v-tabs
+        v-model="state.tab"
+        align-tabs="center"
+        color="orange"
       >
-        {{ project.name }}
-      </v-tab>
-    </v-tabs>
+        <v-tab
+          v-for="project in state.projects"
+          :key="project.id"
+          rounded="0"
+          :value="project.id"
+        >
+          {{ project.name }}
+        </v-tab>
+      </v-tabs>
+      <v-btn
+        color="green"
+        icon="mdi-plus"
+        rounded="0"
+        variant="tonal"
+        size="small"
+      />
+    </div>
     <v-window
       v-model="state.tab"
       class="project-window mt-5"
