@@ -47,6 +47,8 @@
                 :key="tag.id"
                 size="small"
                 :color="tag.color"
+                closable
+                @click:close="deleteTag(tag.id)"
               >
                 {{ tag.content }}
               </v-chip>
@@ -234,6 +236,11 @@ const isInSelectedTags = (tagId: number) => {
 
 const saveTags = () => {
   state.tags.push(...state.selectedTags);
+  state.selectedTags = [];
+};
+
+const deleteTag = (tagId: number) => {
+  state.tags = state.tags.filter((t) => t.id !== tagId);
 };
 
 const availableTags = computed(() => {
