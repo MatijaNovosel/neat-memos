@@ -2,20 +2,28 @@
   <v-container class="main-ctr">
     <mobile-drawer-controls hide-right />
     <div class="d-flex justify-space-between align-center">
-      <v-tabs
-        v-model="state.tab"
-        align-tabs="center"
-        color="orange"
-      >
-        <v-tab
-          v-for="project in state.projects"
-          :key="project.id"
-          rounded="0"
-          :value="project.id"
+      <template v-if="state.projects.length">
+        <v-tabs
+          v-model="state.tab"
+          align-tabs="center"
+          color="orange"
         >
-          {{ project.name }}
-        </v-tab>
-      </v-tabs>
+          <v-tab
+            v-for="project in state.projects"
+            :key="project.id"
+            rounded="0"
+            :value="project.id"
+          >
+            {{ project.name }}
+          </v-tab>
+        </v-tabs>
+      </template>
+      <span
+        class="text-grey-lighten-1 text-h6"
+        v-else
+      >
+        No projects found.
+      </span>
       <v-btn
         color="green"
         icon="mdi-plus"
@@ -50,23 +58,28 @@
               :key="column.id"
               class="column-ctr"
             >
-              <div
-                class="d-flex font-weight-bold justify-start text-white bg-orange-lighten-3 pb-4 pt-5 pos-rel rounded-t"
-              >
-                <span class="pl-5">
-                  {{ column.name }}
-                </span>
-                <v-btn
-                  class="top-right-btn"
-                  variant="text"
-                  size="small"
-                  color="white"
-                  icon="mdi-dots-horizontal"
-                />
+              <div class="font-weight-bold text-white bg-orange-lighten-2 py-3 pos-rel rounded-t">
+                <v-text-field
+                  class="px-5"
+                  hide-details
+                  v-model="column.name"
+                  density="compact"
+                  variant="solo"
+                >
+                  <template #append>
+                    <v-btn
+                      variant="text"
+                      size="small"
+                      color="white"
+                      icon="mdi-dots-horizontal"
+                    />
+                  </template>
+                </v-text-field>
               </div>
+              <v-divider color="white" />
               <container
                 tag="div"
-                class="kanban-column bg-orange-lighten-3 px-5 rounded-b pb-2"
+                class="kanban-column bg-orange-lighten-3 px-5 rounded-b pb-2 pt-3"
                 :get-child-payload="getCardPayload(project.id, column.id)"
                 orientation="vertical"
                 :group-name="project.name"
@@ -97,15 +110,20 @@
 <script setup lang="ts">
 import DetailsDialog from "@/components/kanban/DetailsDialog.vue";
 import KanbanCard from "@/components/kanban/KanbanCard.vue";
-import { KANBAN_PROJECTS } from "@/constants/kanban";
+import { randInt } from "@/helpers/math";
+import { sample } from "@/helpers/misc";
 import { DropResult } from "@/models/common";
-import { Card, Column, Project } from "@/models/kanban";
-import { reactive } from "vue";
+import { Card, CardCover, Column, Project } from "@/models/kanban";
+import { TagModel } from "@/models/tag";
+import { useMemoStore } from "@/store/memos";
+import { onMounted, reactive } from "vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
+
+const memoStore = useMemoStore();
 
 interface State {
   projects: Project[];
-  tab: number;
+  tab: number | null;
 }
 
 const dropPlaceholderOptions = {
@@ -115,8 +133,8 @@ const dropPlaceholderOptions = {
 };
 
 const state: State = reactive({
-  projects: [...KANBAN_PROJECTS],
-  tab: KANBAN_PROJECTS[0].id
+  projects: [],
+  tab: null
 });
 
 const applyDrag = <T>(arr: T[], dropResult: DropResult<T>): T[] => {
@@ -159,6 +177,79 @@ const onColumnDrop = (projectId: number, dropResult: DropResult<Column>) => {
     project.columns = applyDrag(project.columns, dropResult);
   }
 };
+
+onMounted(() => {
+  for (let i = 0; i < 3; i++) {
+    const columns: Column[] = [];
+
+    for (let j = 0; j < 5; j++) {
+      const cards: Card[] = [];
+      const numberOfCards = randInt(2, 10);
+
+      for (let k = 0; k < numberOfCards; k++) {
+        const numberOfTags = randInt(1, 4);
+        const cardId = randInt(1, 99999);
+        const shouldHaveCover = randInt(1, 4) === 2;
+        const tags: TagModel[] = [];
+
+        let cover: CardCover | undefined = undefined;
+
+        for (let l = 0; l < numberOfTags; l++) {
+          const randTag = sample(memoStore.tags);
+          if (!tags.find((t) => t.id === randTag.id)) {
+            tags.push(randTag);
+          }
+        }
+
+        if (shouldHaveCover) {
+          const coverIsImage = randInt(1, 3) === 3;
+          if (coverIsImage) {
+            cover = {
+              imageUrl:
+                "https://i0.wp.com/nftartwithlauren.com/wp-content/uploads/2023/11/laurenmcdonaghpereiraphoto_A_field_of_blooming_sunflowers_und_40d30d23-9ecd-489f-a2b9-5a8f7293af9a_0.png?fit=1024%2C574&ssl=1"
+            };
+          } else {
+            cover = {
+              color: sample([
+                "#E53935",
+                "#EC407A",
+                "#AB47BC",
+                "#7E57C2",
+                "#42A5F5",
+                "#4DD0E1",
+                "#4DB6AC",
+                "#66BB6A"
+              ])
+            };
+          }
+        }
+
+        cards.push({
+          id: cardId,
+          name: `Card ${cardId}`,
+          tags,
+          cover
+        });
+      }
+
+      const columnId = randInt(1, 99999);
+
+      columns.push({
+        id: columnId,
+        cards,
+        name: `Column ${columnId}`
+      });
+    }
+
+    const projectId = randInt(1, 99999);
+
+    state.projects.push({
+      columns,
+      id: projectId,
+      name: `Project ${projectId}`
+    });
+  }
+});
 </script>
 
 <style scoped>

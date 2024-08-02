@@ -16,11 +16,6 @@
               : null
         }"
       >
-        <v-text-field
-          hide-details
-          v-model="state.title"
-          density="compact"
-        />
         <v-spacer />
         <v-btn
           icon="mdi-close"
@@ -38,16 +33,30 @@
           cols="8"
           class="px-4 pb-4"
         >
-          <div class="text-grey-lighten-1 text-subtitle-2">Labels</div>
+          <v-text-field
+            class="mb-3"
+            hide-details
+            v-model="state.title"
+            density="compact"
+          />
+          <div class="text-grey-lighten-1 text-subtitle-2">Tags</div>
           <div class="d-flex flex-gap flex-wrap align-center mt-2">
-            <v-chip
-              v-for="tag in kanbanStore.activeCard.tags"
-              :key="tag.id"
-              size="small"
-              :color="tag.color"
+            <template v-if="state.tags.length">
+              <v-chip
+                v-for="tag in state.tags"
+                :key="tag.id"
+                size="small"
+                :color="tag.color"
+              >
+                {{ tag.content }}
+              </v-chip>
+            </template>
+            <span
+              class="text-subtitle-2"
+              v-else
             >
-              {{ tag.content }}
-            </v-chip>
+              No tags found
+            </span>
             <v-btn
               icon
               height="26px"
@@ -68,12 +77,13 @@
                   flat
                 >
                   <v-card-text class="d-flex flex-wrap flex-gap">
-                    <template v-if="memoStore.tags.length">
+                    <template v-if="availableTags.length">
                       <v-chip
                         density="compact"
-                        :color="tag.color"
-                        v-for="tag in memoStore.tags"
+                        v-for="tag in availableTags"
                         :key="tag.id"
+                        :color="isInSelectedTags(tag.id) ? tag.color : 'grey'"
+                        @click="selectTag(tag)"
                       >
                         <span> {{ tag.content }} </span>
                       </v-chip>
@@ -88,11 +98,12 @@
                   <v-divider />
                   <v-card-actions class="justify-end">
                     <v-btn
-                      size="small"
+                      variant="tonal"
                       color="green"
+                      density="compact"
                       rounded="8"
                     >
-                      New label
+                      Save
                     </v-btn>
                   </v-card-actions>
                 </v-card>
@@ -172,9 +183,10 @@
 </template>
 
 <script lang="ts" setup>
+import { TagModel } from "@/models/tag";
 import { useKanbanStore } from "@/store/kanban";
 import { useMemoStore } from "@/store/memos";
-import { reactive, watch } from "vue";
+import { computed, reactive, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDisplay } from "vuetify";
 
@@ -182,6 +194,8 @@ interface State {
   title: string;
   description: string;
   coverColor: string;
+  tags: TagModel[];
+  selectedTags: TagModel[];
 }
 
 const { smAndDown } = useDisplay();
@@ -192,12 +206,31 @@ const kanbanStore = useKanbanStore();
 const state: State = reactive({
   title: "",
   description: "",
-  coverColor: "#ffffff"
+  coverColor: "#ffffff",
+  tags: [],
+  selectedTags: []
 });
 
 const close = () => {
   kanbanStore.detailsDialog = false;
 };
+
+const selectTag = (tag: TagModel) => {
+  if (!!state.selectedTags.find((t) => t.id === tag.id)) {
+    state.selectedTags = state.selectedTags.filter((t) => t.id !== tag.id);
+    return;
+  }
+  state.selectedTags.push(tag);
+};
+
+const isInSelectedTags = (tagId: number) => {
+  return !!state.selectedTags.find((t) => t.id === tagId);
+};
+
+const availableTags = computed(() => {
+  const tagIds = state.tags.map((t) => t.id);
+  return memoStore.tags.filter((t) => !tagIds.includes(t.id));
+});
 
 watch(
   () => kanbanStore.activeCard,
@@ -206,6 +239,7 @@ watch(
     state.title = val?.name || "";
     state.description = val?.description || "";
     state.coverColor = val?.cover?.color || "#ffffff";
+    state.tags = val?.tags || [];
   }
 );
 </script>

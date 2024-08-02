@@ -84,13 +84,6 @@
             closable
             @click:close="deleteTag(tag.id)"
           >
-            <v-icon
-              class="mr-2"
-              size="15"
-              :color="tag.color"
-            >
-              mdi-pound
-            </v-icon>
             <span> {{ tag.content }} </span>
           </v-chip>
         </div>
