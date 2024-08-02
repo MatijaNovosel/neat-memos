@@ -44,7 +44,7 @@
       >
         <div
           :id="`project-${project.id}`"
-          class="bg-grey-lighten-3 mx-0 pt-5 px-5 pb-4 d-flex kanban-projects rounded-lg h-100"
+          class="bg-grey-lighten-3 pt-5 px-5 pb-4 d-flex kanban-projects rounded-lg h-100"
         >
           <container
             tag="div"

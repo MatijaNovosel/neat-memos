@@ -102,6 +102,7 @@
                       color="green"
                       density="compact"
                       rounded="8"
+                      @click="saveTags"
                     >
                       Save
                     </v-btn>
@@ -213,6 +214,10 @@ const state: State = reactive({
 
 const close = () => {
   kanbanStore.detailsDialog = false;
+  state.selectedTags = [];
+  state.title = "";
+  state.description = "";
+  state.tags = [];
 };
 
 const selectTag = (tag: TagModel) => {
@@ -225,6 +230,10 @@ const selectTag = (tag: TagModel) => {
 
 const isInSelectedTags = (tagId: number) => {
   return !!state.selectedTags.find((t) => t.id === tagId);
+};
+
+const saveTags = () => {
+  state.tags.push(...state.selectedTags);
 };
 
 const availableTags = computed(() => {

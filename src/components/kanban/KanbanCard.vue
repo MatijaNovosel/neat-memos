@@ -23,7 +23,7 @@
       }"
     />
     <v-card-title
-      class="d-flex labels"
+      class="d-flex labels mt-2"
       v-if="props.data.tags.length"
     >
       <v-chip
