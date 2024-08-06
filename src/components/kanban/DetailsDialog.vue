@@ -9,12 +9,7 @@
     <v-card v-if="kanbanStore.activeCard">
       <v-card-title
         class="d-flex items-center align-center pt-2 px-6"
-        :style="{
-          backgroundColor:
-            kanbanStore.activeCard.cover && kanbanStore.activeCard.cover.color
-              ? kanbanStore.activeCard.cover.color
-              : null
-        }"
+        :style="titleStyle"
       >
         <v-spacer />
         <v-btn
@@ -246,6 +241,17 @@ const deleteTag = (tagId: number) => {
 const availableTags = computed(() => {
   const tagIds = state.tags.map((t) => t.id);
   return memoStore.tags.filter((t) => !tagIds.includes(t.id));
+});
+
+const titleStyle = computed(() => {
+  if (kanbanStore.activeCard) {
+    return {
+      backgroundColor:
+        kanbanStore.activeCard.cover && kanbanStore.activeCard.cover.color
+          ? kanbanStore.activeCard.cover.color
+          : undefined
+    };
+  }
 });
 
 watch(
