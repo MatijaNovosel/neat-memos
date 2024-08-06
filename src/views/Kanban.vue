@@ -49,6 +49,7 @@
           rounded="0"
           variant="tonal"
           size="small"
+          @click="kanbanStore.columnDialog = true"
         />
       </div>
     </div>
@@ -140,7 +141,7 @@
 <script setup lang="ts">
 import DetailsDialog from "@/components/kanban/DetailsDialog.vue";
 import KanbanCard from "@/components/kanban/KanbanCard.vue";
-import NewProjectDialog from "@/components/newProjectDialog/NewProjectDialog.vue";
+import NewProjectDialog from "@/components/projectDialog/ProjectDialog.vue";
 import { randInt } from "@/helpers/math";
 import { sample } from "@/helpers/misc";
 import { DropResult } from "@/models/common";

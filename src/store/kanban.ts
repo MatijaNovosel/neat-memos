@@ -8,6 +8,7 @@ export const useKanbanStore = defineStore("kanban", () => {
   const detailsDialog = ref<boolean>(false);
   const activeCard = ref<Card | null>(null);
   const projectDialog = ref(false);
+  const columnDialog = ref(false);
   const projects = ref<ProjectModel[]>([]);
 
   const kanbanService = new KanbanService();
@@ -35,6 +36,7 @@ export const useKanbanStore = defineStore("kanban", () => {
   return {
     detailsDialog,
     projectDialog,
+    columnDialog,
     activeCard,
     projects,
     loadProjects,
