@@ -31,6 +31,7 @@ export interface CreateProjectModel {
 }
 
 export interface ProjectModel {
+  id: number;
   name: string;
   userId: string;
 }

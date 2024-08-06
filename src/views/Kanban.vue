@@ -24,14 +24,23 @@
       >
         No projects found.
       </span>
-      <v-btn
-        color="green"
-        icon="mdi-plus"
-        rounded="0"
-        variant="tonal"
-        size="small"
-        @click="kanbanStore.projectDialog = true"
-      />
+      <div class="d-flex flex-gap">
+        <v-btn
+          color="green"
+          icon="mdi-plus"
+          rounded="0"
+          variant="tonal"
+          size="small"
+          @click="kanbanStore.projectDialog = true"
+        />
+        <v-btn
+          color="blue"
+          icon="mdi-table-column-plus-before"
+          rounded="0"
+          variant="tonal"
+          size="small"
+        />
+      </div>
     </div>
     <v-window
       v-model="state.tab"
@@ -188,9 +197,8 @@ const onColumnDrop = (projectId: number, dropResult: DropResult<Column>) => {
 onMounted(async () => {
   state.loading = true;
   await kanbanStore.loadProjects();
-  console.log(kanbanStore.projects);
 
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < kanbanStore.projects.length; i++) {
     const columns: Column[] = [];
 
     for (let j = 0; j < 5; j++) {
@@ -252,12 +260,10 @@ onMounted(async () => {
       });
     }
 
-    const projectId = randInt(1, 99999);
-
     state.projects.push({
       columns,
-      id: projectId,
-      name: `Project ${projectId}`
+      id: kanbanStore.projects[i].id,
+      name: kanbanStore.projects[i].name
     });
   }
 
