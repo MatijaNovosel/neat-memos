@@ -14,7 +14,17 @@
             rounded="0"
             :value="project.id"
           >
-            {{ project.name }}
+            <span class="mr-2">
+              {{ project.name }}
+            </span>
+            <v-btn
+              icon="mdi-close-circle"
+              density="compact"
+              color="grey"
+              variant="text"
+              size="small"
+              @click="deleteProject"
+            />
           </v-tab>
         </v-tabs>
       </template>
@@ -42,7 +52,16 @@
         />
       </div>
     </div>
+    <v-row v-if="state.loading">
+      <v-progress-circular
+        class="my-6 mx-auto"
+        color="orange"
+        size="50"
+        indeterminate
+      />
+    </v-row>
     <v-window
+      v-if="!state.loading"
       v-model="state.tab"
       class="project-window mt-5"
     >
@@ -192,6 +211,10 @@ const onColumnDrop = (projectId: number, dropResult: DropResult<Column>) => {
   if (project) {
     project.columns = applyDrag(project.columns, dropResult);
   }
+};
+
+const deleteProject = () => {
+  //
 };
 
 onMounted(async () => {
