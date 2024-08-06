@@ -135,13 +135,15 @@
     </v-window>
   </v-container>
   <details-dialog />
-  <new-project-dialog />
+  <project-dialog />
+  <column-dialog />
 </template>
 
 <script setup lang="ts">
+import ColumnDialog from "@/components/columnDialog/ColumnDialog.vue";
 import DetailsDialog from "@/components/kanban/DetailsDialog.vue";
 import KanbanCard from "@/components/kanban/KanbanCard.vue";
-import NewProjectDialog from "@/components/projectDialog/ProjectDialog.vue";
+import ProjectDialog from "@/components/projectDialog/ProjectDialog.vue";
 import { randInt } from "@/helpers/math";
 import { sample } from "@/helpers/misc";
 import { DropResult } from "@/models/common";
