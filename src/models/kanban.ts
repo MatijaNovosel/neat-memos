@@ -24,3 +24,13 @@ export interface Project {
   name: string;
   columns: Column[];
 }
+
+export interface CreateProjectModel {
+  name: string;
+  userId: string;
+}
+
+export interface ProjectModel {
+  name: string;
+  userId: string;
+}

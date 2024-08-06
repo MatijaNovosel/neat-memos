@@ -30,6 +30,7 @@
         rounded="0"
         variant="tonal"
         size="small"
+        @click="kanbanStore.projectDialog = true"
       />
     </div>
     <v-window
@@ -105,25 +106,30 @@
     </v-window>
   </v-container>
   <details-dialog />
+  <new-project-dialog />
 </template>
 
 <script setup lang="ts">
 import DetailsDialog from "@/components/kanban/DetailsDialog.vue";
 import KanbanCard from "@/components/kanban/KanbanCard.vue";
+import NewProjectDialog from "@/components/newProjectDialog/NewProjectDialog.vue";
 import { randInt } from "@/helpers/math";
 import { sample } from "@/helpers/misc";
 import { DropResult } from "@/models/common";
 import { Card, CardCover, Column, Project } from "@/models/kanban";
 import { TagModel } from "@/models/tag";
+import { useKanbanStore } from "@/store/kanban";
 import { useMemoStore } from "@/store/memos";
 import { onMounted, reactive } from "vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 
 const memoStore = useMemoStore();
+const kanbanStore = useKanbanStore();
 
 interface State {
   projects: Project[];
   tab: number | null;
+  loading: boolean;
 }
 
 const dropPlaceholderOptions = {
@@ -134,7 +140,8 @@ const dropPlaceholderOptions = {
 
 const state: State = reactive({
   projects: [],
-  tab: null
+  tab: null,
+  loading: false
 });
 
 const applyDrag = <T>(arr: T[], dropResult: DropResult<T>): T[] => {
@@ -178,7 +185,11 @@ const onColumnDrop = (projectId: number, dropResult: DropResult<Column>) => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
+  state.loading = true;
+  await kanbanStore.loadProjects();
+  console.log(kanbanStore.projects);
+
   for (let i = 0; i < 3; i++) {
     const columns: Column[] = [];
 
@@ -249,6 +260,8 @@ onMounted(() => {
       name: `Project ${projectId}`
     });
   }
+
+  state.loading = false;
 });
 </script>
 

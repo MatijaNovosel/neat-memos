@@ -6,7 +6,7 @@
     :model-value="memoStore.editDialog"
   >
     <v-card>
-      <v-card-title class="d-flex items-center align-center pt-4 px-6">
+      <v-card-title class="d-flex items-center align-center pt-3 px-6">
         <span> Edit memo </span>
         <v-spacer />
         <v-btn
@@ -16,7 +16,8 @@
           @click="close"
         />
       </v-card-title>
-      <v-card-text class="pt-0">
+      <v-divider />
+      <v-card-text class="pt-4">
         <memo-entry
           :initial-tags="initialTags"
           :initial-content="initialContent"

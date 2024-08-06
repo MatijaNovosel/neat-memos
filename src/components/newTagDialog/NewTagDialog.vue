@@ -7,7 +7,7 @@
     :model-value="memoStore.tagDialog"
   >
     <v-card>
-      <v-card-title class="d-flex items-center align-center pt-4 px-6">
+      <v-card-title class="d-flex items-center align-center py-1 px-6">
         <span> {{ i18n.t("tags") }} </span>
         <v-spacer />
         <v-btn
@@ -17,7 +17,8 @@
           @click="close"
         />
       </v-card-title>
-      <v-card-text class="pt-0 align-content-end">
+      <v-divider />
+      <v-card-text class="pt-5 align-content-end">
         <vv-form
           ref="tagForm"
           as="v-form"
