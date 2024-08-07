@@ -1,12 +1,12 @@
 import { KanbanService } from "@/api/services/kanban";
-import { Card, ProjectModel } from "@/models/kanban";
+import { CardModel, ProjectModel } from "@/models/kanban";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useUserStore } from "./user";
 
 export const useKanbanStore = defineStore("kanban", () => {
   const detailsDialog = ref<boolean>(false);
-  const activeCard = ref<Card | null>(null);
+  const activeCard = ref<CardModel | null>(null);
   const projectDialog = ref(false);
   const columnDialog = ref(false);
   const projects = ref<ProjectModel[]>([]);

@@ -6,43 +6,77 @@ export class KanbanService implements IKanbanService {
   async getProjects(userId: string): Promise<ProjectModel[]> {
     const { data, error } = await supabase
       .from("projects")
-      .select("id, createdAt, userId, name, columns (id, name, position, projectId)")
+      .select(
+        `
+        id,
+        createdAt,
+        userId,
+        name,
+        columns (
+          id,
+          name,
+          position,
+          projectId,
+          cards (
+            id,
+            createdAt,
+            coverColor,
+            coverUrl,
+            name,
+            description,
+            columnId,
+            tags (
+              id,
+              content,
+              color
+            )
+          )
+        )`
+      )
       .eq("userId", userId);
 
     if (error) throw error;
     if (!data) return [];
 
-    return data.map((x) => ({
-      ...x,
-      columns: x.columns.map((y) => ({
-        id: y.id,
-        position: y.position,
-        name: y.name,
-        projectId: y.projectId,
-        cards: []
-      }))
-    }));
+    return data;
   }
 
   async getProject(id: number): Promise<ProjectModel | null> {
     const { data, error } = await supabase
       .from("projects")
-      .select("id, createdAt, userId, name, columns (id, name, position, projectId)")
+      .select(
+        `
+        id,
+        createdAt,
+        userId,
+        name,
+        columns (
+          id,
+          name,
+          position,
+          projectId,
+          cards (
+            id,
+            createdAt,
+            coverColor,
+            coverUrl,
+            name,
+            description,
+            columnId,
+            tags (
+              id,
+              content,
+              color
+            )
+          )
+        )`
+      )
       .eq("id", id);
 
     if (error) throw error;
     if (!data) return null;
 
-    return data.map((x) => ({
-      ...x,
-      columns: x.columns.map((y) => ({
-        id: y.id,
-        position: y.position,
-        name: y.name,
-        projectId: y.projectId,
-        cards: []
-      }))
-    }))[0];
+    return data[0];
   }
 
   async saveProject(data: CreateProjectModel): Promise<number> {

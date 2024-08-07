@@ -246,10 +246,9 @@ const availableTags = computed(() => {
 const titleStyle = computed(() => {
   if (kanbanStore.activeCard) {
     return {
-      backgroundColor:
-        kanbanStore.activeCard.cover && kanbanStore.activeCard.cover.color
-          ? kanbanStore.activeCard.cover.color
-          : undefined
+      backgroundColor: kanbanStore.activeCard.coverColor
+        ? kanbanStore.activeCard.coverColor
+        : undefined
     };
   }
 });
@@ -260,7 +259,7 @@ watch(
     console.log(val);
     state.title = val?.name || "";
     state.description = val?.description || "";
-    state.coverColor = val?.cover?.color || "#ffffff";
+    state.coverColor = val?.coverColor || "#ffffff";
     state.tags = val?.tags || [];
   }
 );

@@ -1,16 +1,12 @@
 import { TagModel } from "./tag";
 
-export interface CardCover {
-  imageUrl?: string;
-  color?: string;
-}
-
-export interface Card {
+export interface CardModel {
   id: number;
   name: string;
   tags: TagModel[];
-  cover?: CardCover;
-  description?: string;
+  coverColor: string | null;
+  coverUrl: string | null;
+  description: string | null;
 }
 
 export interface ColumnModel {
@@ -18,7 +14,7 @@ export interface ColumnModel {
   name: string;
   position: number;
   projectId: number;
-  cards: Card[];
+  cards: CardModel[];
 }
 
 export interface CreateProjectModel {

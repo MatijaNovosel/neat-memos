@@ -144,11 +144,8 @@ import ColumnDialog from "@/components/columnDialog/ColumnDialog.vue";
 import DetailsDialog from "@/components/kanban/DetailsDialog.vue";
 import KanbanCard from "@/components/kanban/KanbanCard.vue";
 import ProjectDialog from "@/components/projectDialog/ProjectDialog.vue";
-import { randInt } from "@/helpers/math";
-import { sample } from "@/helpers/misc";
 import { DropResult } from "@/models/common";
-import { Card, CardCover, ColumnModel, ProjectModel } from "@/models/kanban";
-import { TagModel } from "@/models/tag";
+import { CardModel, ColumnModel, ProjectModel } from "@/models/kanban";
 import { useKanbanStore } from "@/store/kanban";
 import { useMemoStore } from "@/store/memos";
 import { onMounted, reactive } from "vue";
@@ -189,14 +186,18 @@ const applyDrag = <T>(arr: T[], dropResult: DropResult<T>): T[] => {
   return result;
 };
 
-const onDrop = <T extends Card>(projectId: number, columnId: number, dropResult: DropResult<T>) => {
+const onDrop = <T extends CardModel>(
+  projectId: number,
+  columnId: number,
+  dropResult: DropResult<T>
+) => {
   if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
     const project = state.projects.find((p) => p.id === projectId);
     if (project) {
       const column = project.columns.filter((p) => p.id === columnId)[0];
       const itemIndex = project.columns.indexOf(column);
       const newColumn = Object.assign({}, column);
-      newColumn.cards = applyDrag<Card>(newColumn.cards, dropResult);
+      newColumn.cards = applyDrag<CardModel>(newColumn.cards, dropResult);
       project.columns.splice(itemIndex, 1, newColumn);
     }
   }
@@ -223,79 +224,7 @@ const deleteProject = () => {
 onMounted(async () => {
   state.loading = true;
   await kanbanStore.loadProjects();
-
-  for (let i = 0; i < kanbanStore.projects.length; i++) {
-    const project = kanbanStore.projects[i];
-    const columns: ColumnModel[] = [];
-
-    for (let j = 0; j < project.columns.length; j++) {
-      const column = project.columns[j];
-      const cards: Card[] = [];
-      const numberOfCards = randInt(2, 10);
-
-      for (let k = 0; k < numberOfCards; k++) {
-        const numberOfTags = randInt(1, 4);
-        const cardId = randInt(1, 99999);
-        const shouldHaveCover = randInt(1, 4) === 2;
-        const tags: TagModel[] = [];
-
-        let cover: CardCover | undefined = undefined;
-
-        for (let l = 0; l < numberOfTags; l++) {
-          const randTag = sample(memoStore.tags);
-          if (!tags.find((t) => t.id === randTag.id)) {
-            tags.push(randTag);
-          }
-        }
-
-        if (shouldHaveCover) {
-          const coverIsImage = randInt(1, 3) === 3;
-          if (coverIsImage) {
-            cover = {
-              imageUrl:
-                "https://i0.wp.com/nftartwithlauren.com/wp-content/uploads/2023/11/laurenmcdonaghpereiraphoto_A_field_of_blooming_sunflowers_und_40d30d23-9ecd-489f-a2b9-5a8f7293af9a_0.png?fit=1024%2C574&ssl=1"
-            };
-          } else {
-            cover = {
-              color: sample([
-                "#E53935",
-                "#EC407A",
-                "#AB47BC",
-                "#7E57C2",
-                "#42A5F5",
-                "#4DD0E1",
-                "#4DB6AC",
-                "#66BB6A"
-              ])
-            };
-          }
-        }
-
-        cards.push({
-          id: cardId,
-          name: `Card ${cardId}`,
-          tags,
-          cover
-        });
-      }
-
-      columns.push({
-        id: column.id,
-        cards,
-        name: column.name,
-        position: column.position,
-        projectId: column.projectId
-      });
-    }
-
-    state.projects.push({
-      columns,
-      userId: project.userId,
-      id: project.id,
-      name: project.name
-    });
-  }
-
+  state.projects.push(...kanbanStore.projects);
   state.loading = false;
 });
 </script>
