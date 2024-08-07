@@ -1,5 +1,5 @@
 <template>
-  <v-container class="main-ctr">
+  <v-container>
     <mobile-drawer-controls hide-right />
     <div class="d-flex justify-space-between align-center">
       <template v-if="kanbanStore.projects.length">
