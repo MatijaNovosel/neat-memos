@@ -2,17 +2,18 @@
   <v-container class="main-ctr">
     <mobile-drawer-controls hide-right />
     <div class="d-flex justify-space-between align-center">
-      <template v-if="state.projects.length">
+      <template v-if="kanbanStore.projects.length">
         <v-tabs
-          v-model="state.tab"
+          v-model="kanbanStore.selectedProject"
           align-tabs="center"
           color="orange"
         >
           <v-tab
-            v-for="project in state.projects"
+            v-for="project in kanbanStore.projects"
             :key="project.id"
             rounded="0"
             :value="project.id"
+            class="text-transform-inh"
           >
             <span class="mr-2">
               {{ project.name }}
@@ -63,11 +64,11 @@
     </v-row>
     <v-window
       v-if="!state.loading"
-      v-model="state.tab"
+      v-model="kanbanStore.selectedProject"
       class="project-window mt-5"
     >
       <v-window-item
-        v-for="project in state.projects"
+        v-for="project in kanbanStore.projects"
         :key="`tabItem_${project.id}`"
         :value="project.id"
         class="h-100"
@@ -144,19 +145,17 @@ import ColumnDialog from "@/components/columnDialog/ColumnDialog.vue";
 import DetailsDialog from "@/components/kanban/DetailsDialog.vue";
 import KanbanCard from "@/components/kanban/KanbanCard.vue";
 import ProjectDialog from "@/components/projectDialog/ProjectDialog.vue";
+import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
 import { DropResult } from "@/models/common";
-import { CardModel, ColumnModel, ProjectModel } from "@/models/kanban";
+import { CardModel, ColumnModel } from "@/models/kanban";
 import { useKanbanStore } from "@/store/kanban";
-import { useMemoStore } from "@/store/memos";
 import { onMounted, reactive } from "vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 
-const memoStore = useMemoStore();
 const kanbanStore = useKanbanStore();
+const createConfirmationDialog = useConfirmationDialog();
 
 interface State {
-  projects: ProjectModel[];
-  tab: number | null;
   loading: boolean;
 }
 
@@ -167,8 +166,6 @@ const dropPlaceholderOptions = {
 };
 
 const state: State = reactive({
-  projects: [],
-  tab: null,
   loading: false
 });
 
@@ -192,7 +189,7 @@ const onDrop = <T extends CardModel>(
   dropResult: DropResult<T>
 ) => {
   if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
-    const project = state.projects.find((p) => p.id === projectId);
+    const project = kanbanStore.projects.find((p) => p.id === projectId);
     if (project) {
       const column = project.columns.filter((p) => p.id === columnId)[0];
       const itemIndex = project.columns.indexOf(column);
@@ -205,32 +202,33 @@ const onDrop = <T extends CardModel>(
 
 const getCardPayload = (projectId: number, columnId: number) => {
   return (index: number) => {
-    const project = state.projects.find((p) => p.id === projectId);
+    const project = kanbanStore.projects.find((p) => p.id === projectId);
     return project?.columns.filter((p) => p.id === columnId)[0].cards[index];
   };
 };
 
 const onColumnDrop = (projectId: number, dropResult: DropResult<ColumnModel>) => {
-  const project = state.projects.find((p) => p.id === projectId);
+  const project = kanbanStore.projects.find((p) => p.id === projectId);
   if (project) {
     project.columns = applyDrag(project.columns, dropResult);
   }
 };
 
-const deleteProject = () => {
-  //
+const deleteProject = async () => {
+  const answer = await createConfirmationDialog();
+  if (answer) {
+    //
+  }
+};
+
+const loadProjects = async () => {
+  state.loading = true;
+  await kanbanStore.loadProjects();
+  state.loading = false;
 };
 
 onMounted(async () => {
-  state.loading = true;
-  await kanbanStore.loadProjects();
-  state.projects.push(
-    ...kanbanStore.projects.map((p) => {
-      p.columns.sort((a, b) => a.position - b.position);
-      return p;
-    })
-  );
-  state.loading = false;
+  await loadProjects();
 });
 </script>
 

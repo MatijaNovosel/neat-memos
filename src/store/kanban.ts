@@ -10,6 +10,7 @@ export const useKanbanStore = defineStore("kanban", () => {
   const projectDialog = ref(false);
   const columnDialog = ref(false);
   const projects = ref<ProjectModel[]>([]);
+  const selectedProject = ref<number | null>(null);
 
   const kanbanService = new KanbanService();
 
@@ -27,10 +28,34 @@ export const useKanbanStore = defineStore("kanban", () => {
     if (!userStore.user) {
       return;
     }
-    await kanbanService.saveProject({
+    const id = await kanbanService.saveProject({
       name,
       userId: userStore.user.id
     });
+    projects.value.push({
+      id,
+      columns: [],
+      name,
+      userId: userStore.user.id
+    });
+  };
+
+  const createColumn = async (name: string, position: number, projectId: number) => {
+    const id = await kanbanService.createColumn({
+      name,
+      position,
+      projectId
+    });
+    const activeProject = projects.value.find((p) => p.id === projectId);
+    if (activeProject) {
+      activeProject.columns.push({
+        cards: [],
+        id,
+        name,
+        position,
+        projectId
+      });
+    }
   };
 
   return {
@@ -39,7 +64,9 @@ export const useKanbanStore = defineStore("kanban", () => {
     columnDialog,
     activeCard,
     projects,
+    selectedProject,
     loadProjects,
-    saveProject
+    saveProject,
+    createColumn
   };
 });

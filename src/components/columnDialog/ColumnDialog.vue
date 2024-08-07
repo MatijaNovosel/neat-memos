@@ -91,10 +91,21 @@ const close = () => {
 };
 
 const saveColumn = async () => {
-  if (!columnForm.value || !(await columnForm.value.validate()).valid) {
+  if (
+    !columnForm.value ||
+    !(await columnForm.value.validate()).valid ||
+    !kanbanStore.selectedProject
+  ) {
     return;
   }
-  //
+  const activeProject = kanbanStore.projects.find((p) => p.id === kanbanStore.selectedProject);
+  if (activeProject) {
+    const maxPosition = Math.max(...activeProject.columns.map((c) => c.position));
+    await kanbanStore.createColumn(state.name, maxPosition + 1, kanbanStore.selectedProject);
+  }
+  alert({
+    text: "Column created"
+  });
   close();
 };
 </script>

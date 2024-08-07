@@ -28,3 +28,9 @@ export interface ProjectModel {
   userId: string;
   columns: ColumnModel[];
 }
+
+export interface CreateColumnModel {
+  name: string;
+  projectId: number;
+  position: number;
+}

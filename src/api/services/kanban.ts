@@ -1,8 +1,27 @@
 import supabase from "@/helpers/supabase";
-import { CreateProjectModel, ProjectModel } from "@/models/kanban";
+import { CreateColumnModel, CreateProjectModel, ProjectModel } from "@/models/kanban";
 import { IKanbanService } from "../interfaces/kanban";
 
 export class KanbanService implements IKanbanService {
+  async createColumn(data: CreateColumnModel): Promise<number> {
+    const { data: response, error } = await supabase
+      .from("columns")
+      .insert([
+        {
+          name: data.name,
+          position: data.position,
+          projectId: data.projectId
+        }
+      ])
+      .select();
+
+    const id = response![0].id;
+
+    if (error) throw error;
+
+    return id;
+  }
+
   async getProjects(userId: string): Promise<ProjectModel[]> {
     const { data, error } = await supabase
       .from("projects")
