@@ -5,21 +5,21 @@
     flat
   >
     <v-toolbar
-      v-if="props.data.cover && props.data.cover.color"
+      v-if="props.data.coverColor"
       :style="{
-        backgroundColor: props.data.cover.color
+        backgroundColor: props.data.coverColor
       }"
       class="mb-1"
       height="15"
     />
     <div
-      v-if="props.data.cover && props.data.cover.imageUrl"
+      v-if="props.data.coverUrl"
       class="mb-1"
       :style="{
         height: '110px',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundImage: `url(${props.data.cover?.imageUrl})`
+        backgroundImage: `url(${props.data.coverUrl})`
       }"
     />
     <v-card-title
@@ -45,11 +45,11 @@
 </template>
 
 <script lang="ts" setup>
-import { Card } from "@/models/kanban";
+import { CardModel } from "@/models/kanban";
 import { useKanbanStore } from "@/store/kanban";
 
 const props = defineProps<{
-  data: Card;
+  data: CardModel;
 }>();
 
 const kanbanStore = useKanbanStore();

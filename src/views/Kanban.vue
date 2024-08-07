@@ -224,7 +224,12 @@ const deleteProject = () => {
 onMounted(async () => {
   state.loading = true;
   await kanbanStore.loadProjects();
-  state.projects.push(...kanbanStore.projects);
+  state.projects.push(
+    ...kanbanStore.projects.map((p) => {
+      p.columns.sort((a, b) => a.position - b.position);
+      return p;
+    })
+  );
   state.loading = false;
 });
 </script>
