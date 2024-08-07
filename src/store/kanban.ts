@@ -58,6 +58,10 @@ export const useKanbanStore = defineStore("kanban", () => {
     }
   };
 
+  const deleteColumn = async (columnId: number) => {
+    //
+  };
+
   return {
     detailsDialog,
     projectDialog,
@@ -65,6 +69,7 @@ export const useKanbanStore = defineStore("kanban", () => {
     activeCard,
     projects,
     selectedProject,
+    deleteColumn,
     loadProjects,
     saveProject,
     createColumn

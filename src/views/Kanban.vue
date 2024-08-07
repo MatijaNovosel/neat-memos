@@ -102,8 +102,35 @@
                       variant="text"
                       size="small"
                       color="white"
-                      icon="mdi-dots-horizontal"
-                    />
+                      icon
+                    >
+                      <v-icon> mdi-dots-horizontal </v-icon>
+                      <v-menu activator="parent">
+                        <v-list
+                          border
+                          elevation="0"
+                          density="compact"
+                          class="py-0"
+                        >
+                          <v-list-item
+                            class="text-caption py-0"
+                            v-for="(item, i) in columnActions"
+                            @click="handleColumnAction(item.type, column.id)"
+                            :key="i"
+                          >
+                            <v-icon
+                              :color="item.color"
+                              class="mr-3"
+                            >
+                              {{ item.icon }}
+                            </v-icon>
+                            <span>
+                              {{ item.text }}
+                            </span>
+                          </v-list-item>
+                        </v-list>
+                      </v-menu>
+                    </v-btn>
                   </template>
                 </v-text-field>
               </div>
@@ -146,6 +173,7 @@ import DetailsDialog from "@/components/kanban/DetailsDialog.vue";
 import KanbanCard from "@/components/kanban/KanbanCard.vue";
 import ProjectDialog from "@/components/projectDialog/ProjectDialog.vue";
 import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
+import { COLUMN_ACTIONS } from "@/constants/kanban";
 import { DropResult } from "@/models/common";
 import { CardModel, ColumnModel } from "@/models/kanban";
 import { useKanbanStore } from "@/store/kanban";
@@ -154,6 +182,21 @@ import { Container, Draggable } from "vue3-smooth-dnd";
 
 const kanbanStore = useKanbanStore();
 const createConfirmationDialog = useConfirmationDialog();
+
+const columnActions = [
+  {
+    icon: "mdi-delete-outline",
+    text: "Delete",
+    type: COLUMN_ACTIONS.DELETE,
+    color: "red"
+  },
+  {
+    icon: "mdi-plus-box",
+    text: "Create card",
+    type: COLUMN_ACTIONS.CREATE_CARD,
+    color: "blue"
+  }
+];
 
 interface State {
   loading: boolean;
@@ -168,6 +211,15 @@ const dropPlaceholderOptions = {
 const state: State = reactive({
   loading: false
 });
+
+const handleColumnAction = async (action: string, columnId: number) => {
+  switch (action) {
+    case COLUMN_ACTIONS.DELETE:
+      const answerDelete = await createConfirmationDialog();
+      if (answerDelete) await kanbanStore.deleteColumn(columnId);
+      break;
+  }
+};
 
 const applyDrag = <T>(arr: T[], dropResult: DropResult<T>): T[] => {
   const { removedIndex, addedIndex, payload } = dropResult;
