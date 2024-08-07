@@ -7,4 +7,5 @@ export interface IKanbanService {
   saveProject(data: CreateProjectModel): Promise<number>;
   // Columns
   createColumn(data: CreateColumnModel): Promise<number>;
+  deleteColumn(columnId: number): Promise<void>;
 }

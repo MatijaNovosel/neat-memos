@@ -3,6 +3,11 @@ import { CreateColumnModel, CreateProjectModel, ProjectModel } from "@/models/ka
 import { IKanbanService } from "../interfaces/kanban";
 
 export class KanbanService implements IKanbanService {
+  async deleteColumn(columnId: number): Promise<void> {
+    const { error } = await supabase.from("columns").delete().eq("id", columnId);
+    if (error) throw error;
+  }
+
   async createColumn(data: CreateColumnModel): Promise<number> {
     const { data: response, error } = await supabase
       .from("columns")
