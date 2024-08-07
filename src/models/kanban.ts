@@ -13,16 +13,12 @@ export interface Card {
   description?: string;
 }
 
-export interface Column {
+export interface ColumnModel {
   id: number;
   name: string;
+  position: number;
+  projectId: number;
   cards: Card[];
-}
-
-export interface Project {
-  id: number;
-  name: string;
-  columns: Column[];
 }
 
 export interface CreateProjectModel {
@@ -34,4 +30,5 @@ export interface ProjectModel {
   id: number;
   name: string;
   userId: string;
+  columns: ColumnModel[];
 }

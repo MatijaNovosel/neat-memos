@@ -147,7 +147,7 @@ import ProjectDialog from "@/components/projectDialog/ProjectDialog.vue";
 import { randInt } from "@/helpers/math";
 import { sample } from "@/helpers/misc";
 import { DropResult } from "@/models/common";
-import { Card, CardCover, Column, Project } from "@/models/kanban";
+import { Card, CardCover, ColumnModel, ProjectModel } from "@/models/kanban";
 import { TagModel } from "@/models/tag";
 import { useKanbanStore } from "@/store/kanban";
 import { useMemoStore } from "@/store/memos";
@@ -158,7 +158,7 @@ const memoStore = useMemoStore();
 const kanbanStore = useKanbanStore();
 
 interface State {
-  projects: Project[];
+  projects: ProjectModel[];
   tab: number | null;
   loading: boolean;
 }
@@ -209,7 +209,7 @@ const getCardPayload = (projectId: number, columnId: number) => {
   };
 };
 
-const onColumnDrop = (projectId: number, dropResult: DropResult<Column>) => {
+const onColumnDrop = (projectId: number, dropResult: DropResult<ColumnModel>) => {
   const project = state.projects.find((p) => p.id === projectId);
   if (project) {
     project.columns = applyDrag(project.columns, dropResult);
@@ -225,9 +225,11 @@ onMounted(async () => {
   await kanbanStore.loadProjects();
 
   for (let i = 0; i < kanbanStore.projects.length; i++) {
-    const columns: Column[] = [];
+    const project = kanbanStore.projects[i];
+    const columns: ColumnModel[] = [];
 
-    for (let j = 0; j < 5; j++) {
+    for (let j = 0; j < project.columns.length; j++) {
+      const column = project.columns[j];
       const cards: Card[] = [];
       const numberOfCards = randInt(2, 10);
 
@@ -277,19 +279,20 @@ onMounted(async () => {
         });
       }
 
-      const columnId = randInt(1, 99999);
-
       columns.push({
-        id: columnId,
+        id: column.id,
         cards,
-        name: `Column ${columnId}`
+        name: column.name,
+        position: column.position,
+        projectId: column.projectId
       });
     }
 
     state.projects.push({
       columns,
-      id: kanbanStore.projects[i].id,
-      name: kanbanStore.projects[i].name
+      userId: project.userId,
+      id: project.id,
+      name: project.name
     });
   }
 
