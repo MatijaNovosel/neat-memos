@@ -15,7 +15,9 @@
         <v-btn
           icon="mdi-close"
           variant="text"
-          color="black"
+          size="small"
+          class="bg-orange my-3"
+          color="white"
           @click="close"
         />
       </v-card-title>
@@ -245,11 +247,20 @@ const availableTags = computed(() => {
 
 const titleStyle = computed(() => {
   if (kanbanStore.activeCard) {
-    return {
-      backgroundColor: kanbanStore.activeCard.coverColor
-        ? kanbanStore.activeCard.coverColor
-        : undefined
-    };
+    const styleObj: any = {};
+
+    if (kanbanStore.activeCard.coverColor) {
+      styleObj.backgroundColor = kanbanStore.activeCard.coverColor;
+    }
+
+    if (kanbanStore.activeCard.coverUrl) {
+      styleObj.background = `url(${kanbanStore.activeCard.coverUrl})`;
+      styleObj.height = "170px";
+      styleObj.backgroundSize = "cover";
+      styleObj.backgroundPosition = "center";
+    }
+
+    return styleObj;
   }
 });
 
