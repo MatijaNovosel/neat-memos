@@ -319,9 +319,9 @@ const loadProjects = async () => {
   state.loading = false;
 };
 
-const updateColumnName = useDebounceFn((columnId: number, value: string) => {
+const updateColumnName = useDebounceFn(async (columnId: number, value: string) => {
   if (value.length >= 3) {
-    kanbanStore.changeColumnName(columnId, value);
+    await kanbanStore.changeColumnName(columnId, value);
     alert({
       text: "Column name updated"
     });
