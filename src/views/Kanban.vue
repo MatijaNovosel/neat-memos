@@ -91,10 +91,12 @@
             >
               <div class="font-weight-bold text-white bg-orange-lighten-2 py-3 pos-rel rounded-t">
                 <v-text-field
-                  class="px-5"
+                  class="px-5 text-white"
                   hide-details
                   v-model="column.name"
+                  bg-color="orange-lighten-2"
                   density="compact"
+                  flat
                   variant="solo"
                 >
                   <template #append>
@@ -348,5 +350,9 @@ onMounted(async () => {
 
 :deep(.v-list-item__content) {
   display: flex;
+}
+
+:deep(.v-field) {
+  color: white !important;
 }
 </style>
