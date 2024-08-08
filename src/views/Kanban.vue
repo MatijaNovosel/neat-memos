@@ -113,7 +113,7 @@
                           class="py-0"
                         >
                           <v-list-item
-                            class="text-caption py-0"
+                            class="text-caption"
                             v-for="(item, i) in columnActions"
                             @click="handleColumnAction(item.type, column.id)"
                             :key="i"
@@ -141,7 +141,7 @@
                 :get-child-payload="getCardPayload(project.id, column.id)"
                 orientation="vertical"
                 :group-name="project.name"
-                @drop="(result) => onDrop(project.id, column.id, result)"
+                @drop="(result) => onCardDrop(project.id, column.id, result)"
                 drag-class="card-ghost"
                 drop-class="card-ghost-drop"
                 :drop-placeholder="dropPlaceholderOptions"
@@ -175,7 +175,7 @@ import ProjectDialog from "@/components/projectDialog/ProjectDialog.vue";
 import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
 import { COLUMN_ACTIONS } from "@/constants/kanban";
 import { DropResult } from "@/models/common";
-import { CardModel, ColumnModel } from "@/models/kanban";
+import { CardModel, ColumnCardPosition, ColumnModel } from "@/models/kanban";
 import { useKanbanStore } from "@/store/kanban";
 import { onMounted, reactive } from "vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
@@ -235,7 +235,7 @@ const applyDrag = <T>(arr: T[], dropResult: DropResult<T>): T[] => {
   return result;
 };
 
-const onDrop = <T extends CardModel>(
+const onCardDrop = async <T extends CardModel>(
   projectId: number,
   columnId: number,
   dropResult: DropResult<T>
@@ -248,6 +248,42 @@ const onDrop = <T extends CardModel>(
       const newColumn = Object.assign({}, column);
       newColumn.cards = applyDrag<CardModel>(newColumn.cards, dropResult);
       project.columns.splice(itemIndex, 1, newColumn);
+      console.log({ dropResult });
+      if (dropResult.addedIndex !== null && dropResult.removedIndex !== null) {
+        // Rearrange in the same column
+        const columnPositions: ColumnCardPosition[] = newColumn.cards.map((c, i) => ({
+          cardId: c.id,
+          newPosition: i
+        }));
+        await kanbanStore.rearrangeCardsInColumn(columnPositions);
+      } else if (dropResult.addedIndex !== null) {
+        // Moved to new column
+        const oldColumnPositions: ColumnCardPosition[] = [];
+        const newColumnPositions: ColumnCardPosition[] = newColumn.cards.map((c, i) => ({
+          cardId: c.id,
+          newPosition: i
+        }));
+
+        const newCardPosition = dropResult.addedIndex;
+        const oldCardPosition = dropResult.payload.position;
+
+        console.log(newColumn.cards);
+
+        const oldColumn = project.columns.find((p) => p.id === dropResult.payload.columnId);
+        if (oldColumn) {
+          console.log({ oldColumnPositions });
+
+          return;
+
+          await kanbanStore.moveCardToColumn({
+            cardId: dropResult.payload.id,
+            newCardPosition: dropResult.addedIndex,
+            oldCardPosition: dropResult.payload.position,
+            oldColumnId: dropResult.payload.columnId,
+            newColumnId: columnId
+          });
+        }
+      }
     }
   }
 };
@@ -310,5 +346,9 @@ onMounted(async () => {
 .project-window {
   height: calc(100vh - 110px);
   overflow: auto;
+}
+
+:deep(.v-list-item__content) {
+  display: flex;
 }
 </style>

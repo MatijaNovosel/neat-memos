@@ -1,5 +1,10 @@
 import { KanbanService } from "@/api/services/kanban";
-import { CardModel, ProjectModel } from "@/models/kanban";
+import {
+  CardModel,
+  ColumnCardPosition,
+  MoveCardToColumnModel,
+  ProjectModel
+} from "@/models/kanban";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useUserStore } from "./user";
@@ -21,14 +26,20 @@ export const useKanbanStore = defineStore("kanban", () => {
       return;
     }
     const data = await kanbanService.getProjects(userStore.user.id);
-    projects.value = data;
+    projects.value = data.map((p) => {
+      p.columns.sort((a, b) => a.position - b.position);
+      p.columns.forEach((c) => {
+        c.cards.sort((a, b) => a.position - b.position);
+      });
+      return p;
+    });
   };
 
-  const saveProject = async (name: string) => {
+  const createProject = async (name: string) => {
     if (!userStore.user) {
       return;
     }
-    const id = await kanbanService.saveProject({
+    const id = await kanbanService.createProject({
       name,
       userId: userStore.user.id
     });
@@ -58,6 +69,14 @@ export const useKanbanStore = defineStore("kanban", () => {
     }
   };
 
+  const moveCardToColumn = async (data: MoveCardToColumnModel) => {
+    await kanbanService.moveCardToColumn(data);
+  };
+
+  const rearrangeCardsInColumn = async (cardPositions: ColumnCardPosition[]) => {
+    await kanbanService.rearrangeCardsInColumn(cardPositions);
+  };
+
   const deleteColumn = async (columnId: number) => {
     //
   };
@@ -69,9 +88,11 @@ export const useKanbanStore = defineStore("kanban", () => {
     activeCard,
     projects,
     selectedProject,
+    rearrangeCardsInColumn,
     deleteColumn,
     loadProjects,
-    saveProject,
-    createColumn
+    createProject,
+    createColumn,
+    moveCardToColumn
   };
 });

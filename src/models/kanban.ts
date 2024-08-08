@@ -6,7 +6,9 @@ export interface CardModel {
   tags: TagModel[];
   coverColor: string | null;
   coverUrl: string | null;
+  position: number;
   description: string | null;
+  columnId: number;
 }
 
 export interface ColumnModel {
@@ -33,4 +35,17 @@ export interface CreateColumnModel {
   name: string;
   projectId: number;
   position: number;
+}
+
+export interface MoveCardToColumnModel {
+  cardId: number;
+  oldCardPosition: number;
+  newCardPosition: number;
+  oldColumnId: number;
+  newColumnId: number;
+}
+
+export interface ColumnCardPosition {
+  newPosition: number;
+  cardId: number;
 }

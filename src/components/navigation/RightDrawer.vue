@@ -4,7 +4,7 @@
     :order="1"
     v-model="state.drawer"
     :permanent="mdAndUp"
-    class="pa-5 right-drawer"
+    class="pl-5 pl-md-0 py-5 pr-5 right-drawer"
     :class="theme.current.value.dark ? '' : 'bg-grey-lighten-4'"
   >
     <template #prepend>

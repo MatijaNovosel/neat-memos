@@ -1,8 +1,37 @@
 import supabase from "@/helpers/supabase";
-import { CreateColumnModel, CreateProjectModel, ProjectModel } from "@/models/kanban";
+import {
+  ColumnCardPosition,
+  CreateColumnModel,
+  CreateProjectModel,
+  MoveCardToColumnModel,
+  ProjectModel
+} from "@/models/kanban";
 import { IKanbanService } from "../interfaces/kanban";
 
 export class KanbanService implements IKanbanService {
+  async rearrangeCardsInColumn(data: ColumnCardPosition[]): Promise<void> {
+    const { error } = await supabase.from("cards").upsert(
+      data.map((d) => ({
+        position: d.newPosition,
+        id: d.cardId
+      }))
+    );
+    if (error) throw error;
+  }
+
+  async moveCardToColumn(data: MoveCardToColumnModel): Promise<void> {
+    const { error } = await supabase
+      .from("cards")
+      .update([
+        {
+          columnId: data.newColumnId
+        }
+      ])
+      .eq("id", data.cardId);
+
+    if (error) throw error;
+  }
+
   async deleteColumn(columnId: number): Promise<void> {
     const { error } = await supabase.from("columns").delete().eq("id", columnId);
     if (error) throw error;
@@ -49,6 +78,7 @@ export class KanbanService implements IKanbanService {
             name,
             description,
             columnId,
+            position,
             tags (
               id,
               content,
@@ -84,6 +114,7 @@ export class KanbanService implements IKanbanService {
             createdAt,
             coverColor,
             coverUrl,
+            position,
             name,
             description,
             columnId,
@@ -103,7 +134,7 @@ export class KanbanService implements IKanbanService {
     return data[0];
   }
 
-  async saveProject(data: CreateProjectModel): Promise<number> {
+  async createProject(data: CreateProjectModel): Promise<number> {
     const { data: response, error } = await supabase
       .from("projects")
       .insert([

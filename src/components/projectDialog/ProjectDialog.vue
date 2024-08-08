@@ -21,7 +21,7 @@
       <vv-form
         ref="projectForm"
         as="v-form"
-        @submit="saveProject"
+        @submit="createProject"
       >
         <v-card-text class="pt-3 align-content-end">
           <vv-field
@@ -90,11 +90,11 @@ const close = () => {
   kanbanStore.projectDialog = false;
 };
 
-const saveProject = async () => {
+const createProject = async () => {
   if (!projectForm.value || !(await projectForm.value.validate()).valid) {
     return;
   }
-  await kanbanStore.saveProject(state.projectName);
+  await kanbanStore.createProject(state.projectName);
   alert({
     text: "Project created"
   });
