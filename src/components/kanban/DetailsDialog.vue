@@ -154,14 +154,6 @@
           </v-btn>
           <v-btn
             size="small"
-            color="blue"
-            rounded="8"
-            variant="tonal"
-            prepend-icon="mdi-tag"
-            text="Labels"
-          />
-          <v-btn
-            size="small"
             color="green"
             rounded="8"
             prepend-icon="mdi-card-multiple-outline"
