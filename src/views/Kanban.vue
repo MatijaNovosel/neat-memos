@@ -97,6 +97,7 @@
                   bg-color="orange-lighten-2"
                   density="compact"
                   flat
+                  @update:modelValue="(e: string) => updateColumnName(column.id, e)"
                   variant="solo"
                 >
                   <template #append>
@@ -175,15 +176,18 @@ import DetailsDialog from "@/components/kanban/DetailsDialog.vue";
 import KanbanCard from "@/components/kanban/KanbanCard.vue";
 import ProjectDialog from "@/components/projectDialog/ProjectDialog.vue";
 import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
+import { useNotifications } from "@/composables/useNotifications";
 import { COLUMN_ACTIONS } from "@/constants/kanban";
 import { DropResult } from "@/models/common";
 import { CardModel, ColumnCardPosition, ColumnModel } from "@/models/kanban";
 import { useKanbanStore } from "@/store/kanban";
+import { useDebounceFn } from "@vueuse/core";
 import { onMounted, reactive } from "vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 
 const kanbanStore = useKanbanStore();
 const createConfirmationDialog = useConfirmationDialog();
+const { alert } = useNotifications();
 
 const columnActions = [
   {
@@ -314,6 +318,15 @@ const loadProjects = async () => {
   await kanbanStore.loadProjects();
   state.loading = false;
 };
+
+const updateColumnName = useDebounceFn((columnId: number, value: string) => {
+  if (value.length >= 3) {
+    kanbanStore.changeColumnName(columnId, value);
+    alert({
+      text: "Column name updated"
+    });
+  }
+}, 400);
 
 onMounted(async () => {
   await loadProjects();

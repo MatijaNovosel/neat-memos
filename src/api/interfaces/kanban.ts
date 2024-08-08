@@ -14,6 +14,7 @@ export interface IKanbanService {
   // Columns
   createColumn(data: CreateColumnModel): Promise<number>;
   deleteColumn(columnId: number): Promise<void>;
+  changeColumnName(columnId: number, name: string): Promise<void>;
   // Cards
   moveCardToColumn(data: MoveCardToColumnModel): Promise<void>;
   rearrangeCardsInColumn(data: ColumnCardPosition[]): Promise<void>;

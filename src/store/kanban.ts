@@ -77,6 +77,10 @@ export const useKanbanStore = defineStore("kanban", () => {
     await kanbanService.rearrangeCardsInColumn(cardPositions);
   };
 
+  const changeColumnName = async (columnId: number, name: string) => {
+    await kanbanService.changeColumnName(columnId, name);
+  };
+
   const deleteColumn = async (columnId: number) => {
     //
   };
@@ -88,6 +92,7 @@ export const useKanbanStore = defineStore("kanban", () => {
     activeCard,
     projects,
     selectedProject,
+    changeColumnName,
     rearrangeCardsInColumn,
     deleteColumn,
     loadProjects,

@@ -9,6 +9,19 @@ import {
 import { IKanbanService } from "../interfaces/kanban";
 
 export class KanbanService implements IKanbanService {
+  async changeColumnName(columnId: number, name: string): Promise<void> {
+    const { error: error } = await supabase
+      .from("columns")
+      .update([
+        {
+          name
+        }
+      ])
+      .eq("id", columnId);
+
+    if (error) throw error;
+  }
+
   async rearrangeCardsInColumn(data: ColumnCardPosition[]): Promise<void> {
     const { error } = await supabase.from("cards").upsert(
       data.map((d) => ({
