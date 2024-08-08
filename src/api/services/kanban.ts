@@ -20,7 +20,7 @@ export class KanbanService implements IKanbanService {
   }
 
   async moveCardToColumn(data: MoveCardToColumnModel): Promise<void> {
-    const { error } = await supabase
+    const { error: cardMoveError } = await supabase
       .from("cards")
       .update([
         {
@@ -29,7 +29,20 @@ export class KanbanService implements IKanbanService {
       ])
       .eq("id", data.cardId);
 
-    if (error) throw error;
+    if (cardMoveError) throw cardMoveError;
+
+    const { error: cardRearrangeError } = await supabase.from("cards").upsert([
+      ...data.newColumnPositions.map((d) => ({
+        position: d.newPosition,
+        id: d.cardId
+      })),
+      ...data.oldColumnPositions.map((d) => ({
+        position: d.newPosition,
+        id: d.cardId
+      }))
+    ]);
+
+    if (cardRearrangeError) throw cardRearrangeError;
   }
 
   async deleteColumn(columnId: number): Promise<void> {

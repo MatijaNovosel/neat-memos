@@ -248,7 +248,6 @@ const onCardDrop = async <T extends CardModel>(
       const newColumn = Object.assign({}, column);
       newColumn.cards = applyDrag<CardModel>(newColumn.cards, dropResult);
       project.columns.splice(itemIndex, 1, newColumn);
-      console.log({ dropResult });
       if (dropResult.addedIndex !== null && dropResult.removedIndex !== null) {
         // Rearrange in the same column
         const columnPositions: ColumnCardPosition[] = newColumn.cards.map((c, i) => ({
@@ -264,22 +263,21 @@ const onCardDrop = async <T extends CardModel>(
           newPosition: i
         }));
 
-        const newCardPosition = dropResult.addedIndex;
         const oldCardPosition = dropResult.payload.position;
-
-        console.log(newColumn.cards);
-
         const oldColumn = project.columns.find((p) => p.id === dropResult.payload.columnId);
-        if (oldColumn) {
-          console.log({ oldColumnPositions });
 
-          return;
+        if (oldColumn) {
+          for (const card of oldColumn.cards.filter((c) => c.id !== dropResult.payload.id)) {
+            oldColumnPositions.push({
+              cardId: card.id,
+              newPosition: oldCardPosition < card.position ? card.position - 1 : card.position
+            });
+          }
 
           await kanbanStore.moveCardToColumn({
             cardId: dropResult.payload.id,
-            newCardPosition: dropResult.addedIndex,
-            oldCardPosition: dropResult.payload.position,
-            oldColumnId: dropResult.payload.columnId,
+            newColumnPositions,
+            oldColumnPositions,
             newColumnId: columnId
           });
         }
