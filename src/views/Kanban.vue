@@ -290,8 +290,7 @@ const onCardDrop = async <T extends CardModel>(
 
           await kanbanStore.moveCardToColumn({
             cardId: dropResult.payload.id,
-            newColumnPositions,
-            oldColumnPositions,
+            positions: [...oldColumnPositions, ...newColumnPositions],
             newColumnId: columnId
           });
 

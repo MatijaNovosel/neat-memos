@@ -55,16 +55,12 @@ export class KanbanService implements IKanbanService {
 
     if (cardMoveError) throw cardMoveError;
 
-    const { error: cardRearrangeError } = await supabase.from("cards").upsert([
-      ...data.newColumnPositions.map((d) => ({
-        position: d.newPosition,
-        id: d.id
-      })),
-      ...data.oldColumnPositions.map((d) => ({
+    const { error: cardRearrangeError } = await supabase.from("cards").upsert(
+      data.positions.map((d) => ({
         position: d.newPosition,
         id: d.id
       }))
-    ]);
+    );
 
     if (cardRearrangeError) throw cardRearrangeError;
   }

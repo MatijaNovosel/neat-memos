@@ -39,8 +39,7 @@ export interface CreateColumnModel {
 
 export interface MoveCardToColumnModel {
   cardId: number;
-  newColumnPositions: MovePosition[];
-  oldColumnPositions: MovePosition[];
+  positions: MovePosition[];
   newColumnId: number;
 }
 
