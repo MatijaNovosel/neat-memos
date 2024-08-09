@@ -13,6 +13,7 @@ export const useKanbanStore = defineStore("kanban", () => {
   const detailsDialog = ref<boolean>(false);
   const activeCard = ref<CardModel | null>(null);
   const projectDialog = ref(false);
+  const loading = ref(false);
   const columnDialog = ref(false);
   const projects = ref<ProjectModel[]>([]);
   const selectedProject = ref<number | null>(null);
@@ -25,6 +26,7 @@ export const useKanbanStore = defineStore("kanban", () => {
     if (!userStore.user) {
       return;
     }
+    loading.value = true;
     const data = await kanbanService.getProjects(userStore.user.id);
     projects.value = data.map((p) => {
       p.columns.sort((a, b) => a.position - b.position);
@@ -33,12 +35,14 @@ export const useKanbanStore = defineStore("kanban", () => {
       });
       return p;
     });
+    loading.value = false;
   };
 
   const createProject = async (name: string) => {
     if (!userStore.user) {
       return;
     }
+    loading.value = true;
     const id = await kanbanService.createProject({
       name,
       userId: userStore.user.id
@@ -49,9 +53,11 @@ export const useKanbanStore = defineStore("kanban", () => {
       name,
       userId: userStore.user.id
     });
+    loading.value = false;
   };
 
   const createColumn = async (name: string, position: number, projectId: number) => {
+    loading.value = true;
     const id = await kanbanService.createColumn({
       name,
       position,
@@ -67,18 +73,25 @@ export const useKanbanStore = defineStore("kanban", () => {
         projectId
       });
     }
+    loading.value = false;
   };
 
   const moveCardToColumn = async (data: MoveCardToColumnModel) => {
+    loading.value = true;
     await kanbanService.moveCardToColumn(data);
+    loading.value = false;
   };
 
   const rearrangeCardsInColumn = async (cardPositions: ColumnCardPosition[]) => {
+    loading.value = true;
     await kanbanService.rearrangeCardsInColumn(cardPositions);
+    loading.value = false;
   };
 
   const changeColumnName = async (columnId: number, name: string) => {
+    loading.value = true;
     await kanbanService.changeColumnName(columnId, name);
+    loading.value = false;
   };
 
   const deleteColumn = async (columnId: number) => {
@@ -92,6 +105,7 @@ export const useKanbanStore = defineStore("kanban", () => {
     activeCard,
     projects,
     selectedProject,
+    loading,
     changeColumnName,
     rearrangeCardsInColumn,
     deleteColumn,

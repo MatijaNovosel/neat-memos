@@ -37,6 +37,8 @@
       </span>
       <div class="d-flex flex-gap">
         <v-btn
+          :loading="kanbanStore.loading"
+          :disabled="kanbanStore.loading"
           color="green"
           icon="mdi-plus"
           rounded="0"
@@ -45,6 +47,8 @@
           @click="kanbanStore.projectDialog = true"
         />
         <v-btn
+          :loading="kanbanStore.loading"
+          :disabled="kanbanStore.loading"
           color="blue"
           icon="mdi-table-column-plus-before"
           rounded="0"
@@ -286,6 +290,9 @@ const onCardDrop = async <T extends CardModel>(
             oldColumnPositions,
             newColumnId: columnId
           });
+
+          const card = newColumn.cards.find((c) => c.id === dropResult.payload.id);
+          card!.columnId = columnId;
         }
       }
     }
