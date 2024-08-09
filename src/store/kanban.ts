@@ -1,10 +1,5 @@
 import { KanbanService } from "@/api/services/kanban";
-import {
-  CardModel,
-  ColumnCardPosition,
-  MoveCardToColumnModel,
-  ProjectModel
-} from "@/models/kanban";
+import { CardModel, MoveCardToColumnModel, MovePosition, ProjectModel } from "@/models/kanban";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useUserStore } from "./user";
@@ -82,9 +77,15 @@ export const useKanbanStore = defineStore("kanban", () => {
     loading.value = false;
   };
 
-  const rearrangeCardsInColumn = async (cardPositions: ColumnCardPosition[]) => {
+  const rearrangeCardsInColumn = async (cardPositions: MovePosition[]) => {
     loading.value = true;
     await kanbanService.rearrangeCardsInColumn(cardPositions);
+    loading.value = false;
+  };
+
+  const rearrangeColumns = async (positions: MovePosition[]) => {
+    loading.value = true;
+    await kanbanService.rearrangeColumns(positions);
     loading.value = false;
   };
 
@@ -106,6 +107,7 @@ export const useKanbanStore = defineStore("kanban", () => {
     projects,
     selectedProject,
     loading,
+    rearrangeColumns,
     changeColumnName,
     rearrangeCardsInColumn,
     deleteColumn,

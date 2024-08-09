@@ -86,6 +86,7 @@
             class="d-flex flex-gap h-fit-content"
             group-name="cols"
             orientation="horizontal"
+            :get-child-payload="getColumnPayload(project.id)"
             @drop="(e) => onColumnDrop(project.id, e)"
           >
             <draggable
@@ -183,7 +184,7 @@ import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
 import { useNotifications } from "@/composables/useNotifications";
 import { COLUMN_ACTIONS } from "@/constants/kanban";
 import { DropResult } from "@/models/common";
-import { CardModel, ColumnCardPosition, ColumnModel } from "@/models/kanban";
+import { CardModel, ColumnModel, MovePosition } from "@/models/kanban";
 import { useKanbanStore } from "@/store/kanban";
 import { useDebounceFn } from "@vueuse/core";
 import { onMounted, reactive } from "vue";
@@ -251,6 +252,7 @@ const onCardDrop = async <T extends CardModel>(
   dropResult: DropResult<T>
 ) => {
   if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
+    if (dropResult.addedIndex === dropResult.removedIndex) return;
     const project = kanbanStore.projects.find((p) => p.id === projectId);
     if (project) {
       const column = project.columns.filter((p) => p.id === columnId)[0];
@@ -260,16 +262,16 @@ const onCardDrop = async <T extends CardModel>(
       project.columns.splice(itemIndex, 1, newColumn);
       if (dropResult.addedIndex !== null && dropResult.removedIndex !== null) {
         // Rearrange in the same column
-        const columnPositions: ColumnCardPosition[] = newColumn.cards.map((c, i) => ({
-          cardId: c.id,
+        const columnPositions: MovePosition[] = newColumn.cards.map((c, i) => ({
+          id: c.id,
           newPosition: i
         }));
         await kanbanStore.rearrangeCardsInColumn(columnPositions);
       } else if (dropResult.addedIndex !== null) {
         // Moved to new column
-        const oldColumnPositions: ColumnCardPosition[] = [];
-        const newColumnPositions: ColumnCardPosition[] = newColumn.cards.map((c, i) => ({
-          cardId: c.id,
+        const oldColumnPositions: MovePosition[] = [];
+        const newColumnPositions: MovePosition[] = newColumn.cards.map((c, i) => ({
+          id: c.id,
           newPosition: i
         }));
 
@@ -279,7 +281,7 @@ const onCardDrop = async <T extends CardModel>(
         if (oldColumn) {
           for (const card of oldColumn.cards.filter((c) => c.id !== dropResult.payload.id)) {
             oldColumnPositions.push({
-              cardId: card.id,
+              id: card.id,
               newPosition: oldCardPosition < card.position ? card.position - 1 : card.position
             });
           }
@@ -306,10 +308,22 @@ const getCardPayload = (projectId: number, columnId: number) => {
   };
 };
 
-const onColumnDrop = (projectId: number, dropResult: DropResult<ColumnModel>) => {
+const getColumnPayload = (projectId: number) => {
+  return (index: number) => {
+    const project = kanbanStore.projects.find((p) => p.id === projectId);
+    return project?.columns[index];
+  };
+};
+
+const onColumnDrop = async (projectId: number, dropResult: DropResult<ColumnModel>) => {
   const project = kanbanStore.projects.find((p) => p.id === projectId);
   if (project) {
     project.columns = applyDrag(project.columns, dropResult);
+    const positions: MovePosition[] = project.columns.map((c, i) => ({
+      id: c.id,
+      newPosition: i
+    }));
+    await kanbanStore.rearrangeColumns(positions);
   }
 };
 

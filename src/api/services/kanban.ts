@@ -1,14 +1,25 @@
 import supabase from "@/helpers/supabase";
 import {
-  ColumnCardPosition,
   CreateColumnModel,
   CreateProjectModel,
   MoveCardToColumnModel,
+  MovePosition,
   ProjectModel
 } from "@/models/kanban";
 import { IKanbanService } from "../interfaces/kanban";
 
 export class KanbanService implements IKanbanService {
+  async rearrangeColumns(positions: MovePosition[]): Promise<void> {
+    const { error } = await supabase.from("columns").upsert(
+      positions.map((d) => ({
+        position: d.newPosition,
+        id: d.id
+      }))
+    );
+
+    if (error) throw error;
+  }
+
   async changeColumnName(columnId: number, name: string): Promise<void> {
     const { error: error } = await supabase
       .from("columns")
@@ -22,11 +33,11 @@ export class KanbanService implements IKanbanService {
     if (error) throw error;
   }
 
-  async rearrangeCardsInColumn(data: ColumnCardPosition[]): Promise<void> {
+  async rearrangeCardsInColumn(data: MovePosition[]): Promise<void> {
     const { error } = await supabase.from("cards").upsert(
       data.map((d) => ({
         position: d.newPosition,
-        id: d.cardId
+        id: d.id
       }))
     );
     if (error) throw error;
@@ -47,11 +58,11 @@ export class KanbanService implements IKanbanService {
     const { error: cardRearrangeError } = await supabase.from("cards").upsert([
       ...data.newColumnPositions.map((d) => ({
         position: d.newPosition,
-        id: d.cardId
+        id: d.id
       })),
       ...data.oldColumnPositions.map((d) => ({
         position: d.newPosition,
-        id: d.cardId
+        id: d.id
       }))
     ]);
 
