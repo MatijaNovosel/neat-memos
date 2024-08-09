@@ -9,6 +9,7 @@ export interface CardModel {
   position: number;
   description: string | null;
   columnId: number;
+  menuOpen?: boolean;
 }
 
 export interface ColumnModel {

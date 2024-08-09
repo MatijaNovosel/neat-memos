@@ -34,6 +34,10 @@ export const useKanbanStore = defineStore("kanban", () => {
       p.columns.sort((a, b) => a.position - b.position);
       p.columns.forEach((c) => {
         c.cards.sort((a, b) => a.position - b.position);
+        c.cards = c.cards.map((card) => {
+          card.menuOpen = false;
+          return card;
+        });
       });
       return p;
     });
@@ -125,6 +129,10 @@ export const useKanbanStore = defineStore("kanban", () => {
     //
   };
 
+  const deleteCard = async (cardId: number) => {
+    //
+  };
+
   return {
     kanbanCardDialog,
     projectDialog,
@@ -134,6 +142,7 @@ export const useKanbanStore = defineStore("kanban", () => {
     selectedProject,
     loading,
     activeColumnId,
+    deleteCard,
     createCard,
     rearrangeColumns,
     changeColumnName,

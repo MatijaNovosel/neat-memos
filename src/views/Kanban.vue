@@ -171,8 +171,40 @@
                 >
                   <kanban-card
                     v-if="card"
+                    @click.right.prevent="card.menuOpen = true"
                     :data="card"
-                  />
+                  >
+                    <v-menu
+                      transition="scale-transition"
+                      location="end"
+                      v-model="card.menuOpen"
+                      activator="parent"
+                    >
+                      <v-list
+                        border
+                        elevation="0"
+                        density="compact"
+                        class="py-0"
+                      >
+                        <v-list-item
+                          class="text-caption"
+                          v-for="(item, i) in cardActions"
+                          @click="handleCardAction(item.type, column.id)"
+                          :key="i"
+                        >
+                          <v-icon
+                            :color="item.color"
+                            class="mr-3"
+                          >
+                            {{ item.icon }}
+                          </v-icon>
+                          <span>
+                            {{ item.text }}
+                          </span>
+                        </v-list-item>
+                      </v-list>
+                    </v-menu>
+                  </kanban-card>
                 </draggable>
               </container>
               <div class="d-flex justify-center mt-3">
@@ -205,7 +237,7 @@ import KanbanCardDialog from "@/components/kanban/KanbanCardDialog.vue";
 import ProjectDialog from "@/components/projectDialog/ProjectDialog.vue";
 import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
 import { useNotifications } from "@/composables/useNotifications";
-import { COLUMN_ACTIONS } from "@/constants/kanban";
+import { CARD_ACTIONS, COLUMN_ACTIONS } from "@/constants/kanban";
 import { DropResult } from "@/models/common";
 import { CardModel, ColumnModel, MovePosition } from "@/models/kanban";
 import { useKanbanStore } from "@/store/kanban";
@@ -229,6 +261,15 @@ const columnActions = [
     text: "Create card",
     type: COLUMN_ACTIONS.CREATE_CARD,
     color: "blue"
+  }
+];
+
+const cardActions = [
+  {
+    icon: "mdi-delete-outline",
+    text: "Delete",
+    type: CARD_ACTIONS.DELETE,
+    color: "red"
   }
 ];
 
@@ -261,6 +302,15 @@ const handleColumnAction = async (action: string, columnId: number) => {
     case COLUMN_ACTIONS.CREATE_CARD:
       kanbanStore.kanbanCardDialog = true;
       kanbanStore.activeColumnId = columnId;
+      break;
+  }
+};
+
+const handleCardAction = async (action: string, cardId: number) => {
+  switch (action) {
+    case CARD_ACTIONS.DELETE:
+      const answerDelete = await createConfirmationDialog();
+      if (answerDelete) await kanbanStore.deleteCard(cardId);
       break;
   }
 };

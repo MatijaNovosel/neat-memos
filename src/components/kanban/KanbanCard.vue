@@ -4,6 +4,9 @@
     class="pa-0 mb-3 kanban-card"
     flat
   >
+    <div>
+      <slot name="default" />
+    </div>
     <v-toolbar
       v-if="props.data.coverColor"
       :style="{
