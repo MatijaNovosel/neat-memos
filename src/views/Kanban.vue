@@ -73,6 +73,8 @@
     >
       <v-window-item
         v-for="project in kanbanStore.projects"
+        :transition="false"
+        :reverse-transition="false"
         :key="`tabItem_${project.id}`"
         :value="project.id"
         class="h-100"
