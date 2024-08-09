@@ -146,7 +146,6 @@
                 <div class="text-grey-lighten-1 text-subtitle-2 w-100 mb-2">Color</div>
                 <v-color-picker
                   hide-inputs
-                  hide-sliders
                   v-model="state.coverColor"
                   class="elevation-0 pa-0"
                 />
@@ -287,14 +286,14 @@ const availableTags = computed(() => {
 });
 
 const titleStyle = computed(() => {
-  if (kanbanStore.activeCard) {
+  if (kanbanStore.activeCard || isNewCard.value) {
     const styleObj: any = {};
 
-    if (kanbanStore.activeCard.coverColor) {
-      styleObj.backgroundColor = kanbanStore.activeCard.coverColor;
+    if (kanbanStore.activeCard?.coverColor || isNewCard.value) {
+      styleObj.backgroundColor = state.coverColor;
     }
 
-    if (kanbanStore.activeCard.coverUrl) {
+    if (kanbanStore.activeCard?.coverUrl) {
       styleObj.background = `url(${kanbanStore.activeCard.coverUrl})`;
       styleObj.height = "170px";
       styleObj.backgroundSize = "cover";
