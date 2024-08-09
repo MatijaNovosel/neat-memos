@@ -84,6 +84,9 @@
           class="bg-grey-lighten-3 pt-5 px-5 pb-4 d-flex kanban-projects rounded-lg h-100"
         >
           <container
+            lock-axis="x"
+            @drag-start="onDragColumnStart"
+            @drag-end="onDragColumnEnd"
             tag="div"
             class="d-flex flex-gap h-fit-content"
             group-name="cols"
@@ -98,6 +101,7 @@
             >
               <div class="font-weight-bold text-white bg-orange-lighten-2 py-3 pos-rel rounded-t">
                 <v-text-field
+                  :readonly="state.draggingColumn"
                   class="px-5 text-white"
                   hide-details
                   v-model="column.name"
@@ -147,11 +151,16 @@
               <v-divider color="white" />
               <container
                 tag="div"
+                :class="{
+                  'pt-10': !column.cards.length
+                }"
                 class="kanban-column bg-orange-lighten-3 px-5 rounded-b pb-2 pt-3"
                 :get-child-payload="getCardPayload(project.id, column.id)"
                 orientation="vertical"
                 :group-name="project.name"
                 @drop="(result) => onCardDrop(project.id, column.id, result)"
+                @drag-start="onDragCardStart"
+                @drag-end="onDragCardEnd"
                 drag-class="card-ghost"
                 drop-class="card-ghost-drop"
                 :drop-placeholder="dropPlaceholderOptions"
@@ -166,21 +175,33 @@
                   />
                 </draggable>
               </container>
+              <div class="d-flex justify-center mt-3">
+                <v-btn
+                  variant="outlined"
+                  color="orange"
+                  size="small"
+                  prepend-icon="mdi-plus"
+                  rounded="8"
+                  @click="handleColumnAction(COLUMN_ACTIONS.CREATE_CARD, column.id)"
+                >
+                  Add card
+                </v-btn>
+              </div>
             </draggable>
           </container>
         </div>
       </v-window-item>
     </v-window>
   </v-container>
-  <details-dialog />
+  <kanban-card-dialog />
   <project-dialog />
   <column-dialog />
 </template>
 
 <script setup lang="ts">
 import ColumnDialog from "@/components/columnDialog/ColumnDialog.vue";
-import DetailsDialog from "@/components/kanban/DetailsDialog.vue";
 import KanbanCard from "@/components/kanban/KanbanCard.vue";
+import KanbanCardDialog from "@/components/kanban/KanbanCardDialog.vue";
 import ProjectDialog from "@/components/projectDialog/ProjectDialog.vue";
 import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
 import { useNotifications } from "@/composables/useNotifications";
@@ -189,7 +210,7 @@ import { DropResult } from "@/models/common";
 import { CardModel, ColumnModel, MovePosition } from "@/models/kanban";
 import { useKanbanStore } from "@/store/kanban";
 import { useDebounceFn } from "@vueuse/core";
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 
 const kanbanStore = useKanbanStore();
@@ -213,6 +234,9 @@ const columnActions = [
 
 interface State {
   loading: boolean;
+  dragging: boolean;
+  draggingCard: boolean;
+  draggingColumn: boolean;
 }
 
 const dropPlaceholderOptions = {
@@ -222,7 +246,10 @@ const dropPlaceholderOptions = {
 };
 
 const state: State = reactive({
-  loading: false
+  loading: false,
+  dragging: false,
+  draggingCard: false,
+  draggingColumn: false
 });
 
 const handleColumnAction = async (action: string, columnId: number) => {
@@ -230,6 +257,10 @@ const handleColumnAction = async (action: string, columnId: number) => {
     case COLUMN_ACTIONS.DELETE:
       const answerDelete = await createConfirmationDialog();
       if (answerDelete) await kanbanStore.deleteColumn(columnId);
+      break;
+    case COLUMN_ACTIONS.CREATE_CARD:
+      kanbanStore.kanbanCardDialog = true;
+      kanbanStore.activeColumnId = columnId;
       break;
   }
 };
@@ -350,8 +381,60 @@ const updateColumnName = useDebounceFn(async (columnId: number, value: string) =
   }
 }, 400);
 
+const onDragCardStart = () => {
+  state.draggingCard = true;
+};
+
+const onDragCardEnd = () => {
+  state.draggingCard = false;
+};
+
+const onDragColumnStart = () => {
+  state.draggingColumn = true;
+};
+
+const onDragColumnEnd = () => {
+  state.draggingColumn = false;
+};
+
+const tableEl = ref<any>(null);
+const pos = {
+  top: 0,
+  y: 0
+};
+
 onMounted(async () => {
   await loadProjects();
+  if (tableEl.value) {
+    const table = tableEl.value.$el;
+    const ele = table.childNodes[1]; // Select inner scrolling portion
+
+    const mouseDownHandler = ({ clientY }: MouseEvent) => {
+      ele.style.cursor = "grabbing";
+      ele.style.userSelect = "none";
+      pos.top = ele.scrollTop;
+      pos.y = clientY;
+      document.addEventListener("mousemove", mouseMoveHandler);
+      document.addEventListener("mouseup", mouseUpHandler);
+    };
+
+    const mouseMoveHandler = ({ clientY }: MouseEvent) => {
+      const dy = clientY - pos.y;
+      ele.scrollTop = pos.top - dy;
+      state.dragging = true;
+    };
+
+    const mouseUpHandler = () => {
+      ele.style.cursor = "pointer";
+      document.removeEventListener("mousemove", mouseMoveHandler);
+      document.removeEventListener("mouseup", mouseUpHandler);
+      setTimeout(() => {
+        state.dragging = false;
+      }, 100);
+    };
+
+    ele.addEventListener("mousedown", mouseDownHandler);
+  }
 });
 </script>
 

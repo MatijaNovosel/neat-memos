@@ -56,7 +56,7 @@ const kanbanStore = useKanbanStore();
 
 const openDetailsDialog = () => {
   kanbanStore.activeCard = { ...props.data };
-  kanbanStore.detailsDialog = true;
+  kanbanStore.kanbanCardDialog = true;
 };
 </script>
 

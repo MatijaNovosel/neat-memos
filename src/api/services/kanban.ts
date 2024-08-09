@@ -1,5 +1,6 @@
 import supabase from "@/helpers/supabase";
 import {
+  CreateCardModel,
   CreateColumnModel,
   CreateProjectModel,
   MoveCardToColumnModel,
@@ -9,6 +10,28 @@ import {
 import { IKanbanService } from "../interfaces/kanban";
 
 export class KanbanService implements IKanbanService {
+  async createCard(data: CreateCardModel): Promise<number> {
+    const { data: response, error } = await supabase
+      .from("cards")
+      .insert([
+        {
+          columnId: data.columnId,
+          coverColor: data.coverColor,
+          coverUrl: data.coverUrl,
+          description: data.description,
+          name: data.title,
+          position: data.position
+        }
+      ])
+      .select();
+
+    const id = response![0].id;
+
+    if (error) throw error;
+
+    return id;
+  }
+
   async rearrangeColumns(positions: MovePosition[]): Promise<void> {
     const { error } = await supabase.from("columns").upsert(
       positions.map((d) => ({

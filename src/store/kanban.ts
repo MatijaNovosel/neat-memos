@@ -1,13 +1,20 @@
 import { KanbanService } from "@/api/services/kanban";
-import { CardModel, MoveCardToColumnModel, MovePosition, ProjectModel } from "@/models/kanban";
+import {
+  CardModel,
+  CreateCardModel,
+  MoveCardToColumnModel,
+  MovePosition,
+  ProjectModel
+} from "@/models/kanban";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useUserStore } from "./user";
 
 export const useKanbanStore = defineStore("kanban", () => {
-  const detailsDialog = ref<boolean>(false);
+  const kanbanCardDialog = ref<boolean>(false);
   const activeCard = ref<CardModel | null>(null);
   const projectDialog = ref(false);
+  const activeColumnId = ref<number | null>(null);
   const loading = ref(false);
   const columnDialog = ref(false);
   const projects = ref<ProjectModel[]>([]);
@@ -95,18 +102,39 @@ export const useKanbanStore = defineStore("kanban", () => {
     loading.value = false;
   };
 
+  const createCard = async (data: CreateCardModel) => {
+    loading.value = true;
+    const id = await kanbanService.createCard(data);
+    const project = projects.value.find((p) => p.id === data.projectId);
+    project?.columns
+      .find((c) => c.id === data.columnId)
+      ?.cards.push({
+        id,
+        columnId: data.columnId,
+        coverColor: data.coverColor,
+        coverUrl: data.coverUrl,
+        description: data.description,
+        name: data.title,
+        position: data.position,
+        tags: []
+      });
+    loading.value = false;
+  };
+
   const deleteColumn = async (columnId: number) => {
     //
   };
 
   return {
-    detailsDialog,
+    kanbanCardDialog,
     projectDialog,
     columnDialog,
     activeCard,
     projects,
     selectedProject,
     loading,
+    activeColumnId,
+    createCard,
     rearrangeColumns,
     changeColumnName,
     rearrangeCardsInColumn,

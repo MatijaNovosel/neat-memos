@@ -47,3 +47,14 @@ export interface MovePosition {
   newPosition: number;
   id: number;
 }
+
+export interface CreateCardModel {
+  projectId: number;
+  columnId: number;
+  title: string;
+  tags: TagModel[];
+  description: string | null;
+  coverUrl: string | null;
+  position: number;
+  coverColor: string | null;
+}

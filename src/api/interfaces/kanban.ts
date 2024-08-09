@@ -1,4 +1,5 @@
 import {
+  CreateCardModel,
   CreateColumnModel,
   CreateProjectModel,
   MoveCardToColumnModel,
@@ -19,4 +20,5 @@ export interface IKanbanService {
   // Cards
   moveCardToColumn(data: MoveCardToColumnModel): Promise<void>;
   rearrangeCardsInColumn(data: MovePosition[]): Promise<void>;
+  createCard(data: CreateCardModel): Promise<number>;
 }

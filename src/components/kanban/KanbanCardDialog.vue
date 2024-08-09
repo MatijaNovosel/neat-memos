@@ -4,9 +4,9 @@
     :fullscreen="smAndDown"
     width="650"
     persistent
-    :model-value="kanbanStore.detailsDialog"
+    :model-value="kanbanStore.kanbanCardDialog"
   >
-    <v-card v-if="kanbanStore.activeCard">
+    <v-card>
       <v-card-title
         class="d-flex items-center align-center pt-2 px-6"
         :style="titleStyle"
@@ -24,7 +24,7 @@
       <v-divider />
       <v-row
         no-gutters
-        class="my-3 pr-3"
+        class="my-3"
       >
         <v-col
           cols="8"
@@ -34,6 +34,7 @@
             class="mb-3"
             hide-details
             v-model="state.title"
+            placeholder="Title"
             density="compact"
           />
           <div class="text-grey-lighten-1 text-subtitle-2">Tags</div>
@@ -123,7 +124,7 @@
         </v-col>
         <v-col
           cols="4"
-          class="d-flex flex-column flex-gap"
+          class="d-flex flex-column flex-gap pr-3"
         >
           <v-btn
             size="small"
@@ -153,6 +154,7 @@
             </v-menu>
           </v-btn>
           <v-btn
+            v-if="!isNewCard"
             size="small"
             color="green"
             rounded="8"
@@ -169,12 +171,29 @@
             text="Attachment"
           />
         </v-col>
+        <template v-if="isNewCard">
+          <v-divider />
+          <v-col
+            cols="12"
+            class="d-flex justify-end pt-3 pr-3"
+          >
+            <v-btn
+              color="green"
+              rounded="8"
+              variant="flat"
+              @click="save"
+            >
+              Save
+            </v-btn>
+          </v-col>
+        </template>
       </v-row>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts" setup>
+import { useNotifications } from "@/composables/useNotifications";
 import { TagModel } from "@/models/tag";
 import { useKanbanStore } from "@/store/kanban";
 import { useMemoStore } from "@/store/memos";
@@ -194,6 +213,7 @@ const { smAndDown } = useDisplay();
 const i18n = useI18n();
 const memoStore = useMemoStore();
 const kanbanStore = useKanbanStore();
+const { alert } = useNotifications();
 
 const state: State = reactive({
   title: "",
@@ -203,12 +223,18 @@ const state: State = reactive({
   selectedTags: []
 });
 
+const isNewCard = computed(() => !kanbanStore.activeCard);
+
 const close = () => {
-  kanbanStore.detailsDialog = false;
-  state.selectedTags = [];
-  state.title = "";
-  state.description = "";
-  state.tags = [];
+  kanbanStore.kanbanCardDialog = false;
+  setTimeout(() => {
+    kanbanStore.activeCard = null;
+    kanbanStore.activeColumnId = null;
+    state.selectedTags = [];
+    state.title = "";
+    state.description = "";
+    state.tags = [];
+  }, 500);
 };
 
 const selectTag = (tag: TagModel) => {
@@ -230,6 +256,31 @@ const saveTags = () => {
 
 const deleteTag = (tagId: number) => {
   state.tags = state.tags.filter((t) => t.id !== tagId);
+};
+
+const save = async () => {
+  const project = kanbanStore.projects.find((p) => p.id === kanbanStore.selectedProject);
+  const maxPosition = Math.max(
+    ...project!.columns
+      .find((c) => c.id === kanbanStore.activeColumnId)!
+      .cards.map((c) => c.position)
+  );
+  console.log(maxPosition);
+  console.log(project!.columns.find((c) => c.id === kanbanStore.activeColumnId)!.cards);
+  await kanbanStore.createCard({
+    columnId: kanbanStore.activeColumnId!,
+    coverColor: state.coverColor === "#ffffff" ? null : state.coverColor,
+    coverUrl: null,
+    description: state.description,
+    title: state.title,
+    tags: [],
+    position: maxPosition + 1,
+    projectId: kanbanStore.selectedProject!
+  });
+  close();
+  alert({
+    text: "Card created"
+  });
 };
 
 const availableTags = computed(() => {
