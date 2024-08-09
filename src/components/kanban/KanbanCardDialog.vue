@@ -265,8 +265,6 @@ const save = async () => {
       .find((c) => c.id === kanbanStore.activeColumnId)!
       .cards.map((c) => c.position)
   );
-  console.log(maxPosition);
-  console.log(project!.columns.find((c) => c.id === kanbanStore.activeColumnId)!.cards);
   await kanbanStore.createCard({
     columnId: kanbanStore.activeColumnId!,
     coverColor: state.coverColor === "#ffffff" ? null : state.coverColor,
