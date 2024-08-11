@@ -92,7 +92,7 @@
             group-name="cols"
             orientation="horizontal"
             :get-child-payload="getColumnPayload(project.id)"
-            @drop="(e) => onColumnDrop(project.id, e)"
+            @drop="(e: DropResult<any>) => onColumnDrop(project.id, e)"
           >
             <draggable
               v-for="column in project.columns"
@@ -158,7 +158,7 @@
                 :get-child-payload="getCardPayload(project.id, column.id)"
                 orientation="vertical"
                 :group-name="project.name"
-                @drop="(result) => onCardDrop(project.id, column.id, result)"
+                @drop="(result: DropResult<any>) => onCardDrop(project.id, column.id, result)"
                 @drag-start="onDragCardStart"
                 @drag-end="onDragCardEnd"
                 drag-class="card-ghost"
@@ -182,6 +182,7 @@
                     >
                       <v-list
                         border
+                        rounded="0"
                         elevation="0"
                         density="compact"
                         class="py-0"

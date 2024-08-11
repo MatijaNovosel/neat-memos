@@ -286,22 +286,18 @@ const availableTags = computed(() => {
 });
 
 const titleStyle = computed(() => {
-  if (kanbanStore.activeCard || isNewCard.value) {
-    const styleObj: any = {};
+  const styleObj: any = {};
 
-    if (kanbanStore.activeCard?.coverColor || isNewCard.value) {
-      styleObj.backgroundColor = state.coverColor;
-    }
+  styleObj.backgroundColor = state.coverColor;
 
-    if (kanbanStore.activeCard?.coverUrl) {
-      styleObj.background = `url(${kanbanStore.activeCard.coverUrl})`;
-      styleObj.height = "170px";
-      styleObj.backgroundSize = "cover";
-      styleObj.backgroundPosition = "center";
-    }
-
-    return styleObj;
+  if (kanbanStore.activeCard?.coverUrl) {
+    styleObj.background = `url(${kanbanStore.activeCard.coverUrl})`;
+    styleObj.height = "170px";
+    styleObj.backgroundSize = "cover";
+    styleObj.backgroundPosition = "center";
   }
+
+  return styleObj;
 });
 
 watch(
