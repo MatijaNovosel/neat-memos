@@ -251,10 +251,16 @@ const isInSelectedTags = (tagId: number) => {
 const saveTags = () => {
   tags.value = [...tags.value, ...selectedTags.value];
   selectedTags.value = [];
+  if (!isNewCard.value) {
+    save();
+  }
 };
 
 const deleteTag = (tagId: number) => {
   tags.value = tags.value.filter((t) => t.id !== tagId);
+  if (!isNewCard.value) {
+    save();
+  }
 };
 
 const save = useDebounceFn(async () => {
@@ -277,6 +283,7 @@ const save = useDebounceFn(async () => {
       card!.description = description.value;
       card!.coverColor = coverColor.value;
       card!.tags = tags.value;
+      kanbanStore.activeCard!.tags = tags.value;
     }
     alert({
       text: "Card updated"
@@ -333,17 +340,6 @@ watch([coverColor, title, description], (newVal, oldVal) => {
     newVal.every((x) => x.length !== 0) &&
     !isNewCard.value
   ) {
-    save();
-  }
-});
-
-watch(tags, (newVal, oldVal) => {
-  if (isNewCard.value) {
-    return;
-  }
-  const newIds = newVal.map((t) => t.id);
-  const oldIds = oldVal.map((t) => t.id);
-  if (JSON.stringify(newIds) !== JSON.stringify(oldIds)) {
     save();
   }
 });
