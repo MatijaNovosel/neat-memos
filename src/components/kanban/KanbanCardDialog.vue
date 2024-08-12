@@ -14,9 +14,15 @@
         <v-spacer />
         <v-btn
           icon="mdi-close"
+          :loading="state.saving"
+          :disabled="state.saving"
           variant="text"
           size="small"
-          class="bg-orange my-3"
+          class="my-3"
+          :class="{
+            'bg-orange': !state.saving,
+            'bg-grey': state.saving
+          }"
           color="white"
           @click="close"
         />
