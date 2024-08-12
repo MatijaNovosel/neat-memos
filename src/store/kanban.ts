@@ -129,8 +129,8 @@ export const useKanbanStore = defineStore("kanban", () => {
     //
   };
 
-  const deleteCard = async (cardId: number) => {
-    //
+  const deleteCard = async (cardId: number, positions: MovePosition[]) => {
+    await kanbanService.deleteCard(cardId, positions);
   };
 
   return {

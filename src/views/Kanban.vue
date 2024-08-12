@@ -190,7 +190,7 @@
                         <v-list-item
                           class="text-caption"
                           v-for="(item, i) in cardActions"
-                          @click="handleCardAction(item.type, column.id)"
+                          @click="handleCardAction(item.type, card, column.id)"
                           :key="i"
                         >
                           <v-icon
@@ -243,7 +243,7 @@ import { DropResult } from "@/models/common";
 import { CardModel, ColumnModel, MovePosition } from "@/models/kanban";
 import { useKanbanStore } from "@/store/kanban";
 import { useDebounceFn } from "@vueuse/core";
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive } from "vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 
 const kanbanStore = useKanbanStore();
@@ -307,11 +307,29 @@ const handleColumnAction = async (action: string, columnId: number) => {
   }
 };
 
-const handleCardAction = async (action: string, cardId: number) => {
+const handleCardAction = async (action: string, card: CardModel, columnId: number) => {
   switch (action) {
     case CARD_ACTIONS.DELETE:
       const answerDelete = await createConfirmationDialog();
-      if (answerDelete) await kanbanStore.deleteCard(cardId);
+      if (answerDelete) {
+        const positions: MovePosition[] = [];
+        const project = kanbanStore.projects.find((p) => p.id === kanbanStore.selectedProject);
+        const column = project!.columns.find((c) => c.id === columnId);
+
+        for (const c of column!.cards) {
+          if (c.id === card.id) continue;
+          positions.push({
+            id: c.id,
+            newPosition: card.position < c.position ? c.position - 1 : c.position
+          });
+        }
+
+        await kanbanStore.deleteCard(card.id, positions);
+        column!.cards = column!.cards.filter((c) => c.id !== card.id);
+        alert({
+          text: "Card deleted"
+        });
+      }
       break;
   }
 };
@@ -448,44 +466,8 @@ const onDragColumnEnd = () => {
   state.draggingColumn = false;
 };
 
-const tableEl = ref<any>(null);
-const pos = {
-  top: 0,
-  y: 0
-};
-
 onMounted(async () => {
   await loadProjects();
-  if (tableEl.value) {
-    const table = tableEl.value.$el;
-    const ele = table.childNodes[1]; // Select inner scrolling portion
-
-    const mouseDownHandler = ({ clientY }: MouseEvent) => {
-      ele.style.cursor = "grabbing";
-      ele.style.userSelect = "none";
-      pos.top = ele.scrollTop;
-      pos.y = clientY;
-      document.addEventListener("mousemove", mouseMoveHandler);
-      document.addEventListener("mouseup", mouseUpHandler);
-    };
-
-    const mouseMoveHandler = ({ clientY }: MouseEvent) => {
-      const dy = clientY - pos.y;
-      ele.scrollTop = pos.top - dy;
-      state.dragging = true;
-    };
-
-    const mouseUpHandler = () => {
-      ele.style.cursor = "pointer";
-      document.removeEventListener("mousemove", mouseMoveHandler);
-      document.removeEventListener("mouseup", mouseUpHandler);
-      setTimeout(() => {
-        state.dragging = false;
-      }, 100);
-    };
-
-    ele.addEventListener("mousedown", mouseDownHandler);
-  }
 });
 </script>
 

@@ -10,6 +10,20 @@ import {
 import { IKanbanService } from "../interfaces/kanban";
 
 export class KanbanService implements IKanbanService {
+  async deleteCard(cardId: number, positions: MovePosition[]): Promise<void> {
+    const { error: cardDeleteError } = await supabase.from("cards").delete().eq("id", cardId);
+    if (cardDeleteError) throw cardDeleteError;
+
+    const { error } = await supabase.from("cards").upsert(
+      positions.map((d) => ({
+        position: d.newPosition,
+        id: d.id
+      }))
+    );
+
+    if (error) throw error;
+  }
+
   async createCard(data: CreateCardModel): Promise<number> {
     const { data: response, error } = await supabase
       .from("cards")
