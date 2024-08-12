@@ -99,13 +99,13 @@
               :key="column.id"
               class="column-ctr"
             >
-              <div class="font-weight-bold text-white bg-orange-lighten-2 py-3 pos-rel rounded-t">
+              <div class="font-weight-bold text-white bg-orange-lighten-3 pos-rel rounded-t pt-2">
                 <v-text-field
                   :readonly="state.draggingColumn"
-                  class="px-5 text-white"
+                  class="pl-2 pr-3 text-white"
                   hide-details
                   v-model="column.name"
-                  bg-color="orange-lighten-2"
+                  bg-color="orange-lighten-3"
                   density="compact"
                   flat
                   @update:modelValue="(e: string) => updateColumnName(column.id, e)"
@@ -148,13 +148,12 @@
                   </template>
                 </v-text-field>
               </div>
-              <v-divider color="white" />
               <container
                 tag="div"
                 :class="{
                   'pt-10': !column.cards.length
                 }"
-                class="kanban-column bg-orange-lighten-3 px-5 rounded-b pb-2 pt-3"
+                class="kanban-column bg-orange-lighten-3 px-5 rounded-b py-2"
                 :get-child-payload="getCardPayload(project.id, column.id)"
                 orientation="vertical"
                 :group-name="project.name"

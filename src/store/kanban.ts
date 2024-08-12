@@ -2,6 +2,7 @@ import { KanbanService } from "@/api/services/kanban";
 import {
   CardModel,
   CreateCardModel,
+  EditCardModel,
   MoveCardToColumnModel,
   MovePosition,
   ProjectModel
@@ -118,9 +119,9 @@ export const useKanbanStore = defineStore("kanban", () => {
         coverColor: data.coverColor,
         coverUrl: data.coverUrl,
         description: data.description,
-        name: data.title,
+        name: data.name,
         position: data.position,
-        tags: []
+        tags: data.tags
       });
     loading.value = false;
   };
@@ -133,6 +134,10 @@ export const useKanbanStore = defineStore("kanban", () => {
     await kanbanService.deleteCard(cardId, positions);
   };
 
+  const editKanbanCard = async (data: EditCardModel) => {
+    await kanbanService.editCard(data);
+  };
+
   return {
     kanbanCardDialog,
     projectDialog,
@@ -142,6 +147,7 @@ export const useKanbanStore = defineStore("kanban", () => {
     selectedProject,
     loading,
     activeColumnId,
+    editKanbanCard,
     deleteCard,
     createCard,
     rearrangeColumns,

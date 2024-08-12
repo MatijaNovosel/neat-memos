@@ -52,10 +52,20 @@ export interface MovePosition {
 export interface CreateCardModel {
   projectId: number;
   columnId: number;
-  title: string;
+  name: string;
   tags: TagModel[];
   description: string | null;
   coverUrl: string | null;
   position: number;
   coverColor: string | null;
+}
+
+export interface EditCardModel {
+  id: number;
+  name: string;
+  description: string | null;
+  coverUrl: string | null;
+  coverColor: string | null;
+  initialTags: TagModel[];
+  tags: TagModel[];
 }

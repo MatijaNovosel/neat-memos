@@ -33,15 +33,15 @@
           <v-text-field
             class="mb-3"
             hide-details
-            v-model="state.title"
+            v-model="title"
             placeholder="Title"
             density="compact"
           />
           <div class="text-grey-lighten-1 text-subtitle-2">Tags</div>
           <div class="d-flex flex-gap flex-wrap align-center mt-2">
-            <template v-if="state.tags.length">
+            <template v-if="tags.length">
               <v-chip
-                v-for="tag in state.tags"
+                v-for="tag in tags"
                 :key="tag.id"
                 size="small"
                 :color="tag.color"
@@ -118,7 +118,7 @@
             hide-details="auto"
             row-height="15"
             rows="3"
-            v-model="state.description"
+            v-model="description"
             placeholder="Description"
           />
         </v-col>
@@ -146,7 +146,7 @@
                 <div class="text-grey-lighten-1 text-subtitle-2 w-100 mb-2">Color</div>
                 <v-color-picker
                   hide-inputs
-                  v-model="state.coverColor"
+                  v-model="coverColor"
                   class="elevation-0 pa-0"
                 />
               </v-card>
@@ -196,16 +196,13 @@ import { useNotifications } from "@/composables/useNotifications";
 import { TagModel } from "@/models/tag";
 import { useKanbanStore } from "@/store/kanban";
 import { useMemoStore } from "@/store/memos";
-import { computed, reactive, watch } from "vue";
+import { useDebounceFn } from "@vueuse/core";
+import { computed, reactive, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDisplay } from "vuetify";
 
 interface State {
-  title: string;
-  description: string;
-  coverColor: string;
-  tags: TagModel[];
-  selectedTags: TagModel[];
+  saving: boolean;
 }
 
 const { smAndDown } = useDisplay();
@@ -214,12 +211,15 @@ const memoStore = useMemoStore();
 const kanbanStore = useKanbanStore();
 const { alert } = useNotifications();
 
+const title = ref("");
+const coverColor = ref("");
+const description = ref("");
+
+const tags = ref<TagModel[]>([]);
+const selectedTags = ref<TagModel[]>([]);
+
 const state: State = reactive({
-  title: "",
-  description: "",
-  coverColor: "#ffffff",
-  tags: [],
-  selectedTags: []
+  saving: false
 });
 
 const isNewCard = computed(() => !kanbanStore.activeCard);
@@ -229,66 +229,92 @@ const close = () => {
   setTimeout(() => {
     kanbanStore.activeCard = null;
     kanbanStore.activeColumnId = null;
-    state.selectedTags = [];
-    state.title = "";
-    state.description = "";
-    state.tags = [];
+    selectedTags.value = [];
+    title.value = "";
+    description.value = "";
+    tags.value = [];
   }, 500);
 };
 
 const selectTag = (tag: TagModel) => {
-  if (!!state.selectedTags.find((t) => t.id === tag.id)) {
-    state.selectedTags = state.selectedTags.filter((t) => t.id !== tag.id);
+  if (!!selectedTags.value.find((t) => t.id === tag.id)) {
+    selectedTags.value = selectedTags.value.filter((t) => t.id !== tag.id);
     return;
   }
-  state.selectedTags.push(tag);
+  selectedTags.value.push(tag);
 };
 
 const isInSelectedTags = (tagId: number) => {
-  return !!state.selectedTags.find((t) => t.id === tagId);
+  return !!selectedTags.value.find((t) => t.id === tagId);
 };
 
 const saveTags = () => {
-  state.tags.push(...state.selectedTags);
-  state.selectedTags = [];
+  tags.value = [...tags.value, ...selectedTags.value];
+  selectedTags.value = [];
 };
 
 const deleteTag = (tagId: number) => {
-  state.tags = state.tags.filter((t) => t.id !== tagId);
+  tags.value = tags.value.filter((t) => t.id !== tagId);
 };
 
-const save = async () => {
+const save = useDebounceFn(async () => {
+  state.saving = true;
   const project = kanbanStore.projects.find((p) => p.id === kanbanStore.selectedProject);
-  const maxPosition = Math.max(
-    ...project!.columns
-      .find((c) => c.id === kanbanStore.activeColumnId)!
-      .cards.map((c) => c.position)
-  );
-  await kanbanStore.createCard({
-    columnId: kanbanStore.activeColumnId!,
-    coverColor: state.coverColor === "#ffffff" ? null : state.coverColor,
-    coverUrl: null,
-    description: state.description,
-    title: state.title,
-    tags: [],
-    position: maxPosition + 1,
-    projectId: kanbanStore.selectedProject!
-  });
-  close();
-  alert({
-    text: "Card created"
-  });
-};
+  if (!isNewCard.value) {
+    await kanbanStore.editKanbanCard({
+      id: kanbanStore.activeCard!.id,
+      coverColor: coverColor.value === "#ffffff" ? null : coverColor.value,
+      coverUrl: null,
+      name: title.value,
+      description: description.value,
+      initialTags: kanbanStore.activeCard!.tags,
+      tags: tags.value
+    });
+    const column = project?.columns.find((c) => c.id === kanbanStore.activeCard?.columnId);
+    if (column) {
+      const card = column.cards.find((card) => card.id === kanbanStore.activeCard?.id);
+      card!.name = title.value;
+      card!.description = description.value;
+      card!.coverColor = coverColor.value;
+      card!.tags = tags.value;
+    }
+    alert({
+      text: "Card updated"
+    });
+  } else {
+    const project = kanbanStore.projects.find((p) => p.id === kanbanStore.selectedProject);
+    const maxPosition = Math.max(
+      ...project!.columns
+        .find((c) => c.id === kanbanStore.activeColumnId)!
+        .cards.map((c) => c.position)
+    );
+    await kanbanStore.createCard({
+      columnId: kanbanStore.activeColumnId!,
+      coverColor: coverColor.value === "#ffffff" ? null : coverColor.value,
+      coverUrl: null,
+      description: description.value,
+      name: title.value,
+      tags: tags.value,
+      position: maxPosition + 1,
+      projectId: kanbanStore.selectedProject!
+    });
+    close();
+    alert({
+      text: "Card created"
+    });
+  }
+  state.saving = false;
+}, 500);
 
 const availableTags = computed(() => {
-  const tagIds = state.tags.map((t) => t.id);
+  const tagIds = tags.value.map((t) => t.id);
   return memoStore.tags.filter((t) => !tagIds.includes(t.id));
 });
 
 const titleStyle = computed(() => {
   const styleObj: any = {};
 
-  styleObj.backgroundColor = state.coverColor;
+  styleObj.backgroundColor = coverColor.value;
 
   if (kanbanStore.activeCard?.coverUrl) {
     styleObj.background = `url(${kanbanStore.activeCard.coverUrl})`;
@@ -300,14 +326,35 @@ const titleStyle = computed(() => {
   return styleObj;
 });
 
+watch([coverColor, title, description], (newVal, oldVal) => {
+  if (
+    JSON.stringify(oldVal) !== JSON.stringify(newVal) &&
+    oldVal.every((x) => x.length !== 0) &&
+    newVal.every((x) => x.length !== 0) &&
+    !isNewCard.value
+  ) {
+    save();
+  }
+});
+
+watch(tags, (newVal, oldVal) => {
+  if (isNewCard.value) {
+    return;
+  }
+  const newIds = newVal.map((t) => t.id);
+  const oldIds = oldVal.map((t) => t.id);
+  if (JSON.stringify(newIds) !== JSON.stringify(oldIds)) {
+    save();
+  }
+});
+
 watch(
   () => kanbanStore.activeCard,
   (val) => {
-    console.log(val);
-    state.title = val?.name || "";
-    state.description = val?.description || "";
-    state.coverColor = val?.coverColor || "#ffffff";
-    state.tags = val?.tags || [];
+    title.value = val?.name || "";
+    description.value = val?.description || "";
+    coverColor.value = val?.coverColor || "#ffffff";
+    tags.value = val?.tags || [];
   }
 );
 </script>

@@ -3,6 +3,7 @@ import {
   CreateCardModel,
   CreateColumnModel,
   CreateProjectModel,
+  EditCardModel,
   MoveCardToColumnModel,
   MovePosition,
   ProjectModel
@@ -10,6 +11,45 @@ import {
 import { IKanbanService } from "../interfaces/kanban";
 
 export class KanbanService implements IKanbanService {
+  async editCard(data: EditCardModel): Promise<void> {
+    const { error } = await supabase
+      .from("cards")
+      .update({
+        description: data.description,
+        name: data.name,
+        coverColor: data.coverColor,
+        coverUrl: data.coverUrl
+      })
+      .eq("id", data.id);
+    if (error) throw error;
+
+    // Tag updating
+    const tagIds = data.tags.map((x) => x.id);
+    const initialTagIds = data.initialTags.map((x) => x.id);
+
+    const idsToAdd = tagIds.filter((x) => !initialTagIds.includes(x));
+    const idsToRemove = initialTagIds.filter((x) => !tagIds.includes(x));
+
+    for (let i = 0; i < idsToRemove.length; i++) {
+      const { error } = await supabase
+        .from("cardTags")
+        .delete()
+        .eq("tagId", idsToRemove[i])
+        .eq("cardId", data.id);
+      if (error) throw error;
+    }
+
+    for (let i = 0; i < idsToAdd.length; i++) {
+      const { error } = await supabase.from("cardTags").insert([
+        {
+          tagId: idsToAdd[i],
+          cardId: data.id
+        }
+      ]);
+      if (error) throw error;
+    }
+  }
+
   async deleteCard(cardId: number, positions: MovePosition[]): Promise<void> {
     const { error: cardDeleteError } = await supabase.from("cards").delete().eq("id", cardId);
     if (cardDeleteError) throw cardDeleteError;
@@ -33,7 +73,7 @@ export class KanbanService implements IKanbanService {
           coverColor: data.coverColor,
           coverUrl: data.coverUrl,
           description: data.description,
-          name: data.title,
+          name: data.name,
           position: data.position
         }
       ])
@@ -42,6 +82,19 @@ export class KanbanService implements IKanbanService {
     const id = response![0].id;
 
     if (error) throw error;
+
+    for (let i = 0; i < data.tags.length; i++) {
+      const { error } = await supabase
+        .from("cardTags")
+        .insert([
+          {
+            tagId: data.tags[i].id,
+            cardId: id
+          }
+        ])
+        .select();
+      if (error) throw error;
+    }
 
     return id;
   }

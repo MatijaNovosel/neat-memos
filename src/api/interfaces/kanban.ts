@@ -2,6 +2,7 @@ import {
   CreateCardModel,
   CreateColumnModel,
   CreateProjectModel,
+  EditCardModel,
   MoveCardToColumnModel,
   MovePosition,
   ProjectModel
@@ -22,4 +23,5 @@ export interface IKanbanService {
   rearrangeCardsInColumn(data: MovePosition[]): Promise<void>;
   createCard(data: CreateCardModel): Promise<number>;
   deleteCard(cardId: number, positions: MovePosition[]): Promise<void>;
+  editCard(data: EditCardModel): Promise<void>;
 }
