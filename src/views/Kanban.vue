@@ -153,7 +153,7 @@
                 :class="{
                   'pt-10': !column.cards.length
                 }"
-                class="kanban-column bg-orange-lighten-3 px-5 rounded-b py-2"
+                class="kanban-column bg-orange-lighten-3 px-4 rounded-b py-2"
                 :get-child-payload="getCardPayload(project.id, column.id)"
                 orientation="vertical"
                 :group-name="project.name"
@@ -504,9 +504,6 @@ const loadProjects = async () => {
 const updateColumnName = useDebounceFn(async (columnId: number, value: string) => {
   if (value.length >= 3) {
     await kanbanStore.changeColumnName(columnId, value);
-    alert({
-      text: "Column name updated"
-    });
   }
 }, 400);
 
