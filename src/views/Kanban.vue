@@ -94,42 +94,103 @@
             :get-child-payload="getColumnPayload(project.id)"
             @drop="(e: DropResult<any>) => onColumnDrop(project.id, e)"
           >
-            <draggable
-              v-for="column in project.columns"
-              :key="column.id"
-              class="column-ctr"
-            >
-              <div class="font-weight-bold text-white bg-orange-lighten-3 pos-rel rounded-t pt-2">
-                <v-text-field
-                  :readonly="state.draggingColumn"
-                  class="pl-2 pr-3 text-white"
-                  hide-details
-                  v-model="column.name"
-                  bg-color="orange-lighten-3"
-                  density="compact"
-                  flat
-                  @update:modelValue="(e: string) => updateColumnName(column.id, e)"
-                  variant="solo"
+            <template v-if="project.columns.length">
+              <draggable
+                v-for="column in project.columns"
+                :key="column.id"
+                class="column-ctr"
+              >
+                <div class="font-weight-bold text-white bg-orange-lighten-3 pos-rel rounded-t pt-2">
+                  <v-text-field
+                    :readonly="state.draggingColumn"
+                    class="pl-2 pr-3 text-white"
+                    hide-details
+                    v-model="column.name"
+                    bg-color="orange-lighten-3"
+                    density="compact"
+                    flat
+                    @update:modelValue="(e: string) => updateColumnName(column.id, e)"
+                    variant="solo"
+                  >
+                    <template #append>
+                      <v-btn
+                        variant="text"
+                        size="small"
+                        color="white"
+                        icon
+                      >
+                        <v-icon> mdi-dots-horizontal </v-icon>
+                        <v-menu activator="parent">
+                          <v-list
+                            border
+                            elevation="0"
+                            density="compact"
+                            class="py-0"
+                          >
+                            <v-list-item
+                              class="text-caption"
+                              v-for="(item, i) in columnActions"
+                              @click="handleColumnAction(item.type, column.id)"
+                              :key="i"
+                            >
+                              <v-icon
+                                :color="item.color"
+                                class="mr-3"
+                              >
+                                {{ item.icon }}
+                              </v-icon>
+                              <span>
+                                {{ item.text }}
+                              </span>
+                            </v-list-item>
+                          </v-list>
+                        </v-menu>
+                      </v-btn>
+                    </template>
+                  </v-text-field>
+                </div>
+                <container
+                  tag="div"
+                  :class="{
+                    'pt-10': !column.cards.length
+                  }"
+                  class="kanban-column bg-orange-lighten-3 px-4 rounded-b py-2"
+                  :get-child-payload="getCardPayload(project.id, column.id)"
+                  orientation="vertical"
+                  :group-name="project.name"
+                  @drop="(result: DropResult<any>) => onCardDrop(project.id, column.id, result)"
+                  @drag-start="onDragCardStart"
+                  @drag-end="onDragCardEnd"
+                  drag-class="card-ghost"
+                  drop-class="card-ghost-drop"
+                  :drop-placeholder="dropPlaceholderOptions"
                 >
-                  <template #append>
-                    <v-btn
-                      variant="text"
-                      size="small"
-                      color="white"
-                      icon
+                  <draggable
+                    v-for="card in column.cards"
+                    :key="card.id"
+                  >
+                    <kanban-card
+                      v-if="card"
+                      @click.right.prevent="openCardMenu(card)"
+                      :data="card"
                     >
-                      <v-icon> mdi-dots-horizontal </v-icon>
-                      <v-menu activator="parent">
+                      <v-menu
+                        transition="scale-transition"
+                        location="end"
+                        v-model="card.menuOpen"
+                        activator="parent"
+                      >
                         <v-list
                           border
+                          rounded="0"
                           elevation="0"
                           density="compact"
                           class="py-0"
                         >
                           <v-list-item
                             class="text-caption"
-                            v-for="(item, i) in columnActions"
-                            @click="handleColumnAction(item.type, column.id)"
+                            v-for="(item, i) in cardActions"
+                            @click="handleCardAction(item.type, card, column.id)"
                             :key="i"
                           >
                             <v-icon
@@ -144,82 +205,29 @@
                           </v-list-item>
                         </v-list>
                       </v-menu>
-                    </v-btn>
-                  </template>
-                </v-text-field>
-              </div>
-              <container
-                tag="div"
-                :class="{
-                  'pt-10': !column.cards.length
-                }"
-                class="kanban-column bg-orange-lighten-3 px-4 rounded-b py-2"
-                :get-child-payload="getCardPayload(project.id, column.id)"
-                orientation="vertical"
-                :group-name="project.name"
-                @drop="(result: DropResult<any>) => onCardDrop(project.id, column.id, result)"
-                @drag-start="onDragCardStart"
-                @drag-end="onDragCardEnd"
-                drag-class="card-ghost"
-                drop-class="card-ghost-drop"
-                :drop-placeholder="dropPlaceholderOptions"
-              >
-                <draggable
-                  v-for="card in column.cards"
-                  :key="card.id"
-                >
-                  <kanban-card
-                    v-if="card"
-                    @click.right.prevent="openCardMenu(card)"
-                    :data="card"
+                    </kanban-card>
+                  </draggable>
+                </container>
+                <div class="d-flex justify-center mt-3">
+                  <v-btn
+                    variant="outlined"
+                    color="orange"
+                    size="small"
+                    prepend-icon="mdi-plus"
+                    rounded="8"
+                    @click="handleColumnAction(COLUMN_ACTIONS.CREATE_CARD, column.id)"
                   >
-                    <v-menu
-                      transition="scale-transition"
-                      location="end"
-                      v-model="card.menuOpen"
-                      activator="parent"
-                    >
-                      <v-list
-                        border
-                        rounded="0"
-                        elevation="0"
-                        density="compact"
-                        class="py-0"
-                      >
-                        <v-list-item
-                          class="text-caption"
-                          v-for="(item, i) in cardActions"
-                          @click="handleCardAction(item.type, card, column.id)"
-                          :key="i"
-                        >
-                          <v-icon
-                            :color="item.color"
-                            class="mr-3"
-                          >
-                            {{ item.icon }}
-                          </v-icon>
-                          <span>
-                            {{ item.text }}
-                          </span>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                  </kanban-card>
-                </draggable>
-              </container>
-              <div class="d-flex justify-center mt-3">
-                <v-btn
-                  variant="outlined"
-                  color="orange"
-                  size="small"
-                  prepend-icon="mdi-plus"
-                  rounded="8"
-                  @click="handleColumnAction(COLUMN_ACTIONS.CREATE_CARD, column.id)"
-                >
-                  Add card
-                </v-btn>
-              </div>
-            </draggable>
+                    Add card
+                  </v-btn>
+                </div>
+              </draggable>
+            </template>
+            <div
+              v-else
+              class="text-grey text-center"
+            >
+              No columns found
+            </div>
           </container>
         </div>
       </v-window-item>
