@@ -155,9 +155,18 @@ export class KanbanService implements IKanbanService {
     if (cardRearrangeError) throw cardRearrangeError;
   }
 
-  async deleteColumn(columnId: number): Promise<void> {
+  async deleteColumn(columnId: number, positions: MovePosition[]): Promise<void> {
     const { error } = await supabase.from("columns").delete().eq("id", columnId);
     if (error) throw error;
+
+    const { error: rearrangeError } = await supabase.from("columns").upsert(
+      positions.map((d) => ({
+        position: d.newPosition,
+        id: d.id
+      }))
+    );
+
+    if (rearrangeError) throw rearrangeError;
   }
 
   async createColumn(data: CreateColumnModel): Promise<number> {

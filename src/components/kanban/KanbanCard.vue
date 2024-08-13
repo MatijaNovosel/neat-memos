@@ -26,7 +26,7 @@
       }"
     />
     <v-card-title
-      class="d-flex labels mt-2"
+      class="d-flex labels"
       v-if="props.data.tags.length"
     >
       <v-chip
@@ -40,7 +40,7 @@
     </v-card-title>
     <v-card-text
       @click="openDetailsDialog"
-      class="mt-1"
+      class="pb-3"
     >
       {{ props.data.name }}
     </v-card-text>

@@ -126,8 +126,8 @@ export const useKanbanStore = defineStore("kanban", () => {
     loading.value = false;
   };
 
-  const deleteColumn = async (columnId: number) => {
-    //
+  const deleteColumn = async (columnId: number, positions: MovePosition[]) => {
+    await kanbanService.deleteColumn(columnId, positions);
   };
 
   const deleteCard = async (cardId: number, positions: MovePosition[]) => {

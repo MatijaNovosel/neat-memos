@@ -170,7 +170,7 @@
                 >
                   <kanban-card
                     v-if="card"
-                    @click.right.prevent="card.menuOpen = true"
+                    @click.right.prevent="openCardMenu(card)"
                     :data="card"
                   >
                     <v-menu
@@ -297,13 +297,42 @@ const handleColumnAction = async (action: string, columnId: number) => {
   switch (action) {
     case COLUMN_ACTIONS.DELETE:
       const answerDelete = await createConfirmationDialog();
-      if (answerDelete) await kanbanStore.deleteColumn(columnId);
+      if (answerDelete) {
+        const positions: MovePosition[] = [];
+        const project = kanbanStore.projects.find((p) => p.id === kanbanStore.selectedProject);
+
+        if (project) {
+          const column = project.columns.find((c) => c.id === columnId);
+
+          for (const c of project.columns) {
+            if (c.id === columnId) continue;
+            positions.push({
+              id: c.id,
+              newPosition: column!.position < c.position ? c.position - 1 : c.position
+            });
+          }
+
+          await kanbanStore.deleteColumn(columnId, positions);
+          project.columns = project.columns.filter((c) => c.id !== columnId);
+        }
+      }
       break;
     case COLUMN_ACTIONS.CREATE_CARD:
       kanbanStore.kanbanCardDialog = true;
       kanbanStore.activeColumnId = columnId;
       break;
   }
+};
+
+const openCardMenu = (card: CardModel) => {
+  kanbanStore.projects.forEach((p) => {
+    p.columns.forEach((c) => {
+      c.cards.forEach((card) => {
+        card.menuOpen = false;
+      });
+    });
+  });
+  card.menuOpen = true;
 };
 
 const handleCardAction = async (action: string, card: CardModel, columnId: number) => {
