@@ -1,50 +1,52 @@
 <template>
-  <v-card
-    rounded
-    class="pa-0 mb-3 kanban-card"
-    flat
+  <div
+    @click="openDetailsDialog"
+    class="mb-3 kanban-card-wrapper"
   >
-    <div>
-      <slot name="default" />
-    </div>
-    <v-toolbar
-      v-if="props.data.coverColor"
-      :style="{
-        backgroundColor: props.data.coverColor
-      }"
-      class="mb-1"
-      height="15"
-    />
-    <div
-      v-if="props.data.coverUrl"
-      class="mb-1"
-      :style="{
-        height: '110px',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundImage: `url(${props.data.coverUrl})`
-      }"
-    />
-    <v-card-title
-      class="d-flex labels"
-      v-if="props.data.tags.length"
+    <v-card
+      rounded
+      class="pa-0 kanban-card"
+      flat
     >
-      <v-chip
-        v-for="label in props.data.tags"
-        :key="label.id"
-        size="x-small"
-        :color="label.color"
+      <div>
+        <slot name="default" />
+      </div>
+      <v-toolbar
+        v-if="props.data.coverColor"
+        :style="{
+          backgroundColor: props.data.coverColor
+        }"
+        class="mb-1"
+        height="15"
+      />
+      <div
+        v-if="props.data.coverUrl"
+        class="mb-1"
+        :style="{
+          height: '110px',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundImage: `url(${props.data.coverUrl})`
+        }"
+      />
+      <v-card-title
+        class="d-flex labels"
+        v-if="props.data.tags.length"
       >
-        {{ label.content }}
-      </v-chip>
-    </v-card-title>
-    <v-card-text
-      @click="openDetailsDialog"
-      class="pb-3"
-    >
-      {{ props.data.name }}
-    </v-card-text>
-  </v-card>
+        <v-chip
+          v-for="label in props.data.tags"
+          :key="label.id"
+          size="x-small"
+          :color="label.color"
+        >
+          {{ label.content }}
+        </v-chip>
+      </v-card-title>
+      <v-card-text class="pb-3">
+        {{ props.data.name }}
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -71,5 +73,21 @@ const openDetailsDialog = () => {
 
 .kanban-card {
   cursor: pointer;
+}
+
+.kanban-card-wrapper {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.kanban-card-wrapper:hover {
+  border: 1px solid #e4780b;
+  border-radius: 4px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 </style>
