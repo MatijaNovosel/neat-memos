@@ -314,6 +314,13 @@ const handleColumnAction = async (action: string, columnId: number) => {
 
           await kanbanStore.deleteColumn(columnId, positions);
           project.columns = project.columns.filter((c) => c.id !== columnId);
+
+          for (const position of positions) {
+            const column = project.columns.find((c) => c.id === position.id);
+            if (column) {
+              column.position = position.newPosition;
+            }
+          }
         }
       }
       break;
@@ -354,6 +361,11 @@ const handleCardAction = async (action: string, card: CardModel, columnId: numbe
 
         await kanbanStore.deleteCard(card.id, positions);
         column!.cards = column!.cards.filter((c) => c.id !== card.id);
+
+        for (const position of positions) {
+          const card = column!.cards.find((c) => c.id === position.id);
+          card!.position = position.newPosition;
+        }
         alert({
           text: "Card deleted"
         });
@@ -392,11 +404,15 @@ const onCardDrop = async <T extends CardModel>(
       project.columns.splice(itemIndex, 1, newColumn);
       if (dropResult.addedIndex !== null && dropResult.removedIndex !== null) {
         // Rearrange in the same column
-        const columnPositions: MovePosition[] = newColumn.cards.map((c, i) => ({
+        const positions: MovePosition[] = newColumn.cards.map((c, i) => ({
           id: c.id,
           newPosition: i
         }));
-        await kanbanStore.rearrangeCardsInColumn(columnPositions);
+        await kanbanStore.rearrangeCardsInColumn(positions);
+        for (const position of positions) {
+          const card = newColumn.cards.find((c) => c.id === position.id);
+          card!.position = position.newPosition;
+        }
       } else if (dropResult.addedIndex !== null) {
         // Moved to new column
         const oldColumnPositions: MovePosition[] = [];
@@ -424,6 +440,16 @@ const onCardDrop = async <T extends CardModel>(
 
           const card = newColumn.cards.find((c) => c.id === dropResult.payload.id);
           card!.columnId = columnId;
+
+          for (const position of oldColumnPositions) {
+            const card = oldColumn.cards.find((c) => c.id === position.id);
+            card!.position = position.newPosition;
+          }
+
+          for (const position of newColumnPositions) {
+            const card = newColumn.cards.find((c) => c.id === position.id);
+            card!.position = position.newPosition;
+          }
         }
       }
     }
@@ -453,6 +479,12 @@ const onColumnDrop = async (projectId: number, dropResult: DropResult<ColumnMode
       newPosition: i
     }));
     await kanbanStore.rearrangeColumns(positions);
+    for (const position of positions) {
+      const column = project.columns.find((c) => c.id === position.id);
+      if (column) {
+        column.position = position.newPosition;
+      }
+    }
   }
 };
 
