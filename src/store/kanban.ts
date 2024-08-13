@@ -121,7 +121,8 @@ export const useKanbanStore = defineStore("kanban", () => {
         description: data.description,
         name: data.name,
         position: data.position,
-        tags: data.tags
+        tags: data.tags,
+        createdAt: new Date().toISOString()
       });
     loading.value = false;
   };

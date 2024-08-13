@@ -1,7 +1,7 @@
 <template>
   <div
     @click="openDetailsDialog"
-    class="mb-3 kanban-card-wrapper"
+    class="mb-2 kanban-card-wrapper"
   >
     <v-card
       rounded

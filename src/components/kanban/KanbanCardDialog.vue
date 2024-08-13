@@ -37,13 +37,20 @@
           class="px-4 pb-4"
         >
           <v-text-field
-            class="mb-3"
+            class="mb-1"
             hide-details
             v-model="title"
             placeholder="Title"
             density="compact"
           />
-          <div class="text-grey-lighten-1 text-subtitle-2">Tags</div>
+          <div
+            v-if="!isNewCard"
+            class="text-grey text-caption"
+          >
+            <span class="ml-1"> Created </span>
+            {{ format(new Date(kanbanStore.activeCard!.createdAt), "dd.MM.yyyy. HH:mm") }}
+          </div>
+          <div class="text-grey-lighten-1 text-subtitle-2 mt-2">Tags</div>
           <div class="d-flex flex-gap flex-wrap align-center mt-2">
             <template v-if="tags.length">
               <v-chip
@@ -205,6 +212,7 @@ import { TagModel } from "@/models/tag";
 import { useKanbanStore } from "@/store/kanban";
 import { useMemoStore } from "@/store/memos";
 import { useDebounceFn } from "@vueuse/core";
+import { format } from "date-fns";
 import { computed, reactive, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDisplay } from "vuetify";

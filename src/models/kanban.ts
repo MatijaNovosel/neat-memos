@@ -8,6 +8,7 @@ export interface CardModel {
   coverUrl: string | null;
   position: number;
   description: string | null;
+  createdAt: string;
   columnId: number;
   menuOpen?: boolean;
 }
