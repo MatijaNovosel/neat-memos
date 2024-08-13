@@ -293,7 +293,7 @@ const save = useDebounceFn(async () => {
   if (!isNewCard.value) {
     await kanbanStore.editKanbanCard({
       id: kanbanStore.activeCard!.id,
-      coverColor: coverColor.value === "#ffffff" ? null : coverColor.value,
+      coverColor: coverColor.value === "#ffffff" || !coverColor.value ? null : coverColor.value,
       coverUrl: null,
       name: title.value,
       description: description.value,
@@ -305,7 +305,8 @@ const save = useDebounceFn(async () => {
       const card = column.cards.find((card) => card.id === kanbanStore.activeCard?.id);
       card!.name = title.value;
       card!.description = description.value;
-      card!.coverColor = coverColor.value;
+      card!.coverColor =
+        coverColor.value === "#ffffff" || !coverColor.value ? null : coverColor.value;
       card!.tags = tags.value;
       kanbanStore.activeCard!.tags = tags.value;
     }
@@ -354,11 +355,33 @@ const titleStyle = computed(() => {
   return styleObj;
 });
 
-watch([coverColor, title, description], (newVal, oldVal) => {
+watch(coverColor, (newVal, oldVal) => {
   if (
     JSON.stringify(oldVal) !== JSON.stringify(newVal) &&
-    oldVal.every((x) => x.length !== 0) &&
-    newVal.every((x) => x.length !== 0) &&
+    newVal.length !== 0 &&
+    oldVal.length !== 0 &&
+    !isNewCard.value
+  ) {
+    save();
+  }
+});
+
+watch(title, (newVal, oldVal) => {
+  if (
+    JSON.stringify(oldVal) !== JSON.stringify(newVal) &&
+    newVal.length !== 0 &&
+    oldVal.length !== 0 &&
+    !isNewCard.value
+  ) {
+    save();
+  }
+});
+
+watch(description, (newVal, oldVal) => {
+  if (
+    JSON.stringify(oldVal) !== JSON.stringify(newVal) &&
+    newVal.length !== 0 &&
+    oldVal.length !== 0 &&
     !isNewCard.value
   ) {
     save();
@@ -368,6 +391,7 @@ watch([coverColor, title, description], (newVal, oldVal) => {
 watch(
   () => kanbanStore.activeCard,
   (val) => {
+    console.log({ val });
     title.value = val?.name || "";
     description.value = val?.description || "";
     coverColor.value = val?.coverColor || "#ffffff";
