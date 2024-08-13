@@ -17,7 +17,7 @@
           backgroundColor: props.data.coverColor
         }"
         class="mb-1"
-        height="15"
+        height="10"
       />
       <div
         v-if="props.data.coverUrl"
