@@ -153,7 +153,7 @@
             >
               <v-card
                 rounded="8"
-                class="pa-3 d-flex flex-column"
+                class="pa-3 d-flex flex-column align-center"
                 flat
               >
                 <div class="text-grey-lighten-1 text-subtitle-2 w-100 mb-2">Color</div>
@@ -164,6 +164,16 @@
                   v-model="coverColor"
                   class="elevation-0 pa-0"
                 />
+                <v-btn
+                  class="w-fit-content"
+                  color="orange-darken-1"
+                  size="small"
+                  @click="clearCover"
+                  rounded="4"
+                  variant="flat"
+                >
+                  Clear
+                </v-btn>
               </v-card>
             </v-menu>
           </v-btn>
@@ -228,7 +238,7 @@ const kanbanStore = useKanbanStore();
 const { alert } = useNotifications();
 
 const title = ref("");
-const coverColor = ref("");
+const coverColor = ref<string | null>(null);
 const description = ref("");
 
 const tags = ref<TagModel[]>([]);
@@ -355,11 +365,15 @@ const titleStyle = computed(() => {
   return styleObj;
 });
 
+const clearCover = () => {
+  coverColor.value = null;
+};
+
 watch(coverColor, (newVal, oldVal) => {
   if (
     JSON.stringify(oldVal) !== JSON.stringify(newVal) &&
-    newVal.length !== 0 &&
-    oldVal.length !== 0 &&
+    newVal?.length !== 0 &&
+    oldVal?.length !== 0 &&
     !isNewCard.value
   ) {
     save();
