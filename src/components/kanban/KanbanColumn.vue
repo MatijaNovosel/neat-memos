@@ -289,10 +289,6 @@ const handleCardAction = async (action: string, card: CardModel, columnId: numbe
         await kanbanStore.deleteCard(card.id, positions);
         column!.cards = column!.cards.filter((c) => c.id !== card.id);
         adjustColumnCardPositions(column!, positions);
-
-        alert({
-          text: "Card deleted"
-        });
       }
       break;
   }
