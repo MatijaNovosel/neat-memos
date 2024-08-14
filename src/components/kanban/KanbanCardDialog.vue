@@ -162,7 +162,7 @@
                   show-swatches
                   :swatches="colorSwatches"
                   v-model="coverColor"
-                  @update:modelValue="save"
+                  @update:modelValue="updateCoverColor"
                   class="elevation-0 pa-0"
                 />
                 <v-btn
@@ -346,6 +346,13 @@ const save = useDebounceFn(async () => {
   state.saving = false;
 }, 500);
 
+const updateCoverColor = async (value: string | null) => {
+  coverColor.value = value;
+  if (!isNewCard.value) {
+    await save();
+  }
+};
+
 const availableTags = computed(() => {
   const tagIds = tags.value.map((t) => t.id);
   return memoStore.tags.filter((t) => !tagIds.includes(t.id));
@@ -368,7 +375,9 @@ const titleStyle = computed(() => {
 
 const clearCover = () => {
   coverColor.value = null;
-  save();
+  if (!isNewCard.value) {
+    save();
+  }
 };
 
 watch(title, (newVal, oldVal) => {
