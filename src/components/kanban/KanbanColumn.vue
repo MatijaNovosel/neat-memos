@@ -222,6 +222,13 @@ const openCardMenu = (card: CardModel) => {
   card.menuOpen = true;
 };
 
+const adjustColumnCardPositions = (column: ColumnModel, positions: MovePosition[]) => {
+  for (const position of positions) {
+    const card = column.cards.find((c) => c.id === position.id);
+    card!.position = position.newPosition;
+  }
+};
+
 const onCardDrop = async <T extends CardModel>(
   projectId: number,
   columnId: number,
@@ -243,10 +250,7 @@ const onCardDrop = async <T extends CardModel>(
           newPosition: i
         }));
         await kanbanStore.rearrangeCardsInColumn(positions);
-        for (const position of positions) {
-          const card = newColumn.cards.find((c) => c.id === position.id);
-          card!.position = position.newPosition;
-        }
+        adjustColumnCardPositions(newColumn, positions);
       } else if (dropResult.addedIndex !== null) {
         // Moved to new column
         const oldColumnPositions: MovePosition[] = [];
@@ -275,15 +279,8 @@ const onCardDrop = async <T extends CardModel>(
           const card = newColumn.cards.find((c) => c.id === dropResult.payload.id);
           card!.columnId = columnId;
 
-          for (const position of oldColumnPositions) {
-            const card = oldColumn.cards.find((c) => c.id === position.id);
-            card!.position = position.newPosition;
-          }
-
-          for (const position of newColumnPositions) {
-            const card = newColumn.cards.find((c) => c.id === position.id);
-            card!.position = position.newPosition;
-          }
+          adjustColumnCardPositions(oldColumn, oldColumnPositions);
+          adjustColumnCardPositions(newColumn, newColumnPositions);
         }
       }
     }
@@ -315,11 +312,8 @@ const handleCardAction = async (action: string, card: CardModel, columnId: numbe
 
         await kanbanStore.deleteCard(card.id, positions);
         column!.cards = column!.cards.filter((c) => c.id !== card.id);
+        adjustColumnCardPositions(column!, positions);
 
-        for (const position of positions) {
-          const card = column!.cards.find((c) => c.id === position.id);
-          card!.position = position.newPosition;
-        }
         alert({
           text: "Card deleted"
         });

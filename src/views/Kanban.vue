@@ -24,7 +24,7 @@
               color="grey"
               variant="text"
               size="small"
-              @click="deleteProject"
+              @click="deleteProject(project.id)"
             />
           </v-tab>
         </v-tabs>
@@ -108,10 +108,10 @@ const state: State = reactive({
   loading: false
 });
 
-const deleteProject = async () => {
+const deleteProject = async (projectId: number) => {
   const answer = await createConfirmationDialog();
   if (answer) {
-    //
+    await kanbanStore.deleteProject(projectId);
   }
 };
 

@@ -128,15 +128,29 @@ export const useKanbanStore = defineStore("kanban", () => {
   };
 
   const deleteColumn = async (columnId: number, positions: MovePosition[]) => {
+    loading.value = true;
     await kanbanService.deleteColumn(columnId, positions);
+    loading.value = false;
   };
 
   const deleteCard = async (cardId: number, positions: MovePosition[]) => {
+    loading.value = true;
     await kanbanService.deleteCard(cardId, positions);
+    loading.value = false;
   };
 
   const editKanbanCard = async (data: EditCardModel) => {
+    loading.value = true;
     await kanbanService.editCard(data);
+    loading.value = false;
+  };
+
+  const deleteProject = async (projectId: number) => {
+    loading.value = true;
+    await kanbanService.deleteProject(projectId);
+    projects.value = projects.value.filter((p) => p.id !== projectId);
+    selectedProject.value = projects.value[0].id;
+    loading.value = false;
   };
 
   return {
@@ -148,6 +162,7 @@ export const useKanbanStore = defineStore("kanban", () => {
     selectedProject,
     loading,
     activeColumnId,
+    deleteProject,
     editKanbanCard,
     deleteCard,
     createCard,

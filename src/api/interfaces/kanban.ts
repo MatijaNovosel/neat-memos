@@ -14,6 +14,7 @@ export interface IKanbanService {
   getProject(id: number): Promise<ProjectModel | null>;
   createProject(data: CreateProjectModel): Promise<number>;
   rearrangeColumns(positions: MovePosition[]): Promise<void>;
+  deleteProject(projectId: number): Promise<void>;
   // Columns
   createColumn(data: CreateColumnModel): Promise<number>;
   deleteColumn(columnId: number, positions: MovePosition[]): Promise<void>;

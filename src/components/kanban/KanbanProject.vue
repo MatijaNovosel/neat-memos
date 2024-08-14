@@ -60,7 +60,7 @@ const getColumnPayload = (projectId: number) => {
 
 const onColumnDrop = async (projectId: number, dropResult: DropResult<ColumnModel>) => {
   const project = kanbanStore.projects.find((p) => p.id === projectId);
-  if (project) {
+  if (project && dropResult.addedIndex !== dropResult.removedIndex) {
     project.columns = applyDrag(project.columns, dropResult);
     const positions: MovePosition[] = project.columns.map((c, i) => ({
       id: c.id,

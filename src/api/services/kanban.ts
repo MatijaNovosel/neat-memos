@@ -11,6 +11,11 @@ import {
 import { IKanbanService } from "../interfaces/kanban";
 
 export class KanbanService implements IKanbanService {
+  async deleteProject(projectId: number): Promise<void> {
+    const { error } = await supabase.from("projects").delete().eq("id", projectId);
+    if (error) throw error;
+  }
+
   async editCard(data: EditCardModel): Promise<void> {
     const { error } = await supabase
       .from("cards")
