@@ -268,6 +268,7 @@ const close = () => {
     title.value = "";
     description.value = "";
     tags.value = [];
+    coverColor.value = null;
   }, 100);
 };
 
