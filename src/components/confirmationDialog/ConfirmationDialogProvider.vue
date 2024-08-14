@@ -40,16 +40,16 @@
         <v-card-actions class="py-3 justify-end pr-5">
           <v-btn
             v-show="!!state.options.showCancel"
-            color="error"
+            color="red"
             variant="flat"
-            rounded="lg"
+            rounded="4"
             @click="cancel"
             :text="i18n.t('no')"
           />
           <v-btn
             color="success"
             variant="flat"
-            rounded="lg"
+            rounded="4"
             @click="agree"
             :text="i18n.t('yes')"
           />

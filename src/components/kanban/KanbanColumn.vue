@@ -120,7 +120,13 @@
 
 <script lang="ts" setup>
 import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
-import { CARD_ACTIONS, COLUMN_ACTIONS } from "@/constants/kanban";
+import {
+  CARD_ACTIONS,
+  cardActions,
+  COLUMN_ACTIONS,
+  columnActions,
+  dropPlaceholderOptions
+} from "@/constants/kanban";
 import { applyDrag } from "@/helpers/kanban";
 import { DropResult } from "@/models/common";
 import { CardModel, ColumnModel, MovePosition } from "@/models/kanban";
@@ -135,36 +141,6 @@ const createConfirmationDialog = useConfirmationDialog();
 const props = defineProps<{
   column: ColumnModel;
 }>();
-
-const dropPlaceholderOptions = {
-  className: "drop-preview",
-  animationDuration: "150",
-  showOnTop: true
-};
-
-const columnActions = [
-  {
-    icon: "mdi-delete-outline",
-    text: "Delete",
-    type: COLUMN_ACTIONS.DELETE,
-    color: "red"
-  },
-  {
-    icon: "mdi-plus-box",
-    text: "Create card",
-    type: COLUMN_ACTIONS.CREATE_CARD,
-    color: "blue"
-  }
-];
-
-const cardActions = [
-  {
-    icon: "mdi-delete-outline",
-    text: "Delete",
-    type: CARD_ACTIONS.DELETE,
-    color: "red"
-  }
-];
 
 const getCardPayload = (projectId: number, columnId: number) => {
   return (index: number) => {

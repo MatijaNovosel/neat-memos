@@ -268,7 +268,7 @@ const close = () => {
     title.value = "";
     description.value = "";
     tags.value = [];
-  }, 500);
+  }, 100);
 };
 
 const selectTag = (tag: TagModel) => {
