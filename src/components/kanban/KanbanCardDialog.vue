@@ -269,7 +269,7 @@ const close = () => {
     description.value = "";
     tags.value = [];
     coverColor.value = null;
-  }, 100);
+  }, 300);
 };
 
 const selectTag = (tag: TagModel) => {
