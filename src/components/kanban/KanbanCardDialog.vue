@@ -162,6 +162,7 @@
                   show-swatches
                   :swatches="colorSwatches"
                   v-model="coverColor"
+                  @update:modelValue="save"
                   class="elevation-0 pa-0"
                 />
                 <v-btn
@@ -367,37 +368,17 @@ const titleStyle = computed(() => {
 
 const clearCover = () => {
   coverColor.value = null;
+  save();
 };
 
-watch(coverColor, (newVal, oldVal) => {
-  if (
-    JSON.stringify(oldVal) !== JSON.stringify(newVal) &&
-    newVal?.length !== 0 &&
-    oldVal?.length !== 0 &&
-    !isNewCard.value
-  ) {
-    save();
-  }
-});
-
 watch(title, (newVal, oldVal) => {
-  if (
-    JSON.stringify(oldVal) !== JSON.stringify(newVal) &&
-    newVal.length !== 0 &&
-    oldVal.length !== 0 &&
-    !isNewCard.value
-  ) {
+  if (oldVal !== newVal && newVal.length !== 0 && oldVal.length !== 0 && !isNewCard.value) {
     save();
   }
 });
 
 watch(description, (newVal, oldVal) => {
-  if (
-    JSON.stringify(oldVal) !== JSON.stringify(newVal) &&
-    newVal.length !== 0 &&
-    oldVal.length !== 0 &&
-    !isNewCard.value
-  ) {
+  if (oldVal !== newVal && newVal.length !== 0 && oldVal.length !== 0 && !isNewCard.value) {
     save();
   }
 });
@@ -405,7 +386,6 @@ watch(description, (newVal, oldVal) => {
 watch(
   () => kanbanStore.activeCard,
   (val) => {
-    console.log({ val });
     title.value = val?.name || "";
     description.value = val?.description || "";
     coverColor.value = val?.coverColor || "#ffffff";
