@@ -1,8 +1,6 @@
 {
   "name": "neat-memos",
-  "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
@@ -12,10 +10,6 @@
     "build:android": "vue-tsc && vite build --mode dev && npx cap copy && npx cap copy android"
   },
   "dependencies": {
-    "@capacitor/android": "^5.7.4",
-    "@capacitor/cli": "^5.7.4",
-    "@capacitor/core": "^5.7.4",
-    "@capacitor/ios": "^5.7.4",
     "@mdi/font": "^7.4.47",
     "@supabase/supabase-js": "^2.41.1",
     "@vee-validate/i18n": "^4.12.6",
@@ -35,7 +29,7 @@
     "vue": "^3.4.21",
     "vue-3-material-date-picker": "^1.1.1",
     "vue-i18n": "^9.10.2",
-    "vue-router": "^4.3.0",
+    "vue-router": "^4.4.0",
     "vue3-smooth-dnd": "^0.0.6",
     "vuetify": "^3.5.13",
     "webfontloader": "^1.6.28"
@@ -44,14 +38,10 @@
     "@types/node": "^20.11.30",
     "@types/webfontloader": "^1.6.38",
     "@vitejs/plugin-vue": "^5.0.4",
-    "@vuetify/loader-shared": "^2.0.3",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-vue": "^9.24.0",
     "sass": "^1.72.0",
-    "typescript": "^5.2.2",
-    "vite": "^5.2.0",
-    "vue-tsc": "^2.0.6"
+    "typescript": "^5.4.2",
+    "vite": "^5.3.3",
+    "vue-tsc": "^2.0.26"
   }
 }

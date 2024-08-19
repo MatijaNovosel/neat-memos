@@ -1,16 +1,9 @@
 module.exports = {
   root: true,
-  globals: {
-    NodeJS: true
-  },
   env: {
-    node: true,
-    es2022: true
+    node: true
   },
   extends: ["eslint:recommended", "plugin:vue/vue3-recommended", "@vue/typescript/recommended"],
-  parserOptions: {
-    ecmaVersion: 2020
-  },
   rules: {
     "no-console": "off",
     "no-debugger": "off",
@@ -39,13 +32,5 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": "off",
     "vue/max-attributes-per-line": "off",
     "vue/html-self-closing": "off"
-  },
-  overrides: [
-    {
-      files: ["**/__tests__/*.{j,t}s?(x)", "**/tests/unit/**/*.spec.{j,t}s?(x)"],
-      env: {
-        mocha: true
-      }
-    }
-  ]
+  }
 };
