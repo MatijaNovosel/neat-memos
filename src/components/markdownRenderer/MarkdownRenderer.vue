@@ -9,6 +9,7 @@
 import MarkdownIt from "markdown-it";
 import MarkdownItHighlightjs from "markdown-it-highlightjs";
 import MarkdownItMultiMdTable from "markdown-it-multimd-table";
+// @ts-ignore
 import MarkdownItTasklists from "markdown-it-task-lists";
 
 const markdown = new MarkdownIt()

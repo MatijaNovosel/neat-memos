@@ -28,7 +28,7 @@ Object.keys(rules).forEach((rule) => {
   }
 });
 
-defineRule("must_not_be_in_array", (value: string, array) => {
+defineRule("must_not_be_in_array", (value: string, array: string[]) => {
   if (!value || !value.length) {
     return true;
   }
