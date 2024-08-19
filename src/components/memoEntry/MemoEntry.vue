@@ -270,7 +270,6 @@ const i18n = useI18n();
 const { alert } = useNotifications();
 
 const {
-  files,
   open: openImageDialog,
   reset: resetFileDialog,
   onChange: onFileDialogChange
@@ -379,9 +378,9 @@ const interactionDisabled = computed(() => props.disabled || props.readonly || s
 
 onFileDialogChange(async (files) => {
   if (files) {
-    for (const file of files) {
-      if (file.size < MAX_FILE_SIZE) {
-        (state.files as File[]).push(file);
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].size < MAX_FILE_SIZE) {
+        (state.files as File[]).push(files[i]);
       } else {
         alert({
           text: "File too big! (Max 10MB)",

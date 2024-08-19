@@ -168,7 +168,7 @@ const extensions = computed(() => {
 });
 
 const groupedFiles = computed<Record<string, MemoFileDetailed[]>>(() => {
-  const groups = {};
+  const groups: Record<string, MemoFileDetailed[]> = {};
   const extensions = new Set(state.files.map((f) => getExtensionFromFileName(f.name)));
 
   for (const extension of extensions) {
