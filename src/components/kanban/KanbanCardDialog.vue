@@ -323,7 +323,6 @@ const save = useDebounceFn(async () => {
       kanbanStore.activeCard!.tags = tags.value;
     }
   } else {
-    const project = kanbanStore.projects.find((p) => p.id === kanbanStore.selectedProject);
     const maxPosition = Math.max(
       ...project!.columns
         .find((c) => c.id === kanbanStore.activeColumnId)!
