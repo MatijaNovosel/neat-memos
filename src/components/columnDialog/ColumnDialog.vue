@@ -26,13 +26,13 @@
         <v-card-text class="pt-3 align-content-end">
           <vv-field
             v-slot="{ field, errors }"
-            v-model="state.name"
+            v-model="name"
             name="projectName"
             rules="required|min:3"
             label="Project name"
           >
             <v-text-field
-              v-model="state.name"
+              v-model="name"
               v-bind="field"
               density="compact"
               placeholder="Project name"
@@ -60,29 +60,20 @@
 import { useNotifications } from "@/composables/useNotifications";
 import { IForm } from "@/models/common";
 import { useKanbanStore } from "@/store/kanban";
-import { reactive, ref } from "vue";
+import { ref } from "vue";
 import { useDisplay, useTheme } from "vuetify";
 
-interface State {
-  name: string;
-}
-
 const columnForm = ref<IForm | null>(null);
+const name = ref("");
 
 const theme = useTheme();
 const kanbanStore = useKanbanStore();
 const { smAndDown } = useDisplay();
 const { alert } = useNotifications();
 
-const state: State = reactive({
-  name: ""
-});
-
 const resetProjectForm = () => {
-  state.name = "";
-  if (columnForm.value) {
-    columnForm.value?.resetForm();
-  }
+  name.value = "";
+  columnForm.value?.resetForm();
 };
 
 const close = () => {
@@ -101,7 +92,7 @@ const saveColumn = async () => {
   const activeProject = kanbanStore.projects.find((p) => p.id === kanbanStore.selectedProject);
   if (activeProject) {
     const maxPosition = Math.max(...activeProject.columns.map((c) => c.position));
-    await kanbanStore.createColumn(state.name, maxPosition + 1, kanbanStore.selectedProject);
+    await kanbanStore.createColumn(name.value, maxPosition + 1, kanbanStore.selectedProject);
   }
   alert({
     text: "Column created"

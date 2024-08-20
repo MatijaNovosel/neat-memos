@@ -58,7 +58,7 @@
         />
       </div>
     </div>
-    <v-row v-if="state.loading">
+    <v-row v-if="loading">
       <v-progress-circular
         class="my-6 mx-auto"
         color="orange"
@@ -67,7 +67,7 @@
       />
     </v-row>
     <v-window
-      v-if="!state.loading"
+      v-if="!loading"
       v-model="kanbanStore.selectedProject"
       class="project-window mt-5"
     >
@@ -95,18 +95,12 @@ import KanbanProject from "@/components/kanban/KanbanProject.vue";
 import ProjectDialog from "@/components/projectDialog/ProjectDialog.vue";
 import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
 import { useKanbanStore } from "@/store/kanban";
-import { onMounted, reactive } from "vue";
+import { onMounted, ref } from "vue";
 
 const kanbanStore = useKanbanStore();
 const createConfirmationDialog = useConfirmationDialog();
 
-interface State {
-  loading: boolean;
-}
-
-const state: State = reactive({
-  loading: false
-});
+const loading = ref(false);
 
 const deleteProject = async (projectId: number) => {
   const answer = await createConfirmationDialog();
@@ -115,14 +109,10 @@ const deleteProject = async (projectId: number) => {
   }
 };
 
-const loadProjects = async () => {
-  state.loading = true;
-  await kanbanStore.loadProjects();
-  state.loading = false;
-};
-
 onMounted(async () => {
-  await loadProjects();
+  loading.value = true;
+  await kanbanStore.loadProjects();
+  loading.value = false;
 });
 </script>
 
