@@ -1,6 +1,9 @@
 import i18n from "@/i18n";
 import { computed } from "vue";
 
+export const MEMO_REFRESH_LIMIT = 3600 * 24;
+export const TAG_REFRESH_LIMIT = 3600 * 24;
+
 export const MEMO_VISIBILITY = {
   PRIVATE: 1,
   PUBLIC: 2

@@ -2,7 +2,7 @@ import { MemoService } from "@/api/services/memos";
 import { ResourcesService } from "@/api/services/resources";
 import { TagService } from "@/api/services/tag";
 import { useNotifications } from "@/composables/useNotifications";
-import { MEMO_FILTERS } from "@/constants/memo";
+import { MEMO_FILTERS, MEMO_REFRESH_LIMIT, TAG_REFRESH_LIMIT } from "@/constants/memo";
 import i18n from "@/i18n";
 import { MemoFile, MemoModel } from "@/models/memo";
 import { TagModel } from "@/models/tag";
@@ -22,10 +22,12 @@ export const useMemoStore = defineStore(
     const previewMemo = ref<MemoModel | null>(null);
     const searchText = ref<string | null>(null);
     const filterTags = ref<TagModel[]>([]);
+    const memosUpdatedAt = ref<number | null>(null);
 
     // Tags
     const tags = ref<TagModel[]>([]);
     const tagDialog = ref(false);
+    const tagsUpdatedAt = ref<number | null>(null);
 
     // Services
     const memoService = new MemoService();
@@ -46,16 +48,32 @@ export const useMemoStore = defineStore(
       if (!userStore.user) {
         return;
       }
-      const data = await memoService.getMemos(userStore.user.id);
-      setMemos(data);
+
+      const now = new Date().getTime();
+      const lastUpdatedAt = memosUpdatedAt.value ? memosUpdatedAt.value : 0;
+      const difference = Math.abs(lastUpdatedAt - now) / 1000;
+
+      if (difference > MEMO_REFRESH_LIMIT) {
+        const data = await memoService.getMemos(userStore.user.id);
+        setMemos(data);
+        memosUpdatedAt.value = new Date().getTime();
+      }
     };
 
     const loadTags = async () => {
       if (!userStore.user) {
         return;
       }
-      const data = await tagService.getTags(userStore.user.id);
-      setTags(data);
+
+      const now = new Date().getTime();
+      const lastUpdatedAt = tagsUpdatedAt.value ? tagsUpdatedAt.value : 0;
+      const difference = Math.abs(lastUpdatedAt - now) / 1000;
+
+      if (difference > TAG_REFRESH_LIMIT) {
+        const data = await tagService.getTags(userStore.user.id);
+        setTags(data);
+        tagsUpdatedAt.value = new Date().getTime();
+      }
     };
 
     const saveTag = async (content: string, color: string) => {
@@ -373,6 +391,7 @@ export const useMemoStore = defineStore(
       memoDates,
       filteredMemosArchived,
       filteredMemosNormal,
+      memosUpdatedAt,
       setMemos,
       loadMemos,
       saveMemo,
@@ -404,7 +423,7 @@ export const useMemoStore = defineStore(
   {
     persist: {
       storage: localStorage,
-      paths: ["tags", "memos"]
+      paths: ["tags", "memos", "memosUpdatedAt"]
     }
   }
 );
