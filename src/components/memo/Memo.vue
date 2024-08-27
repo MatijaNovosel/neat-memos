@@ -221,8 +221,8 @@ const handleAction = async (action: string) => {
       await memoStore.pinMemo(props.data.id);
       break;
     case MEMO_ACTIONS.EDIT:
-      memoStore.setActiveMemo(Object.assign({}, props.data));
-      memoStore.openEditDialog();
+      memoStore.activeMemo = Object.assign({}, props.data);
+      memoStore.editDialog = true;
       break;
     case MEMO_ACTIONS.SHARE:
       if (props.data.private) {

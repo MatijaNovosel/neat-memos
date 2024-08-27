@@ -124,8 +124,8 @@ export const useMemoStore = defineStore(
           alert({
             text: i18n.global.t("memoSaved")
           });
-          setActiveMemo(null);
-          closeEditDialog();
+          activeMemo.value = null;
+          editDialog.value = false;
         }
       } catch (e) {
         alert({
@@ -266,32 +266,8 @@ export const useMemoStore = defineStore(
       }
     };
 
-    const openEditDialog = () => {
-      editDialog.value = true;
-    };
-
-    const closeEditDialog = () => {
-      editDialog.value = false;
-    };
-
-    const openPreviewDialog = () => {
-      previewDialog.value = true;
-    };
-
-    const closePreviewDialog = () => {
-      previewDialog.value = false;
-    };
-
-    const openTagDialog = () => {
-      tagDialog.value = true;
-    };
-
     const closeTagDialog = () => {
       tagDialog.value = false;
-    };
-
-    const setActiveMemo = (data: MemoModel | null) => {
-      activeMemo.value = data;
     };
 
     const setPreviewMemo = (data: MemoModel | null) => {
@@ -399,14 +375,8 @@ export const useMemoStore = defineStore(
       deleteMemo,
       pinMemo,
       editMemo,
-      closeEditDialog,
-      openEditDialog,
-      setActiveMemo,
       setSearchText,
       removeFilter,
-      openPreviewDialog,
-      closePreviewDialog,
-      openTagDialog,
       closeTagDialog,
       setTags,
       loadTags,

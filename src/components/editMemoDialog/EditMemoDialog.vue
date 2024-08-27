@@ -44,8 +44,8 @@ const { smAndDown } = useDisplay();
 const theme = useTheme();
 
 const close = () => {
-  memoStore.closeEditDialog();
-  memoStore.setActiveMemo(null);
+  memoStore.editDialog = false;
+  memoStore.activeMemo = null;
 };
 
 watch(

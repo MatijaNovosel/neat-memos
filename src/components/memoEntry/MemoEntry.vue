@@ -325,7 +325,7 @@ const handleAction = (action: string) => {
         private: false,
         updatedAt: new Date().toISOString()
       });
-      memoStore.openPreviewDialog();
+      memoStore.previewDialog = true;
       break;
   }
 };

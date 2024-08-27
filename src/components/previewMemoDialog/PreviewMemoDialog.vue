@@ -37,7 +37,7 @@ const { smAndDown } = useDisplay();
 const theme = useTheme();
 
 const close = () => {
-  memoStore.closePreviewDialog();
+  memoStore.previewDialog = true;
   memoStore.setPreviewMemo(null);
 };
 </script>

@@ -66,7 +66,7 @@
           icon="mdi-plus-box"
           density="compact"
           color="grey"
-          @click="memoStore.openTagDialog"
+          @click="memoStore.tagDialog = true"
         />
       </div>
     </template>
