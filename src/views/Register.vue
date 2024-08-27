@@ -137,9 +137,9 @@ import { useDisplay } from "vuetify";
 
 interface State {
   showPassword: boolean;
-  userName: string | null;
-  email: string | null;
-  password: string | null;
+  userName: string;
+  email: string;
+  password: string;
 }
 
 const registerForm = ref<IForm>();
@@ -150,16 +150,16 @@ const { smAndDown } = useDisplay();
 const { alert } = useNotifications();
 
 const state: State = reactive({
-  userName: null,
-  password: null,
-  email: null,
+  userName: "",
+  password: "",
+  email: "",
   showPassword: false
 });
 
 const resetForm = () => {
-  state.userName = null;
-  state.password = null;
-  state.email = null;
+  state.userName = "";
+  state.password = "";
+  state.email = "";
   if (registerForm.value) {
     registerForm.value?.resetForm();
   }
@@ -171,11 +171,7 @@ const register = async () => {
   }
   try {
     appStore.setLoading(true);
-    await userStore.register(
-      state.email as string,
-      state.password as string,
-      state.userName as string
-    );
+    await userStore.register(state.email, state.password, state.userName);
     alert({
       text: i18n.t("accountCreated")
     });

@@ -147,7 +147,7 @@ import { useTheme } from "vuetify";
 interface State {
   files: MemoFileDetailed[];
   loading: boolean;
-  searchText: string | null;
+  searchText: string;
   filterExtensions: string[];
 }
 
@@ -159,7 +159,7 @@ const theme = useTheme();
 const state: State = reactive({
   files: [],
   loading: false,
-  searchText: null,
+  searchText: "",
   filterExtensions: []
 });
 
@@ -175,12 +175,10 @@ const groupedFiles = computed<Record<string, MemoFileDetailed[]>>(() => {
     groups[extension] = [];
   }
 
-  const text = state.searchText?.toLowerCase() || "";
-
   for (const file of state.files) {
     const ext = getExtensionFromFileName(file.name);
     if (
-      file.name.toLowerCase().includes(text) &&
+      file.name.toLowerCase().includes(state.searchText) &&
       (state.filterExtensions.length ? state.filterExtensions.includes(ext) : true)
     ) {
       groups[ext].push(file);
