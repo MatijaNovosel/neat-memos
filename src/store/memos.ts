@@ -50,7 +50,7 @@ export const useMemoStore = defineStore(
       }
 
       const now = new Date().getTime();
-      const lastUpdatedAt = memosUpdatedAt.value ? memosUpdatedAt.value : 0;
+      const lastUpdatedAt = memosUpdatedAt.value ?? 0;
       const difference = Math.abs(lastUpdatedAt - now) / 1000;
 
       if (difference > MEMO_REFRESH_LIMIT) {
@@ -66,7 +66,7 @@ export const useMemoStore = defineStore(
       }
 
       const now = new Date().getTime();
-      const lastUpdatedAt = tagsUpdatedAt.value ? tagsUpdatedAt.value : 0;
+      const lastUpdatedAt = tagsUpdatedAt.value ?? 0;
       const difference = Math.abs(lastUpdatedAt - now) / 1000;
 
       if (difference > TAG_REFRESH_LIMIT) {
@@ -392,6 +392,7 @@ export const useMemoStore = defineStore(
       filteredMemosArchived,
       filteredMemosNormal,
       memosUpdatedAt,
+      tagsUpdatedAt,
       setMemos,
       loadMemos,
       saveMemo,
@@ -423,7 +424,7 @@ export const useMemoStore = defineStore(
   {
     persist: {
       storage: localStorage,
-      paths: ["tags", "memos", "memosUpdatedAt"]
+      paths: ["tags", "memos", "memosUpdatedAt", "tagsUpdatedAt"]
     }
   }
 );
