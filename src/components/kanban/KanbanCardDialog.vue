@@ -97,6 +97,7 @@
                 <v-menu
                   :close-on-content-click="false"
                   activator="parent"
+                  v-model="cardMenu"
                 >
                   <v-card
                     rounded="8"
@@ -258,6 +259,7 @@ const { alert } = useNotifications();
 const title = ref("");
 const coverColor = ref<string | null>(null);
 const description = ref("");
+const cardMenu = ref(false);
 const cardForm = ref<IForm | null>(null);
 
 const tags = ref<TagModel[]>([]);
@@ -306,6 +308,7 @@ const isInSelectedTags = (tagId: number) => {
 const saveTags = () => {
   tags.value = [...tags.value, ...selectedTags.value];
   selectedTags.value = [];
+  cardMenu.value = false;
   if (!isNewCard.value) {
     save();
   }
