@@ -154,45 +154,56 @@
             cols="4"
             class="d-flex flex-column flex-gap pr-3"
           >
-            <v-btn
-              size="small"
-              color="orange"
-              rounded="8"
-              variant="tonal"
-            >
-              <v-icon class="mr-2"> mdi-credit-card </v-icon>
-              <span> Cover </span>
-              <v-menu
-                :close-on-content-click="false"
-                activator="parent"
+            <div class="d-flex items-center align-center">
+              <v-btn
+                size="small"
+                color="orange"
+                rounded="8"
+                variant="tonal"
+                class="flex-grow-1"
               >
-                <v-card
-                  rounded="8"
-                  class="pa-3 d-flex flex-column align-center"
-                  flat
+                <v-icon class="mr-2"> mdi-credit-card </v-icon>
+                <span> Cover </span>
+                <v-menu
+                  :close-on-content-click="false"
+                  activator="parent"
                 >
-                  <div class="text-grey-lighten-1 text-subtitle-2 w-100 mb-2">Color</div>
-                  <v-color-picker
-                    hide-inputs
-                    show-swatches
-                    :swatches="colorSwatches"
-                    v-model="coverColor"
-                    @update:modelValue="updateCoverColor"
-                    class="elevation-0 pa-0"
-                  />
-                  <v-btn
-                    class="w-fit-content"
-                    color="orange-darken-1"
-                    size="small"
-                    @click="clearCover"
-                    rounded="4"
-                    variant="flat"
+                  <v-card
+                    rounded="8"
+                    class="pa-3 d-flex flex-column align-center"
+                    flat
                   >
-                    Clear
-                  </v-btn>
-                </v-card>
-              </v-menu>
-            </v-btn>
+                    <div class="text-grey-lighten-1 text-subtitle-2 w-100 mb-2">Color</div>
+                    <v-color-picker
+                      hide-inputs
+                      show-swatches
+                      :swatches="colorSwatches"
+                      v-model="coverColor"
+                      @update:modelValue="updateCoverColor"
+                      class="elevation-0 pa-0"
+                    />
+                    <v-btn
+                      class="w-fit-content"
+                      color="orange-darken-1"
+                      size="small"
+                      @click="clearCover"
+                      rounded="4"
+                      variant="flat"
+                    >
+                      Clear
+                    </v-btn>
+                  </v-card>
+                </v-menu>
+              </v-btn>
+              <v-btn
+                color="orange"
+                variant="text"
+                density="compact"
+                icon="mdi-close-circle"
+                class="ml-2 mr-1"
+                @click="clearCover"
+              />
+            </div>
             <v-btn
               v-if="!isNewCard"
               size="small"
