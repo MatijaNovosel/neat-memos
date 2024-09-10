@@ -30,7 +30,7 @@
       <vv-form
         ref="cardForm"
         as="v-form"
-        @submit="save"
+        @submit="() => save()"
       >
         <v-row
           no-gutters
@@ -207,11 +207,13 @@
             <v-btn
               v-if="!isNewCard"
               size="small"
+              :loading="state.saving"
               color="green"
               rounded="8"
               prepend-icon="mdi-card-multiple-outline"
               variant="tonal"
               text="Copy"
+              @click="copyCard"
             />
             <v-btn
               size="small"
@@ -253,6 +255,7 @@ import { useKanbanStore } from "@/store/kanban";
 import { useMemoStore } from "@/store/memos";
 import { useDebounceFn } from "@vueuse/core";
 import { format } from "date-fns";
+import type { CSSProperties } from "vue";
 import { computed, reactive, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDisplay } from "vuetify";
@@ -332,10 +335,27 @@ const deleteTag = (tagId: number) => {
   }
 };
 
-const save = useDebounceFn(async () => {
+const save = useDebounceFn(async (copy: boolean = false) => {
   state.saving = true;
   const project = kanbanStore.projects.find((p) => p.id === kanbanStore.selectedProject);
-  if (!isNewCard.value) {
+
+  if (!isNewCard.value && copy === true) {
+    const maxPosition = Math.max(
+      ...project!.columns
+        .find((c) => c.id === kanbanStore.activeCard!.columnId)!
+        .cards.map((c) => c.position)
+    );
+    await kanbanStore.createCard({
+      columnId: kanbanStore.activeCard!.columnId,
+      coverColor: coverColor.value === "#ffffff" ? null : coverColor.value,
+      coverUrl: null,
+      description: description.value,
+      name: title.value,
+      tags: tags.value,
+      position: maxPosition + 1,
+      projectId: kanbanStore.selectedProject!
+    });
+  } else if (!isNewCard.value) {
     await kanbanStore.editKanbanCard({
       id: kanbanStore.activeCard!.id,
       coverColor: coverColor.value === "#ffffff" || !coverColor.value ? null : coverColor.value,
@@ -346,15 +366,13 @@ const save = useDebounceFn(async () => {
       tags: tags.value
     });
     const column = project?.columns.find((c) => c.id === kanbanStore.activeCard?.columnId);
-    if (column) {
-      const card = column.cards.find((card) => card.id === kanbanStore.activeCard?.id);
-      card!.name = title.value;
-      card!.description = description.value;
-      card!.coverColor =
-        coverColor.value === "#ffffff" || !coverColor.value ? null : coverColor.value;
-      card!.tags = tags.value;
-      kanbanStore.activeCard!.tags = tags.value;
-    }
+    const card = column!.cards.find((card) => card.id === kanbanStore.activeCard?.id);
+    card!.name = title.value;
+    card!.description = description.value;
+    card!.coverColor =
+      coverColor.value === "#ffffff" || !coverColor.value ? null : coverColor.value;
+    card!.tags = tags.value;
+    kanbanStore.activeCard!.tags = tags.value;
   } else {
     if (!cardForm.value || !(await cardForm.value.validate()).valid) {
       state.saving = false;
@@ -396,9 +414,9 @@ const availableTags = computed(() => {
 });
 
 const titleStyle = computed(() => {
-  const styleObj: any = {};
+  const styleObj: CSSProperties = {};
 
-  styleObj.backgroundColor = coverColor.value;
+  styleObj.backgroundColor = coverColor.value || undefined;
 
   if (kanbanStore.activeCard?.coverUrl) {
     styleObj.background = `url(${kanbanStore.activeCard.coverUrl})`;
@@ -415,6 +433,10 @@ const clearCover = () => {
   if (!isNewCard.value) {
     save();
   }
+};
+
+const copyCard = () => {
+  save(true);
 };
 
 watch(title, (newVal, oldVal) => {
