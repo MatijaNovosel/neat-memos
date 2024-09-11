@@ -1,10 +1,16 @@
 <template>
-  <div class="font-weight-bold text-white bg-orange-lighten-3 pos-rel rounded-t pt-2">
+  <div
+    class="font-weight-bold text-white bg-orange-lighten-3 pos-rel rounded-t pt-2"
+    :class="{
+      'bg-orange-lighten-3': !appStore.darkMode,
+      'bg-grey-darken-3': appStore.darkMode
+    }"
+  >
     <v-text-field
       class="pl-2 pr-3 text-white"
       hide-details
       v-model="props.column.name"
-      bg-color="orange-lighten-3"
+      :bg-color="appStore.darkMode ? 'grey-darken-3' : 'orange-lighten-3'"
       density="compact"
       flat
       @update:modelValue="(e: string) => updateColumnName(props.column.id, e)"
@@ -50,9 +56,11 @@
   <container
     tag="div"
     :class="{
-      'pt-10': !props.column.cards.length
+      'pt-10': !props.column.cards.length,
+      'bg-orange-lighten-3': !appStore.darkMode,
+      'bg-grey-darken-3': appStore.darkMode
     }"
-    class="kanban-column bg-orange-lighten-3 px-4 rounded-b py-2"
+    class="kanban-column px-4 rounded-b py-2"
     :get-child-payload="getCardPayload(props.column.projectId, props.column.id)"
     orientation="vertical"
     :group-name="props.column.projectId.toString()"
@@ -130,12 +138,14 @@ import {
 import { applyDrag } from "@/helpers/kanban";
 import { DropResult } from "@/models/common";
 import { CardModel, ColumnModel, MovePosition } from "@/models/kanban";
+import { useAppStore } from "@/store/app";
 import { useKanbanStore } from "@/store/kanban";
 import { useDebounceFn } from "@vueuse/core";
 import { Container, Draggable } from "vue3-smooth-dnd";
 import KanbanCard from "./KanbanCard.vue";
 
 const kanbanStore = useKanbanStore();
+const appStore = useAppStore();
 const createConfirmationDialog = useConfirmationDialog();
 
 const props = defineProps<{

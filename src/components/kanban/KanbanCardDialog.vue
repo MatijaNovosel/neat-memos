@@ -14,14 +14,14 @@
         <v-spacer />
         <v-btn
           icon="mdi-close"
-          :loading="state.saving"
-          :disabled="state.saving"
+          :loading="saving"
+          :disabled="saving"
           variant="text"
           size="small"
           class="my-3"
           :class="{
-            'bg-orange': !state.saving,
-            'bg-grey': state.saving
+            'bg-orange': !saving,
+            'bg-grey': saving
           }"
           color="white"
           @click="close"
@@ -207,7 +207,7 @@
             <v-btn
               v-if="!isNewCard"
               size="small"
-              :loading="state.saving"
+              :loading="saving"
               color="green"
               rounded="8"
               prepend-icon="mdi-card-multiple-outline"
@@ -256,13 +256,9 @@ import { useMemoStore } from "@/store/memos";
 import { useDebounceFn } from "@vueuse/core";
 import { format } from "date-fns";
 import type { CSSProperties } from "vue";
-import { computed, reactive, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDisplay } from "vuetify";
-
-interface State {
-  saving: boolean;
-}
 
 const { smAndDown } = useDisplay();
 const i18n = useI18n();
@@ -274,14 +270,11 @@ const title = ref("");
 const coverColor = ref<string | null>(null);
 const description = ref("");
 const cardMenu = ref(false);
+const saving = ref(false);
 const cardForm = ref<IForm | null>(null);
 
 const tags = ref<TagModel[]>([]);
 const selectedTags = ref<TagModel[]>([]);
-
-const state: State = reactive({
-  saving: false
-});
 
 const colorSwatches = [
   ["#F44336", "#E91E63", "#9C27B0"],
@@ -336,7 +329,7 @@ const deleteTag = (tagId: number) => {
 };
 
 const save = useDebounceFn(async (copy: boolean = false) => {
-  state.saving = true;
+  saving.value = true;
   const project = kanbanStore.projects.find((p) => p.id === kanbanStore.selectedProject);
 
   if (!isNewCard.value && copy === true) {
@@ -375,7 +368,7 @@ const save = useDebounceFn(async (copy: boolean = false) => {
     kanbanStore.activeCard!.tags = tags.value;
   } else {
     if (!cardForm.value || !(await cardForm.value.validate()).valid) {
-      state.saving = false;
+      saving.value = false;
       return;
     }
     const maxPosition = Math.max(
@@ -398,7 +391,7 @@ const save = useDebounceFn(async (copy: boolean = false) => {
       text: "Card created"
     });
   }
-  state.saving = false;
+  saving.value = false;
 }, 500);
 
 const updateCoverColor = async (value: string | null) => {

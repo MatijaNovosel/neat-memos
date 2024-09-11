@@ -28,4 +28,8 @@ export class AccountService implements IAccountService {
       username: user.username
     };
   }
+
+  async deleteAccount(): Promise<void> {
+    //
+  }
 }

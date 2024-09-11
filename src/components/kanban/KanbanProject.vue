@@ -1,7 +1,11 @@
 <template>
   <div
     :id="`project-${props.project.id}`"
-    class="bg-grey-lighten-3 pt-5 px-5 pb-4 d-flex kanban-projects rounded-lg h-100 can-drag"
+    class="pt-5 px-5 pb-4 d-flex kanban-projects rounded-lg h-100 can-drag"
+    :class="{
+      'bg-grey-lighten-3': !appStore.darkMode,
+      'bg-grey-darken-4': appStore.darkMode
+    }"
   >
     <container
       lock-axis="x"
@@ -35,6 +39,7 @@
 import { applyDrag } from "@/helpers/kanban";
 import { DropResult } from "@/models/common";
 import { ColumnModel, MovePosition, ProjectModel } from "@/models/kanban";
+import { useAppStore } from "@/store/app";
 import { useKanbanStore } from "@/store/kanban";
 import { onMounted } from "vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
@@ -46,6 +51,7 @@ const pos = {
 };
 
 const kanbanStore = useKanbanStore();
+const appStore = useAppStore();
 
 const props = defineProps<{
   project: ProjectModel;
