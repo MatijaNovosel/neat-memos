@@ -4,9 +4,9 @@
       density="compact"
       hide-details
       prepend-inner-icon="mdi-earth"
-      :bg-color="theme.current.value.dark ? '' : 'white'"
+      :bg-color="appStore.darkMode ? '' : 'white'"
       class="mr-md-3 mb-3 mb-md-0"
-      v-model="state.language"
+      v-model="language"
       :items="LANGUAGE_OPTIONS"
       :placeholder="i18n.t('language')"
       @update:model-value="updateLanguage"
@@ -14,9 +14,9 @@
     <v-select
       hide-details
       prepend-inner-icon="mdi-moon-waning-crescent"
-      :bg-color="theme.current.value.dark ? '' : 'white'"
+      :bg-color="appStore.darkMode ? '' : 'white'"
       :items="THEME_OPTIONS"
-      v-model="state.theme"
+      v-model="theme"
       density="compact"
       :placeholder="i18n.t('theme')"
       @update:model-value="updateTheme"
@@ -27,34 +27,25 @@
 <script setup lang="ts">
 import { LANGUAGE_OPTIONS, THEME_OPTIONS } from "@/constants/app";
 import { useAppStore } from "@/store/app";
-import { onMounted, reactive } from "vue";
+import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { useTheme } from "vuetify";
 
-interface State {
-  theme: string | null;
-  language: string | null;
-}
-
-const state: State = reactive({
-  theme: null,
-  language: null
-});
+const theme = ref<string | null>(null);
+const language = ref<string | null>(null);
 
 const appStore = useAppStore();
 const i18n = useI18n();
-const theme = useTheme();
 
 const updateTheme = () => {
-  appStore.setTheme(state.theme || "light");
+  appStore.setTheme(theme.value || "light");
 };
 
 const updateLanguage = () => {
-  appStore.setLanguage(state.language || "en");
+  appStore.setLanguage(language.value || "en");
 };
 
 onMounted(() => {
-  state.theme = appStore.darkMode ? "dark" : "light";
-  state.language = appStore.language;
+  theme.value = appStore.darkMode ? "dark" : "light";
+  language.value = appStore.language;
 });
 </script>

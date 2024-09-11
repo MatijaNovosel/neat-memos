@@ -1,7 +1,7 @@
 <template>
   <v-container class="main-ctr">
     <mobile-drawer-controls hide-right />
-    <v-row v-if="state.loading">
+    <v-row v-if="loading">
       <v-progress-circular
         class="my-6 mx-auto"
         color="orange"
@@ -9,14 +9,14 @@
         indeterminate
       />
     </v-row>
-    <v-row v-if="!state.loading">
+    <v-row v-if="!loading">
       <v-col cols="12">
         <v-text-field
           hide-details
           density="compact"
           :bg-color="theme.current.value.dark ? '' : 'white'"
           placeholder="Search"
-          v-model="state.searchText"
+          v-model="searchText"
           prepend-inner-icon="mdi-magnify"
           clearable
         />
@@ -28,7 +28,7 @@
         <v-chip
           @click="selectTag(extension)"
           :key="i"
-          :color="state.filterExtensions.includes(extension) ? 'orange' : 'grey'"
+          :color="filterExtensions.includes(extension) ? 'orange' : 'grey'"
           density="compact"
           size="small"
           v-for="(extension, i) in extensions"
@@ -43,12 +43,12 @@
     />
     <v-row
       class="mt-10 d-flex flex-column align-center"
-      v-if="!groupedFilesCount && !state.loading"
+      v-if="!groupedFilesCount && !loading"
     >
       <span class="text-h1 mb-5"> 😿 </span>
       <span class="text-h6"> {{ i18n.t("noDataFound") }}. </span>
     </v-row>
-    <v-row v-if="!state.loading && groupedFilesCount">
+    <v-row v-if="!loading && groupedFilesCount">
       <div
         class="display-contents"
         v-for="(group, i) in Object.keys(groupedFiles)"
@@ -140,46 +140,37 @@ import { MemoFileDetailed } from "@/models/memo";
 import ROUTE_NAMES from "@/router/routeNames";
 import { useUserStore } from "@/store/user";
 import { format, formatRelative, isToday } from "date-fns";
-import { computed, onMounted, reactive } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useTheme } from "vuetify";
-
-interface State {
-  files: MemoFileDetailed[];
-  loading: boolean;
-  searchText: string;
-  filterExtensions: string[];
-}
 
 const resourcesService = new ResourcesService();
 const userStore = useUserStore();
 const i18n = useI18n();
 const theme = useTheme();
 
-const state: State = reactive({
-  files: [],
-  loading: false,
-  searchText: "",
-  filterExtensions: []
-});
+const files = ref<MemoFileDetailed[]>([]);
+const loading = ref<boolean>(false);
+const searchText = ref<string>("");
+const filterExtensions = ref<string[]>([]);
 
 const extensions = computed(() => {
-  return new Set(state.files.map((f) => getExtensionFromFileName(f.name)));
+  return new Set(files.value.map((f) => getExtensionFromFileName(f.name)));
 });
 
 const groupedFiles = computed<Record<string, MemoFileDetailed[]>>(() => {
   const groups: Record<string, MemoFileDetailed[]> = {};
-  const extensions = new Set(state.files.map((f) => getExtensionFromFileName(f.name)));
+  const extensions = new Set(files.value.map((f) => getExtensionFromFileName(f.name)));
 
   for (const extension of extensions) {
     groups[extension] = [];
   }
 
-  for (const file of state.files) {
+  for (const file of files.value) {
     const ext = getExtensionFromFileName(file.name);
     if (
-      file.name.toLowerCase().includes(state.searchText) &&
-      (state.filterExtensions.length ? state.filterExtensions.includes(ext) : true)
+      file.name.toLowerCase().includes(searchText.value) &&
+      (filterExtensions.value.length ? filterExtensions.value.includes(ext) : true)
     ) {
       groups[ext].push(file);
     }
@@ -208,17 +199,17 @@ const downloadFile = async (file: MemoFileDetailed) => {
 };
 
 const selectTag = (tag: string) => {
-  if (!state.filterExtensions.includes(tag)) {
-    state.filterExtensions.push(tag);
+  if (!filterExtensions.value.includes(tag)) {
+    filterExtensions.value.push(tag);
   } else {
-    state.filterExtensions = state.filterExtensions.filter((ext) => ext !== tag);
+    filterExtensions.value = filterExtensions.value.filter((ext) => ext !== tag);
   }
 };
 
 onMounted(async () => {
-  state.loading = true;
-  const files = await resourcesService.getFiles(userStore.user!.id);
-  state.files = files.map((f) => ({ ...f, downloading: false }));
-  state.loading = false;
+  loading.value = true;
+  const resourceFiles = await resourcesService.getFiles(userStore.user!.id);
+  files.value = resourceFiles.map((f) => ({ ...f, downloading: false }));
+  loading.value = false;
 });
 </script>

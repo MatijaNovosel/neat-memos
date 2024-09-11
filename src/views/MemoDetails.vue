@@ -4,7 +4,7 @@
       :hide-left="!userStore.isAuthenticated"
       hide-right
     />
-    <v-row v-if="state.loading">
+    <v-row v-if="loading">
       <v-progress-circular
         class="my-6 mx-auto"
         color="orange"
@@ -13,13 +13,13 @@
       />
     </v-row>
     <memo
-      v-if="state.memo && !state.loading"
-      :data="state.memo"
+      v-if="memo && !loading"
+      :data="memo"
       readonly
     />
     <v-row
       class="mt-10 d-flex flex-column align-center"
-      v-if="!state.memo && !state.loading"
+      v-if="!memo && !loading"
     >
       <span class="text-h1 mb-5"> 😿 </span>
       <span class="text-h6"> {{ i18n.t("noDataFound") }}. </span>
@@ -45,30 +45,23 @@ import Memo from "@/components/memo/Memo.vue";
 import { MemoModel } from "@/models/memo";
 import ROUTE_NAMES from "@/router/routeNames";
 import { useUserStore } from "@/store/user";
-import { onMounted, reactive, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
-
-interface State {
-  memo: MemoModel | null;
-  loading: boolean;
-}
-
-const state: State = reactive({
-  memo: null,
-  loading: false
-});
 
 const route = useRoute();
 const i18n = useI18n();
 const userStore = useUserStore();
 const memoService = new MemoService();
 
+const memo = ref<MemoModel | null>(null);
+const loading = ref(false);
+
 const getMemo = async () => {
-  state.loading = true;
-  const memo = await memoService.getMemo(parseInt(route.params.id as string));
-  state.memo = memo;
-  state.loading = false;
+  loading.value = true;
+  const fetchedMemo = await memoService.getMemo(parseInt(route.params.id as string));
+  memo.value = fetchedMemo;
+  loading.value = false;
 };
 
 watch(

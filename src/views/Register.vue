@@ -23,7 +23,7 @@
           >
             <vv-field
               v-slot="{ field, errors }"
-              v-model="state.userName"
+              v-model="username"
               name="register-username"
               rules="required|min:3|alpha_num"
               :label="i18n.t('username')"
@@ -46,7 +46,7 @@
           >
             <vv-field
               v-slot="{ field, errors }"
-              v-model="state.email"
+              v-model="email"
               name="register-email"
               rules="required|email"
               :label="i18n.t('email')"
@@ -69,7 +69,7 @@
           >
             <vv-field
               v-slot="{ field, errors }"
-              v-model="state.password"
+              v-model="password"
               name="register-password"
               rules="required|min:6"
               :label="i18n.t('password')"
@@ -82,10 +82,10 @@
                 hide-details="auto"
                 :error-messages="errors"
                 prepend-icon="mdi-lock-outline"
-                :append-inner-icon="state.showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                :type="state.showPassword ? 'text' : 'password'"
+                :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="showPassword ? 'text' : 'password'"
                 :placeholder="i18n.t('password')"
-                @click:append-inner="state.showPassword = !state.showPassword"
+                @click:append-inner="showPassword = !showPassword"
               />
             </vv-field>
           </v-col>
@@ -131,16 +131,9 @@ import { IForm } from "@/models/common";
 import ROUTE_NAMES from "@/router/routeNames";
 import { useAppStore } from "@/store/app";
 import { useUserStore } from "@/store/user";
-import { reactive, ref } from "vue";
+import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDisplay } from "vuetify";
-
-interface State {
-  showPassword: boolean;
-  userName: string;
-  email: string;
-  password: string;
-}
 
 const registerForm = ref<IForm>();
 const userStore = useUserStore();
@@ -149,17 +142,15 @@ const i18n = useI18n();
 const { smAndDown } = useDisplay();
 const { alert } = useNotifications();
 
-const state: State = reactive({
-  userName: "",
-  password: "",
-  email: "",
-  showPassword: false
-});
+const username = ref("");
+const password = ref("");
+const email = ref("");
+const showPassword = ref(false);
 
 const resetForm = () => {
-  state.userName = "";
-  state.password = "";
-  state.email = "";
+  username.value = "";
+  password.value = "";
+  email.value = "";
   if (registerForm.value) {
     registerForm.value?.resetForm();
   }
@@ -171,7 +162,7 @@ const register = async () => {
   }
   try {
     appStore.setLoading(true);
-    await userStore.register(state.email, state.password, state.userName);
+    await userStore.register(email.value, password.value, username.value);
     alert({
       text: i18n.t("accountCreated")
     });

@@ -18,7 +18,7 @@
         >
           <vv-field
             v-slot="{ field, errors }"
-            v-model="state.username"
+            v-model="username"
             name="username"
             rules="required|min:3"
             :label="i18n.t('username')"
@@ -29,7 +29,7 @@
               hide-details="auto"
               :error-messages="errors"
               prepend-icon="mdi-account"
-              v-model="state.username"
+              v-model="username"
               density="compact"
               :placeholder="i18n.t('username')"
             />
@@ -52,7 +52,7 @@
           prepend-icon="mdi-earth"
           hide-details
           density="compact"
-          v-model="state.language"
+          v-model="language"
           :items="LANGUAGE_OPTIONS"
           :placeholder="i18n.t('language')"
           @update:model-value="updateLanguage"
@@ -61,7 +61,7 @@
           prepend-icon="mdi-moon-waning-crescent"
           hide-details
           density="compact"
-          v-model="state.theme"
+          v-model="theme"
           :items="THEME_OPTIONS"
           :placeholder="i18n.t('theme')"
           @update:model-value="updateTheme"
@@ -76,42 +76,33 @@ import { LANGUAGE_OPTIONS, THEME_OPTIONS } from "@/constants/app";
 import { IForm } from "@/models/common";
 import { useAppStore } from "@/store/app";
 import { useUserStore } from "@/store/user";
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
-
-interface State {
-  theme: string | null;
-  language: string | null;
-  username: string | null;
-}
 
 const i18n = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
 
+const theme = ref<string | null>(null);
+const language = ref<string | null>(null);
+const username = ref<string | null>(null);
 const userDataForm = ref<IForm>();
 
-const state: State = reactive({
-  theme: null,
-  language: null,
-  username: null
-});
-
 const updateTheme = () => {
-  appStore.setTheme(state.theme || "light");
+  appStore.setTheme(theme.value || "light");
 };
 
 const updateLanguage = () => {
-  appStore.setLanguage(state.language || "en");
+  appStore.setLanguage(language.value || "en");
 };
 
 const updateUserData = async () => {
-  await userStore.updateUsername(state.username || "");
+  await userStore.updateUsername(username.value || "");
 };
 
 onMounted(() => {
-  state.theme = appStore.darkMode ? "dark" : "light";
-  state.language = appStore.language;
-  state.username = userStore.user?.userName || null;
+  theme.value = appStore.darkMode ? "dark" : "light";
+  language.value = appStore.language;
+  username.value = userStore.user?.userName || null;
 });
 </script>

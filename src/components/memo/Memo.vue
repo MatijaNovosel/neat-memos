@@ -1,6 +1,6 @@
 <template>
   <v-card
-    :loading="state.loading"
+    :loading="loading"
     flat
     :color="theme.current.value.dark ? '' : 'white'"
   >
@@ -132,7 +132,7 @@ import { MemoFile, MemoModel } from "@/models/memo";
 import ROUTE_NAMES from "@/router/routeNames";
 import { useMemoStore } from "@/store/memos";
 import { format, formatRelative, isToday } from "date-fns";
-import { computed, reactive } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useTheme } from "vuetify";
@@ -140,10 +140,6 @@ import { useTheme } from "vuetify";
 interface Props {
   data: MemoModel;
   readonly?: boolean;
-}
-
-interface State {
-  loading: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -156,11 +152,9 @@ const router = useRouter();
 const { alert } = useNotifications();
 const createConfirmationDialog = useConfirmationDialog();
 
-const i18n = useI18n();
+const loading = ref(false);
 
-const state: State = reactive({
-  loading: false
-});
+const i18n = useI18n();
 
 const memoActionItems = computed(() => {
   const res = [
@@ -207,7 +201,7 @@ const memoActionItems = computed(() => {
 });
 
 const handleAction = async (action: string) => {
-  state.loading = true;
+  loading.value = true;
   switch (action) {
     case MEMO_ACTIONS.DELETE:
       const answerDelete = await createConfirmationDialog();
@@ -240,7 +234,7 @@ const handleAction = async (action: string) => {
       });
       break;
   }
-  state.loading = false;
+  loading.value = false;
 };
 
 const dateFormatFn = (date: Date) => {
