@@ -1,7 +1,7 @@
 <template>
   <v-navigation-drawer
     :order="1"
-    v-model="state.drawer"
+    v-model="drawer"
     :permanent="mdAndUp"
     class="pa-5"
     :class="theme.current.value.dark ? '' : 'bg-grey-lighten-5'"
@@ -57,7 +57,7 @@ import { acronym } from "@/helpers/string";
 import ROUTE_NAMES from "@/router/routeNames";
 import { useAppStore } from "@/store/app";
 import { useUserStore } from "@/store/user";
-import { computed, reactive, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useDisplay, useTheme } from "vuetify";
@@ -70,10 +70,7 @@ const { mdAndUp } = useDisplay();
 const theme = useTheme();
 const i18n = useI18n();
 
-const state = reactive({
-  drawer: mdAndUp.value ? true : false,
-  rail: false
-});
+const drawer = ref(mdAndUp.value ? true : false);
 
 const navItems = computed(() => [
   {
@@ -140,6 +137,6 @@ const leftDrawerSubtitle = computed(() => {
 
 watch(
   () => appStore.leftDrawer,
-  () => (state.drawer = !state.drawer)
+  () => (drawer.value = !drawer.value)
 );
 </script>

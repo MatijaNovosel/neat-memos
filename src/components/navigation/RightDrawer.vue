@@ -2,7 +2,7 @@
   <v-navigation-drawer
     location="right"
     :order="1"
-    v-model="state.drawer"
+    v-model="drawer"
     :permanent="mdAndUp"
     class="pl-5 pl-md-0 py-5 pr-5 right-drawer"
     :class="theme.current.value.dark ? '' : 'bg-grey-lighten-4'"
@@ -105,7 +105,7 @@
 import { TagModel } from "@/models/tag";
 import { useAppStore } from "@/store/app";
 import { useMemoStore } from "@/store/memos";
-import { reactive, watch } from "vue";
+import { ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDisplay, useTheme } from "vuetify";
 
@@ -115,9 +115,7 @@ const memoStore = useMemoStore();
 const theme = useTheme();
 const i18n = useI18n();
 
-const state = reactive({
-  drawer: mdAndUp.value ? true : false
-});
+const drawer = ref(mdAndUp.value ? true : false);
 
 const addToFilter = (tag: TagModel) => {
   memoStore.addToTagFilter(tag);
@@ -129,7 +127,7 @@ const isInTagFilter = (tag: TagModel) => {
 
 watch(
   () => appStore.rightDrawer,
-  () => (state.drawer = !state.drawer)
+  () => (drawer.value = !drawer.value)
 );
 </script>
 

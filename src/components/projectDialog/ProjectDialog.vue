@@ -26,13 +26,13 @@
         <v-card-text class="pt-3 align-content-end">
           <vv-field
             v-slot="{ field, errors }"
-            v-model="state.projectName"
+            v-model="projectName"
             name="projectName"
             rules="required|min:3"
             label="Project name"
           >
             <v-text-field
-              v-model="state.projectName"
+              v-model="projectName"
               v-bind="field"
               density="compact"
               placeholder="Project name"
@@ -60,12 +60,8 @@
 import { useNotifications } from "@/composables/useNotifications";
 import { IForm } from "@/models/common";
 import { useKanbanStore } from "@/store/kanban";
-import { reactive, ref } from "vue";
+import { ref } from "vue";
 import { useDisplay, useTheme } from "vuetify";
-
-interface State {
-  projectName: string;
-}
 
 const projectForm = ref<IForm | null>(null);
 
@@ -73,13 +69,10 @@ const theme = useTheme();
 const kanbanStore = useKanbanStore();
 const { smAndDown } = useDisplay();
 const { alert } = useNotifications();
-
-const state: State = reactive({
-  projectName: ""
-});
+const projectName = ref("");
 
 const resetProjectForm = () => {
-  state.projectName = "";
+  projectName.value = "";
   if (projectForm.value) {
     projectForm.value?.resetForm();
   }
@@ -94,7 +87,7 @@ const createProject = async () => {
   if (!projectForm.value || !(await projectForm.value.validate()).valid) {
     return;
   }
-  await kanbanStore.createProject(state.projectName);
+  await kanbanStore.createProject(projectName.value);
   alert({
     text: "Project created"
   });

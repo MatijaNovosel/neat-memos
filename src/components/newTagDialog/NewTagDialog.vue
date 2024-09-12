@@ -26,13 +26,13 @@
         >
           <vv-field
             v-slot="{ field, errors }"
-            v-model="state.tagContent"
+            v-model="tagContent"
             name="username"
             :rules="`required|min:3|must_not_be_in_array:${tagNames}`"
             label="Tag name"
           >
             <v-text-field
-              v-model="state.tagContent"
+              v-model="tagContent"
               v-bind="field"
               density="compact"
               :placeholder="i18n.t('tagName')"
@@ -45,13 +45,13 @@
                   density="compact"
                   variant="text"
                 >
-                  <v-icon :color="state.tagColor || 'grey'"> mdi-circle </v-icon>
+                  <v-icon :color="tagColor || 'grey'"> mdi-circle </v-icon>
                   <v-menu
                     :close-on-content-click="false"
                     activator="parent"
                   >
                     <v-color-picker
-                      v-model="state.tagColor"
+                      v-model="tagColor"
                       hide-inputs
                     />
                   </v-menu>
@@ -102,14 +102,9 @@
 <script setup lang="ts">
 import { IForm } from "@/models/common";
 import { useMemoStore } from "@/store/memos";
-import { computed, reactive, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDisplay, useTheme } from "vuetify";
-
-interface State {
-  tagContent: string | null;
-  tagColor: string | null;
-}
 
 const tagForm = ref<IForm | null>(null);
 
@@ -118,18 +113,16 @@ const memoStore = useMemoStore();
 const i18n = useI18n();
 const { smAndDown } = useDisplay();
 
-const state: State = reactive({
-  tagContent: null,
-  tagColor: null
-});
+const tagContent = ref("");
+const tagColor = ref<string | null>(null);
 
 const close = () => {
   memoStore.closeTagDialog();
 };
 
 const resetTagForm = () => {
-  state.tagContent = null;
-  state.tagColor = null;
+  tagContent.value = "";
+  tagColor.value = null;
   if (tagForm.value) {
     tagForm.value?.resetForm();
   }
@@ -139,7 +132,7 @@ const saveTag = async () => {
   if (!tagForm.value || !(await tagForm.value.validate()).valid) {
     return;
   }
-  await memoStore.saveTag(state.tagContent || "", state.tagColor || "");
+  await memoStore.saveTag(tagContent.value, tagColor.value || "");
 };
 
 const deleteTag = async (id: number) => {

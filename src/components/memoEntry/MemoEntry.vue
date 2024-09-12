@@ -12,13 +12,13 @@
     >
       <vv-field
         v-slot="{ field, errors }"
-        v-model="state.content"
+        v-model="content"
         name="content"
         rules="required|max:2048|min:3"
         :label="i18n.t('content')"
       >
         <v-textarea
-          :readonly="props.readonly || state.loading"
+          :readonly="props.readonly || loading"
           auto-grow
           v-bind="field"
           hide-details="auto"
@@ -26,7 +26,7 @@
           row-height="15"
           rows="1"
           variant="plain"
-          v-model="state.content"
+          v-model="content"
           :placeholder="i18n.t('anyThoughts')"
         />
       </vv-field>
@@ -77,8 +77,8 @@
           variant="text"
           class="mx-2"
           icon
-          @click="state.tagMenuExpanded = !state.tagMenuExpanded"
-          :color="state.tagMenuExpanded ? 'orange' : 'grey'"
+          @click="tagMenuExpanded = !tagMenuExpanded"
+          :color="tagMenuExpanded ? 'orange' : 'grey'"
         >
           <v-icon> mdi-pound </v-icon>
           <v-tooltip
@@ -125,7 +125,7 @@
       <v-expand-transition>
         <div
           class="d-flex flex-wrap flex-gap mt-3"
-          v-if="state.tagMenuExpanded"
+          v-if="tagMenuExpanded"
         >
           <template v-if="memoStore.tags.length">
             <v-chip
@@ -156,14 +156,14 @@
       <v-divider class="mt-3" />
       <div
         class="mt-3 d-flex flex-wrap flex-gap"
-        v-if="state.files.length"
+        v-if="files.length"
       >
         <v-chip
           :disabled="interactionDisabled"
           color="orange"
           density="compact"
           @click="removeFile(i)"
-          v-for="(file, i) in state.files"
+          v-for="(file, i) in files"
           :key="i"
         >
           <v-icon
@@ -188,11 +188,11 @@
             hide-details
             :placeholder="i18n.t('visibility')"
             :items="memoVisibilityItems"
-            v-model="state.memoVisibility"
+            v-model="memoVisibility"
             class="mr-5 flex-shrink"
           />
         </v-col>
-        <v-col cols="4"> </v-col>
+        <v-col cols="4" />
         <v-col
           cols="4"
           class="d-flex justify-end"
@@ -202,7 +202,7 @@
             rounded="lg"
             :color="interactionDisabled ? 'grey' : 'orange'"
             type="submit"
-            :loading="state.loading"
+            :loading="loading"
             variant="flat"
             class="text-capitalize"
           >
@@ -235,7 +235,7 @@ import { MemoFile } from "@/models/memo";
 import { TagModel } from "@/models/tag";
 import { useMemoStore } from "@/store/memos";
 import { useFileDialog } from "@vueuse/core";
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useTheme } from "vuetify";
 
@@ -252,15 +252,6 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false
 });
 
-interface State {
-  files: Array<MemoFile | File>;
-  content: string | null;
-  memoVisibility: number;
-  selectedTags: TagModel[];
-  tagMenuExpanded: boolean;
-  loading: boolean;
-}
-
 const theme = useTheme();
 
 const memoForm = ref<IForm>();
@@ -268,6 +259,15 @@ const memoForm = ref<IForm>();
 const memoStore = useMemoStore();
 const i18n = useI18n();
 const { alert } = useNotifications();
+
+const loading = ref(false);
+const tagMenuExpanded = ref(true);
+const content = ref<string>(props.initialContent || "");
+const memoVisibility = ref<number>(MEMO_VISIBILITY.PRIVATE);
+const selectedTags = ref<TagModel[]>([...(props.initialTags || [])]);
+const files = ref<Array<MemoFile | File>>(
+  props.initialFiles ? (props.initialFiles as MemoFile[]) : []
+);
 
 const {
   open: openImageDialog,
@@ -277,19 +277,10 @@ const {
   multiple: true
 });
 
-const state: State = reactive({
-  files: props.initialFiles ? (props.initialFiles as MemoFile[]) : [],
-  content: props.initialContent || null,
-  memoVisibility: MEMO_VISIBILITY.PRIVATE,
-  selectedTags: [...(props.initialTags || [])],
-  tagMenuExpanded: true,
-  loading: false
-});
-
 const resetMemoForm = () => {
-  state.content = null;
-  state.selectedTags = [];
-  state.files = [];
+  content.value = "";
+  selectedTags.value = [];
+  files.value = [];
   if (memoForm.value) {
     memoForm.value?.resetForm();
   }
@@ -299,29 +290,29 @@ const resetMemoForm = () => {
 const handleAction = (action: string) => {
   switch (action) {
     case MEMO_ADDITIONAL_ACTIONS.ADD_CODE_BLOCK:
-      if (state.content) {
-        state.content += `\n${DEFAULT_CODE_BLOCK}`;
+      if (content.value.length) {
+        content.value += `\n${DEFAULT_CODE_BLOCK}`;
       } else {
-        state.content = DEFAULT_CODE_BLOCK;
+        content.value = DEFAULT_CODE_BLOCK;
       }
       break;
     case MEMO_ADDITIONAL_ACTIONS.ADD_CHECKLIST:
-      if (state.content) {
-        state.content += `\n${DEFAULT_CHECK_LIST}`;
+      if (content.value.length) {
+        content.value += `\n${DEFAULT_CHECK_LIST}`;
       } else {
-        state.content = DEFAULT_CHECK_LIST;
+        content.value = DEFAULT_CHECK_LIST;
       }
       break;
     case MEMO_ADDITIONAL_ACTIONS.PREVIEW:
       memoStore.setPreviewMemo({
-        content: state.content || "",
+        content: content.value,
         id: -1,
         createdAt: new Date().toISOString(),
         pinned: false,
         archived: false,
         userId: "",
-        tags: state.selectedTags,
-        files: state.files as File[],
+        tags: selectedTags.value,
+        files: files.value as File[],
         private: false,
         updatedAt: new Date().toISOString()
       });
@@ -335,52 +326,51 @@ const saveMemo = async () => {
     return;
   }
   try {
-    state.loading = true;
-    const content = state.content || i18n.t("noContent");
+    loading.value = true;
     if (memoStore.activeMemo) {
-      await memoStore.editMemo(content, state.selectedTags, state.files);
+      await memoStore.editMemo(content.value, selectedTags.value, files.value);
     } else {
-      await memoStore.saveMemo(content, state.selectedTags, state.files as File[]);
+      await memoStore.saveMemo(content.value, selectedTags.value, files.value as File[]);
     }
     resetMemoForm();
   } finally {
-    state.loading = false;
+    loading.value = false;
   }
 };
 
 const isInSelectedTags = (tagId: number) => {
-  return !!state.selectedTags.find((t) => t.id === tagId);
+  return !!selectedTags.value.find((t) => t.id === tagId);
 };
 
 const addToSelectedTags = (tag: TagModel) => {
-  if (!!state.selectedTags.find((t) => t.id === tag.id)) {
-    state.selectedTags = state.selectedTags.filter((t) => t.id !== tag.id);
+  if (!!selectedTags.value.find((t) => t.id === tag.id)) {
+    selectedTags.value = selectedTags.value.filter((t) => t.id !== tag.id);
     return;
   }
-  state.selectedTags.push(tag);
+  selectedTags.value.push(tag);
 };
 
 const addReference = () => {
   const reference =
     "[Plenky](https://vlada.gov.hr/UserDocsImages//00%20Foto%20mobitel/Europski%20semestar/%C4%8Clanovi%20Vlade/5%20%C4%8Clanovi%20Vlade%20-%2015%20Vlada%20RH/Plenkovi%C4%87.jpg)";
-  if (state.content) {
-    state.content += `\n${reference}`;
+  if (content.value.length) {
+    content.value += `\n${reference}`;
   } else {
-    state.content = reference;
+    content.value = reference;
   }
 };
 
 const removeFile = (idx: number) => {
-  state.files = state.files.filter((f, i) => i !== idx) as File[];
+  files.value = files.value.filter((f, i) => i !== idx) as File[];
 };
 
-const interactionDisabled = computed(() => props.disabled || props.readonly || state.loading);
+const interactionDisabled = computed(() => props.disabled || props.readonly || loading.value);
 
-onFileDialogChange(async (files) => {
-  if (files) {
-    for (let i = 0; i < files.length; i++) {
-      if (files[i].size < MAX_FILE_SIZE) {
-        (state.files as File[]).push(files[i]);
+onFileDialogChange(async (selectedFiles) => {
+  if (selectedFiles) {
+    for (let i = 0; i < selectedFiles.length; i++) {
+      if (selectedFiles[i].size < MAX_FILE_SIZE) {
+        (files.value as File[]).push(selectedFiles[i]);
       } else {
         alert({
           text: "File too big! (Max 10MB)",

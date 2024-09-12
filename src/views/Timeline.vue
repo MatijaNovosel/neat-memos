@@ -18,7 +18,7 @@
             color="orange"
             class="pb-0 mx-auto"
             :events="memoStore.memoDates"
-            v-model="state.selectedDate"
+            v-model="selectedDate"
           />
           <v-btn
             size="small"
@@ -41,7 +41,7 @@
             color="orange"
             class="pb-0"
             :events="memoStore.memoDates"
-            v-model="state.selectedDate"
+            v-model="selectedDate"
           />
           <v-btn
             size="small"
@@ -55,23 +55,15 @@
         </div>
       </v-menu>
     </v-text-field>
-    <v-row v-if="state.loading">
-      <v-progress-circular
-        class="my-6 mx-auto"
-        color="orange"
-        size="50"
-        indeterminate
-      />
-    </v-row>
     <v-row
       class="mt-10 d-flex flex-column align-center"
-      v-if="!memos.length && !state.loading"
+      v-if="!memos.length"
     >
       <span class="text-h1 mb-5"> 😿 </span>
       <span class="text-h6 mb-4"> {{ i18n.t("noDataFound") }}. </span>
     </v-row>
     <v-row
-      v-if="!state.loading && memos.length"
+      v-else
       class="pt-6"
     >
       <v-col
@@ -93,33 +85,25 @@
 import Memo from "@/components/memo/Memo.vue";
 import { useMemoStore } from "@/store/memos";
 import { format } from "date-fns";
-import { computed, reactive } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDisplay, useTheme } from "vuetify";
-
-interface State {
-  selectedDate: string;
-  loading: boolean;
-}
 
 const memoStore = useMemoStore();
 const i18n = useI18n();
 const theme = useTheme();
 const { smAndDown } = useDisplay();
 
-const state: State = reactive({
-  selectedDate: new Date().toISOString().substring(0, 10),
-  loading: false
-});
+const selectedDate = ref(new Date().toISOString().substring(0, 10));
 
-const dateFormatted = computed(() => format(state.selectedDate, "dd.MM.yyyy."));
+const dateFormatted = computed(() => format(selectedDate.value, "dd.MM.yyyy."));
 
 const setToday = () => {
-  state.selectedDate = new Date().toISOString().substring(0, 10);
+  selectedDate.value = new Date().toISOString().substring(0, 10);
 };
 
 const memos = computed(() => {
-  const date = new Date(state.selectedDate);
+  const date = new Date(selectedDate.value);
   date.setHours(0, 0, 0, 0);
   return memoStore.memos.filter((m) => {
     const d = new Date(m.createdAt);
