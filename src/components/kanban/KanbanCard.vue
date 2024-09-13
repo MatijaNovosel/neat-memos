@@ -22,12 +22,7 @@
       <div
         v-if="props.data.coverUrl"
         class="mb-1"
-        :style="{
-          height: '110px',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundImage: `url(${props.data.coverUrl})`
-        }"
+        :style="coverStyle"
       />
       <v-card-title
         class="d-flex labels"
@@ -52,6 +47,7 @@
 <script lang="ts" setup>
 import { CardModel } from "@/models/kanban";
 import { useKanbanStore } from "@/store/kanban";
+import { computed } from "vue";
 
 const props = defineProps<{
   data: CardModel;
@@ -63,6 +59,15 @@ const openDetailsDialog = () => {
   kanbanStore.activeCard = { ...props.data };
   kanbanStore.kanbanCardDialog = true;
 };
+
+const coverStyle = computed(() => {
+  return {
+    height: "110px",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundImage: `url(${props.data.coverUrl})`
+  };
+});
 </script>
 
 <style scoped>

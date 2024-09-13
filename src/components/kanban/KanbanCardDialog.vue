@@ -249,6 +249,7 @@
 
 <script lang="ts" setup>
 import { useNotifications } from "@/composables/useNotifications";
+import { colorSwatches } from "@/constants/kanban";
 import { IForm } from "@/models/common";
 import { TagModel } from "@/models/tag";
 import { useKanbanStore } from "@/store/kanban";
@@ -275,14 +276,6 @@ const cardForm = ref<IForm | null>(null);
 
 const tags = ref<TagModel[]>([]);
 const selectedTags = ref<TagModel[]>([]);
-
-const colorSwatches = [
-  ["#F44336", "#E91E63", "#9C27B0"],
-  ["#673AB7", "#3F51B5", "#2196F3"],
-  ["#03A9F4", "#00BCD4", "#009688"],
-  ["#4CAF50", "#8BC34A", "#CDDC39"],
-  ["#FFEB3B", "#FFC107", "#FB8C00"]
-];
 
 const isNewCard = computed(() => !kanbanStore.activeCard);
 
