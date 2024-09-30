@@ -7,6 +7,8 @@
 
 ![image](https://github.com/MatijaNovosel/neat-memos/assets/36193643/6f9f01c1-03f0-48fc-9f96-5ac8896b96e3)
 
+![kanban](https://github.com/user-attachments/assets/5fb6d94a-7877-4b21-b502-f58fcba8905f)
+
 ## 🔨 Built With
 
 - [Vue 3](https://vuejs.org/)
@@ -19,6 +21,7 @@
 - Adding and editing notes in a markdown format that fully supports various features such as code highlighting
 - File storage
 - Sharing your memos with other people through a public link
+- Kanban board management for more detailed tasks
 
 ## Install the dependencies
 
