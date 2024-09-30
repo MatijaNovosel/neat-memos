@@ -66,7 +66,9 @@ export const useUserStore = defineStore(
       token.value = null;
       appStore.setTheme("light");
       memoStore.setMemos([]);
+      memoStore.memosUpdatedAt = null;
       memoStore.setTags([]);
+      memoStore.tagsUpdatedAt = null;
       memoStore.clearFilters();
       await authService.signOut();
       alert({

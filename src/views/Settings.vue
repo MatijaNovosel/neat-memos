@@ -48,15 +48,7 @@
         <div class="text-grey">
           {{ i18n.t("appPreferences") }}
         </div>
-        <v-select
-          prepend-icon="mdi-earth"
-          hide-details
-          density="compact"
-          v-model="language"
-          :items="LANGUAGE_OPTIONS"
-          :placeholder="i18n.t('language')"
-          @update:model-value="updateLanguage"
-        />
+        <language-picker />
         <v-select
           prepend-icon="mdi-moon-waning-crescent"
           hide-details
@@ -72,7 +64,8 @@
 </template>
 
 <script setup lang="ts">
-import { LANGUAGE_OPTIONS, THEME_OPTIONS } from "@/constants/app";
+import LanguagePicker from "@/components/languagePicker/LanguagePicker.vue";
+import { THEME_OPTIONS } from "@/constants/app";
 import { IForm } from "@/models/common";
 import { useAppStore } from "@/store/app";
 import { useUserStore } from "@/store/user";
@@ -84,16 +77,11 @@ const appStore = useAppStore();
 const userStore = useUserStore();
 
 const theme = ref<string | null>(null);
-const language = ref<string | null>(null);
 const username = ref<string | null>(null);
 const userDataForm = ref<IForm>();
 
 const updateTheme = () => {
   appStore.setTheme(theme.value || "light");
-};
-
-const updateLanguage = () => {
-  appStore.setLanguage(language.value || "en");
 };
 
 const updateUserData = async () => {
@@ -102,7 +90,6 @@ const updateUserData = async () => {
 
 onMounted(() => {
   theme.value = appStore.darkMode ? "dark" : "light";
-  language.value = appStore.language;
   username.value = userStore.user?.userName || null;
 });
 </script>

@@ -53,6 +53,9 @@ export const useMemoStore = defineStore(
       const lastUpdatedAt = memosUpdatedAt.value ?? 0;
       const difference = Math.abs(lastUpdatedAt - now) / 1000;
 
+      console.log(difference);
+      console.log(lastUpdatedAt);
+
       if (difference > MEMO_REFRESH_LIMIT) {
         const data = await memoService.getMemos(userStore.user.id);
         setMemos(data);
