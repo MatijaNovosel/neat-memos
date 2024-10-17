@@ -165,8 +165,12 @@ export const useKanbanStore = defineStore("kanban", () => {
       projects.value.forEach((project) => {
         const filteredProject = { ...project };
         filteredProject.columns = filteredProject.columns.filter((column) =>
-          column.cards.some((card) =>
-            card.name.toLowerCase().includes(searchText.value!.toLowerCase())
+          column.cards.some(
+            (card) =>
+              card.name.toLowerCase().includes(searchText.value!.toLowerCase()) ||
+              card.tags.some((tag) =>
+                tag.content.toLowerCase().includes(searchText.value!.toLowerCase())
+              )
           )
         );
         result.push(filteredProject);

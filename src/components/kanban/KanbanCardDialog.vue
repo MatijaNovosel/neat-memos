@@ -235,6 +235,7 @@
                 rounded="8"
                 type="submit"
                 variant="flat"
+                :disabled="kanbanStore.loading || kanbanStore.interactionsDisabled"
                 @click="save"
               >
                 Save

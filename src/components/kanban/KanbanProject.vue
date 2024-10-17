@@ -1,7 +1,7 @@
 <template>
   <div
     :id="`project-${props.project.id}`"
-    class="pt-5 px-5 pb-4 d-flex kanban-projects rounded-lg h-100 can-drag"
+    class="d-flex kanban-projects rounded-lg h-100 can-drag"
     :class="{
       'bg-grey-lighten-3': !appStore.darkMode,
       'bg-grey-darken-4': appStore.darkMode
@@ -9,9 +9,8 @@
   >
     <container
       lock-axis="x"
-      :should-accept-drop="() => kanbanStore.interactionsDisabled"
       tag="div"
-      class="d-flex flex-gap h-fit-content can-drag"
+      class="d-flex flex-gap h-fit-content can-drag px-5 pt-5 pb-4"
       group-name="cols"
       orientation="horizontal"
       :get-child-payload="getColumnPayload(project.id)"
@@ -66,6 +65,7 @@ const getColumnPayload = (projectId: number) => {
 };
 
 const onColumnDrop = async (projectId: number, dropResult: DropResult<ColumnModel>) => {
+  if (kanbanStore.interactionsDisabled) return;
   const project = kanbanStore.projects.find((p) => p.id === projectId);
   if (project && dropResult.addedIndex !== dropResult.removedIndex) {
     project.columns = applyDrag(project.columns, dropResult);
@@ -118,7 +118,7 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .kanban-column {
   width: 300px;
   flex-shrink: 0;
@@ -126,7 +126,6 @@ onMounted(() => {
 }
 
 .kanban-projects {
-  gap: 20px;
   overflow: auto;
 }
 

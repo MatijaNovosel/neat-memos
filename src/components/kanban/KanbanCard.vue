@@ -1,11 +1,11 @@
 <template>
   <div
     @click="openDetailsDialog"
-    class="mb-2 kanban-card-wrapper"
+    class="mb-2 kanban-card"
   >
     <v-card
       rounded
-      class="pa-0 kanban-card"
+      class="pa-0 kanban-card-inner"
       flat
     >
       <div
@@ -69,37 +69,42 @@ const coverStyle = computed(() => ({
   backgroundImage: `url(${props.data.coverUrl}) center/cover no-repeat`
 }));
 
-const matchesSearch = computed(
-  () =>
-    kanbanStore.searchText &&
-    props.data.name.toLowerCase().includes(kanbanStore.searchText.toLowerCase())
-);
+const matchesSearch = computed(() => {
+  const text = kanbanStore.searchText?.toLowerCase();
+
+  if (text) {
+    return (
+      props.data.name.toLowerCase().includes(text) ||
+      props.data.tags.some((tag) => tag.content.toLowerCase().includes(text))
+    );
+  }
+
+  return false;
+});
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .labels {
   gap: 8px;
   flex-wrap: wrap;
 }
 
 .kanban-card {
+  border: 1.5px solid transparent;
+  border-radius: 4px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   cursor: pointer;
-}
-
-.kanban-card-wrapper {
-  border: 1px solid transparent;
-  border-radius: 4px;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
-}
+  transition: border-color 0.2s ease-in;
 
-.kanban-card-wrapper:hover {
-  border: 1px solid #e4780b;
-  border-radius: 4px;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+  &:hover {
+    border: 1.5px solid #e4780b;
+    border-radius: 4px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
 }
 
 .overlay {

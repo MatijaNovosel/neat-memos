@@ -22,6 +22,7 @@
           size="small"
           color="white"
           icon
+          :disabled="kanbanStore.loading || kanbanStore.interactionsDisabled"
         >
           <v-icon> mdi-dots-horizontal </v-icon>
           <v-menu activator="parent">
@@ -54,7 +55,6 @@
     </v-text-field>
   </div>
   <container
-    :should-accept-drop="() => !kanbanStore.interactionsDisabled"
     tag="div"
     :class="{
       'pt-10': !props.column.cards.length,
@@ -120,6 +120,7 @@
       size="small"
       prepend-icon="mdi-plus"
       rounded="8"
+      :disabled="kanbanStore.loading || kanbanStore.interactionsDisabled"
       @click="handleColumnAction(COLUMN_ACTIONS.CREATE_CARD, props.column.id)"
     >
       Add card
@@ -161,6 +162,7 @@ const getCardPayload = (projectId: number, columnId: number) => {
 };
 
 const handleColumnAction = async (action: string, columnId: number) => {
+  if (kanbanStore.interactionsDisabled) return;
   switch (action) {
     case COLUMN_ACTIONS.DELETE:
       const answerDelete = await createConfirmationDialog();

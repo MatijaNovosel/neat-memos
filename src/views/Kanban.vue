@@ -24,6 +24,7 @@
               color="grey"
               variant="text"
               size="small"
+              :disabled="kanbanStore.loading || kanbanStore.interactionsDisabled"
               @click="deleteProject(project.id)"
             />
           </v-tab>
@@ -43,10 +44,11 @@
           clearable
           class="search-input"
           v-model="kanbanStore.searchText"
+          :disabled="kanbanStore.loading"
         />
         <v-btn
           :loading="kanbanStore.loading"
-          :disabled="kanbanStore.loading"
+          :disabled="kanbanStore.loading || kanbanStore.interactionsDisabled"
           color="green"
           icon="mdi-plus"
           rounded="0"
@@ -56,7 +58,7 @@
         />
         <v-btn
           :loading="kanbanStore.loading"
-          :disabled="kanbanStore.loading"
+          :disabled="kanbanStore.loading || kanbanStore.interactionsDisabled"
           color="blue"
           icon="mdi-table-column-plus-before"
           rounded="0"
