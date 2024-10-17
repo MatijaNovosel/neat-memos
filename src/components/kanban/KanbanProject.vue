@@ -9,6 +9,7 @@
   >
     <container
       lock-axis="x"
+      :should-accept-drop="() => kanbanStore.interactionsDisabled"
       tag="div"
       class="d-flex flex-gap h-fit-content can-drag"
       group-name="cols"

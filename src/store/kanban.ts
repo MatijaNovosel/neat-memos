@@ -8,7 +8,7 @@ import {
   ProjectModel
 } from "@/models/kanban";
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useUserStore } from "./user";
 
 export const useKanbanStore = defineStore("kanban", () => {
@@ -20,6 +20,7 @@ export const useKanbanStore = defineStore("kanban", () => {
   const columnDialog = ref(false);
   const projects = ref<ProjectModel[]>([]);
   const selectedProject = ref<number | null>(null);
+  const searchText = ref<string | null>(null);
 
   const kanbanService = new KanbanService();
 
@@ -153,6 +154,30 @@ export const useKanbanStore = defineStore("kanban", () => {
     loading.value = false;
   };
 
+  const interactionsDisabled = computed(() => {
+    return searchText.value !== "" && searchText.value !== null;
+  });
+
+  const filteredProjects = computed(() => {
+    if (searchText.value !== "" && searchText.value !== null) {
+      const result: ProjectModel[] = [];
+
+      projects.value.forEach((project) => {
+        const filteredProject = { ...project };
+        filteredProject.columns = filteredProject.columns.filter((column) =>
+          column.cards.some((card) =>
+            card.name.toLowerCase().includes(searchText.value!.toLowerCase())
+          )
+        );
+        result.push(filteredProject);
+      });
+
+      return result;
+    } else {
+      return projects.value;
+    }
+  });
+
   return {
     kanbanCardDialog,
     projectDialog,
@@ -162,6 +187,9 @@ export const useKanbanStore = defineStore("kanban", () => {
     selectedProject,
     loading,
     activeColumnId,
+    searchText,
+    filteredProjects,
+    interactionsDisabled,
     deleteProject,
     editKanbanCard,
     deleteCard,

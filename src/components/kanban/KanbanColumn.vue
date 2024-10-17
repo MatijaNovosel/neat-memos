@@ -54,6 +54,7 @@
     </v-text-field>
   </div>
   <container
+    :should-accept-drop="() => !kanbanStore.interactionsDisabled"
     tag="div"
     :class="{
       'pt-10': !props.column.cards.length,

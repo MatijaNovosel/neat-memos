@@ -9,7 +9,7 @@
           color="orange"
         >
           <v-tab
-            v-for="project in kanbanStore.projects"
+            v-for="project in kanbanStore.filteredProjects"
             :key="project.id"
             rounded="0"
             :value="project.id"
@@ -36,6 +36,14 @@
         No projects found.
       </span>
       <div class="d-flex flex-gap">
+        <v-text-field
+          density="compact"
+          placeholder="Search"
+          hide-details="auto"
+          clearable
+          class="search-input"
+          v-model="kanbanStore.searchText"
+        />
         <v-btn
           :loading="kanbanStore.loading"
           :disabled="kanbanStore.loading"
@@ -72,7 +80,7 @@
       class="project-window mt-5"
     >
       <v-window-item
-        v-for="project in kanbanStore.projects"
+        v-for="project in kanbanStore.filteredProjects"
         :transition="false"
         :reverse-transition="false"
         :key="`tabItem_${project.id}`"
@@ -103,6 +111,7 @@ const createConfirmationDialog = useConfirmationDialog();
 const loading = ref(false);
 
 const deleteProject = async (projectId: number) => {
+  if (kanbanStore.interactionsDisabled) return;
   const answer = await createConfirmationDialog();
   if (answer) {
     await kanbanStore.deleteProject(projectId);
@@ -120,5 +129,9 @@ onMounted(async () => {
 .project-window {
   height: calc(100vh - 110px);
   overflow: auto;
+}
+
+.search-input {
+  width: 200px;
 }
 </style>

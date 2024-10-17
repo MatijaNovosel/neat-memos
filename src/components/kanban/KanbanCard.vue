@@ -8,6 +8,10 @@
       class="pa-0 kanban-card"
       flat
     >
+      <div
+        class="overlay"
+        v-if="matchesSearch"
+      />
       <div>
         <slot name="default" />
       </div>
@@ -60,14 +64,16 @@ const openDetailsDialog = () => {
   kanbanStore.kanbanCardDialog = true;
 };
 
-const coverStyle = computed(() => {
-  return {
-    height: "110px",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundImage: `url(${props.data.coverUrl})`
-  };
-});
+const coverStyle = computed(() => ({
+  height: "110px",
+  backgroundImage: `url(${props.data.coverUrl}) center/cover no-repeat`
+}));
+
+const matchesSearch = computed(
+  () =>
+    kanbanStore.searchText &&
+    props.data.name.toLowerCase().includes(kanbanStore.searchText.toLowerCase())
+);
 </script>
 
 <style scoped>
@@ -94,5 +100,12 @@ const coverStyle = computed(() => {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+
+.overlay {
+  background-color: #14ea144a;
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 </style>
