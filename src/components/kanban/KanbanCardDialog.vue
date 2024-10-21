@@ -64,26 +64,25 @@
               <span class="ml-1"> Created </span>
               {{ format(new Date(kanbanStore.activeCard!.createdAt), "dd.MM.yyyy. HH:mm") }}
             </div>
-            <div class="text-grey-lighten-1 text-subtitle-2 mt-2">Rating</div>
-            <div
-              v-if="kanbanStore.activeCard?.rating"
-              class="pl-1"
-            >
-              <v-rating
-                class="pt-2"
-                half-increments
-                hover
-                size="30"
-                :active-color="getRatingColor()"
-                color="grey-lighten-2"
-                empty-icon="mdi-circle"
-                full-icon="mdi-circle"
-                half-icon="mdi-circle-half"
-                v-model="kanbanStore.activeCard.rating"
-                @update:modelValue="updateRating"
-                :length="5"
-              />
-            </div>
+            <template v-if="kanbanStore.activeCard?.rating">
+              <div class="text-grey-lighten-1 text-subtitle-2 mt-2">Rating</div>
+              <div class="pl-1">
+                <v-rating
+                  class="pt-2"
+                  half-increments
+                  hover
+                  size="30"
+                  :active-color="getRatingColor()"
+                  color="grey-lighten-2"
+                  empty-icon="mdi-circle"
+                  full-icon="mdi-circle"
+                  half-icon="mdi-circle-half"
+                  v-model="kanbanStore.activeCard.rating"
+                  @update:modelValue="updateRating"
+                  :length="5"
+                />
+              </div>
+            </template>
             <div class="text-grey-lighten-1 text-subtitle-2 mt-2">Tags</div>
             <div class="d-flex flex-gap flex-wrap align-center mt-2">
               <template v-if="tags.length">
@@ -475,7 +474,7 @@ watch(title, (newVal, oldVal) => {
 });
 
 watch(description, (newVal, oldVal) => {
-  if (oldVal !== newVal && newVal.length !== 0 && oldVal.length !== 0 && !isNewCard.value) {
+  if (oldVal !== newVal && oldVal.length !== 0 && !isNewCard.value) {
     save();
   }
 });
