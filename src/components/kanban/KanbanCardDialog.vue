@@ -64,6 +64,26 @@
               <span class="ml-1"> Created </span>
               {{ format(new Date(kanbanStore.activeCard!.createdAt), "dd.MM.yyyy. HH:mm") }}
             </div>
+            <div class="text-grey-lighten-1 text-subtitle-2 mt-2">Rating</div>
+            <div
+              v-if="kanbanStore.activeCard?.rating"
+              class="pl-1"
+            >
+              <v-rating
+                class="pt-2"
+                half-increments
+                hover
+                size="30"
+                :active-color="getRatingColor()"
+                color="grey-lighten-2"
+                empty-icon="mdi-circle"
+                full-icon="mdi-circle"
+                half-icon="mdi-circle-half"
+                v-model="kanbanStore.activeCard.rating"
+                @update:modelValue="updateRating"
+                :length="5"
+              />
+            </div>
             <div class="text-grey-lighten-1 text-subtitle-2 mt-2">Tags</div>
             <div class="d-flex flex-gap flex-wrap align-center mt-2">
               <template v-if="tags.length">
@@ -223,6 +243,15 @@
               prepend-icon="mdi-paperclip"
               text="Attachment"
             />
+            <v-btn
+              v-if="!kanbanStore.activeCard?.rating"
+              size="small"
+              color="blue"
+              rounded="8"
+              variant="tonal"
+              prepend-icon="mdi-circle"
+              text="Add rating"
+            />
           </v-col>
           <template v-if="isNewCard">
             <v-divider />
@@ -250,7 +279,7 @@
 
 <script lang="ts" setup>
 import { useNotifications } from "@/composables/useNotifications";
-import { colorSwatches } from "@/constants/kanban";
+import { colorSwatches, ratingColor } from "@/constants/kanban";
 import { IForm } from "@/models/common";
 import { TagModel } from "@/models/tag";
 import { useKanbanStore } from "@/store/kanban";
@@ -292,6 +321,11 @@ const close = () => {
     coverColor.value = null;
     cardForm.value?.resetForm();
   }, 300);
+};
+
+const getRatingColor = () => {
+  const ratingValue = kanbanStore.activeCard?.rating || 1;
+  return ratingColor[Math.ceil(ratingValue)];
 };
 
 const selectTag = (tag: TagModel) => {
@@ -350,6 +384,7 @@ const save = useDebounceFn(async (copy: boolean = false) => {
       name: title.value,
       description: description.value,
       initialTags: kanbanStore.activeCard!.tags,
+      rating: kanbanStore.activeCard!.rating,
       tags: tags.value
     });
     const column = project?.columns.find((c) => c.id === kanbanStore.activeCard?.columnId);
@@ -359,6 +394,7 @@ const save = useDebounceFn(async (copy: boolean = false) => {
     card!.coverColor =
       coverColor.value === "#ffffff" || !coverColor.value ? null : coverColor.value;
     card!.tags = tags.value;
+    card!.rating = kanbanStore.activeCard?.rating;
     kanbanStore.activeCard!.tags = tags.value;
   } else {
     if (!cardForm.value || !(await cardForm.value.validate()).valid) {
@@ -387,6 +423,12 @@ const save = useDebounceFn(async (copy: boolean = false) => {
   }
   saving.value = false;
 }, 500);
+
+const updateRating = async () => {
+  if (!isNewCard.value) {
+    await save();
+  }
+};
 
 const updateCoverColor = async (value: string | null) => {
   coverColor.value = value;

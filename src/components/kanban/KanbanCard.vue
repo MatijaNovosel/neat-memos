@@ -3,9 +3,17 @@
     @click="openDetailsDialog"
     class="mb-2 kanban-card"
   >
+    <v-icon
+      v-if="props.data.urgent"
+      size="18"
+      class="kanban-card-badge"
+      color="red-lighten-2"
+    >
+      mdi-alert-circle
+    </v-icon>
     <v-card
       rounded
-      class="pa-0 kanban-card-inner"
+      class="pa-0 kanban-card-inner pb-2"
       flat
     >
       <div
@@ -41,14 +49,35 @@
           {{ label.content }}
         </v-chip>
       </v-card-title>
-      <v-card-text class="pb-3">
+      <v-card-text class="pt-1 pb-0">
         {{ props.data.name }}
       </v-card-text>
+      <div
+        v-if="props.data.rating"
+        class="pl-4"
+      >
+        <v-rating
+          half-increments
+          disabled
+          :model-value="props.data.rating"
+          :length="5"
+        >
+          <template #item="{ value }">
+            <v-icon
+              :color="getRatingColor(value)"
+              size="12"
+            >
+              mdi-circle
+            </v-icon>
+          </template>
+        </v-rating>
+      </div>
     </v-card>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { ratingColor } from "@/constants/kanban";
 import { CardModel } from "@/models/kanban";
 import { useKanbanStore } from "@/store/kanban";
 import { computed } from "vue";
@@ -62,6 +91,16 @@ const kanbanStore = useKanbanStore();
 const openDetailsDialog = () => {
   kanbanStore.activeCard = { ...props.data };
   kanbanStore.kanbanCardDialog = true;
+};
+
+const getRatingColor = (value: number) => {
+  const ratingValue = props.data.rating || 1;
+
+  if (value > ratingValue) {
+    return "grey-lighten-1";
+  }
+
+  return ratingColor[Math.ceil(ratingValue)];
 };
 
 const coverStyle = computed(() => ({
@@ -90,6 +129,7 @@ const matchesSearch = computed(() => {
 }
 
 .kanban-card {
+  position: relative;
   border: 1.5px solid transparent;
   border-radius: 4px;
   -webkit-box-sizing: border-box;
@@ -97,6 +137,13 @@ const matchesSearch = computed(() => {
   cursor: pointer;
   box-sizing: border-box;
   transition: border-color 0.2s ease-in;
+
+  &-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 20;
+  }
 
   &:hover {
     border: 1.5px solid #e4780b;

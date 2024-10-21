@@ -25,4 +25,6 @@ export interface IKanbanService {
   createCard(data: CreateCardModel): Promise<number>;
   deleteCard(cardId: number, positions: MovePosition[]): Promise<void>;
   editCard(data: EditCardModel): Promise<void>;
+  addRating(cardId: number): Promise<void>;
+  markAsUrgent(cardId: number, status: boolean): Promise<void>;
 }

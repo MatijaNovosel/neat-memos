@@ -284,6 +284,14 @@ const updateColumnName = useDebounceFn(async (columnId: number, value: string) =
 
 const handleCardAction = async (action: string, card: CardModel, columnId: number) => {
   switch (action) {
+    case CARD_ACTIONS.ADD_RATING:
+      await kanbanStore.addRating(card);
+      card.rating = 1;
+      break;
+    case CARD_ACTIONS.MARK_URGENT:
+      await kanbanStore.markAsUrgent(card);
+      card.urgent = !card.urgent;
+      break;
     case CARD_ACTIONS.DELETE:
       const answerDelete = await createConfirmationDialog();
       if (answerDelete) {

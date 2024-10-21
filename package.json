@@ -7,7 +7,8 @@
     "preview": "vite preview",
     "dev:android": "ionic cap run android -l --external -- --mode dev",
     "android:sync": "ionic build && npx cap copy && npx cap sync android",
-    "build:android": "vue-tsc && vite build --mode dev && npx cap copy && npx cap copy android"
+    "build:android": "vue-tsc && vite build --mode dev && npx cap copy && npx cap copy android",
+    "check": "vue-tsc --build --force"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",

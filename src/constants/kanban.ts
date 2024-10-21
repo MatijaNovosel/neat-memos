@@ -1,10 +1,20 @@
+export const ratingColor: Record<number, string> = {
+  1: "red",
+  2: "orange",
+  3: "yellow-lighten-2",
+  4: "light-green-lighten-2",
+  5: "green"
+};
+
 export const COLUMN_ACTIONS = {
   CREATE_CARD: "createCard",
   DELETE: "delete"
 };
 
 export const CARD_ACTIONS = {
-  DELETE: "delete"
+  DELETE: "delete",
+  MARK_URGENT: "markUrgent",
+  ADD_RATING: "addRating"
 };
 
 export const columnActions = [
@@ -28,6 +38,18 @@ export const cardActions = [
     text: "Delete",
     type: CARD_ACTIONS.DELETE,
     color: "red"
+  },
+  {
+    icon: "mdi-alert-circle",
+    text: "Mark as urgent",
+    type: CARD_ACTIONS.MARK_URGENT,
+    color: "red-lighten-2"
+  },
+  {
+    icon: "mdi-circle",
+    text: "Add rating",
+    type: CARD_ACTIONS.ADD_RATING,
+    color: "green"
   }
 ];
 

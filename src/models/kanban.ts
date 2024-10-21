@@ -10,6 +10,8 @@ export interface CardModel {
   description: string | null;
   createdAt: string;
   columnId: number;
+  urgent: boolean;
+  rating?: number;
   menuOpen?: boolean;
 }
 
@@ -64,6 +66,7 @@ export interface CreateCardModel {
 export interface EditCardModel {
   id: number;
   name: string;
+  rating?: number;
   description: string | null;
   coverUrl: string | null;
   coverColor: string | null;

@@ -123,6 +123,7 @@ export const useKanbanStore = defineStore("kanban", () => {
         name: data.name,
         position: data.position,
         tags: data.tags,
+        urgent: false,
         createdAt: new Date().toISOString()
       });
     loading.value = false;
@@ -137,6 +138,18 @@ export const useKanbanStore = defineStore("kanban", () => {
   const deleteCard = async (cardId: number, positions: MovePosition[]) => {
     loading.value = true;
     await kanbanService.deleteCard(cardId, positions);
+    loading.value = false;
+  };
+
+  const addRating = async (card: CardModel) => {
+    loading.value = true;
+    await kanbanService.addRating(card.id);
+    loading.value = false;
+  };
+
+  const markAsUrgent = async (card: CardModel) => {
+    loading.value = true;
+    await kanbanService.markAsUrgent(card.id, card.urgent);
     loading.value = false;
   };
 
@@ -194,6 +207,8 @@ export const useKanbanStore = defineStore("kanban", () => {
     searchText,
     filteredProjects,
     interactionsDisabled,
+    markAsUrgent,
+    addRating,
     deleteProject,
     editKanbanCard,
     deleteCard,

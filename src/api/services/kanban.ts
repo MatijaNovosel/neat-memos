@@ -16,6 +16,26 @@ export class KanbanService implements IKanbanService {
     if (error) throw error;
   }
 
+  async addRating(cardId: number): Promise<void> {
+    const { error } = await supabase
+      .from("cards")
+      .update({
+        rating: 1
+      })
+      .eq("id", cardId);
+    if (error) throw error;
+  }
+
+  async markAsUrgent(cardId: number, status: boolean): Promise<void> {
+    const { error } = await supabase
+      .from("cards")
+      .update({
+        urgent: !status
+      })
+      .eq("id", cardId);
+    if (error) throw error;
+  }
+
   async editCard(data: EditCardModel): Promise<void> {
     const { error } = await supabase
       .from("cards")
@@ -23,7 +43,8 @@ export class KanbanService implements IKanbanService {
         description: data.description,
         name: data.name,
         coverColor: data.coverColor,
-        coverUrl: data.coverUrl
+        coverUrl: data.coverUrl,
+        rating: data.rating
       })
       .eq("id", data.id);
     if (error) throw error;
@@ -215,6 +236,8 @@ export class KanbanService implements IKanbanService {
             name,
             description,
             columnId,
+            urgent,
+            rating,
             position,
             tags (
               id,
@@ -255,6 +278,8 @@ export class KanbanService implements IKanbanService {
             name,
             description,
             columnId,
+            urgent,
+            rating,
             tags (
               id,
               content,

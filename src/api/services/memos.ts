@@ -28,7 +28,18 @@ export class MemoService implements IMemoService {
     const { data, error } = await supabase
       .from("memos")
       .select(
-        "id, createdAt, archived, content, updatedAt, userId, pinned, private, tags ( id, content, color), resources (*)"
+        `
+        id,
+        createdAt,
+        archived,
+        content,
+        updatedAt,
+        userId,
+        pinned,
+        private,
+        tags ( id, content, color),
+        resources (*)
+      `
       )
       .eq("id", id);
 
