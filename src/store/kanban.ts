@@ -168,7 +168,7 @@ export const useKanbanStore = defineStore("kanban", () => {
   };
 
   const interactionsDisabled = computed(() => {
-    return searchText.value !== "" && searchText.value !== null;
+    return (searchText.value !== "" && searchText.value !== null) || loading.value;
   });
 
   const filteredProjects = computed(() => {
