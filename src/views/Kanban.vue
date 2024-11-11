@@ -50,22 +50,38 @@
           :loading="kanbanStore.loading"
           :disabled="kanbanStore.interactionsDisabled"
           color="green"
-          icon="mdi-plus"
+          icon
           rounded="0"
           variant="tonal"
           size="small"
           @click="kanbanStore.projectDialog = true"
-        />
+        >
+          <v-icon> mdi-plus </v-icon>
+          <v-tooltip
+            activator="parent"
+            location="end"
+          >
+            Add project
+          </v-tooltip>
+        </v-btn>
         <v-btn
           :loading="kanbanStore.loading"
           :disabled="kanbanStore.interactionsDisabled"
           color="blue"
-          icon="mdi-table-column-plus-before"
+          icon
           rounded="0"
           variant="tonal"
           size="small"
           @click="kanbanStore.columnDialog = true"
-        />
+        >
+          <v-icon> mdi-table-column-plus-before </v-icon>
+          <v-tooltip
+            activator="parent"
+            location="end"
+          >
+            Add column
+          </v-tooltip>
+        </v-btn>
       </div>
     </div>
     <v-row v-if="loading">

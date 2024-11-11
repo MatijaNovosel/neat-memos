@@ -38,12 +38,6 @@
                 @click="handleColumnAction(item.type, props.column.id)"
                 :key="i"
               >
-                <v-icon
-                  :color="item.color"
-                  class="mr-3"
-                >
-                  {{ item.icon }}
-                </v-icon>
                 <span>
                   {{ item.text }}
                 </span>
@@ -98,12 +92,6 @@
               @click="handleCardAction(item.type, card, props.column.id)"
               :key="i"
             >
-              <v-icon
-                :color="item.color"
-                class="mr-3"
-              >
-                {{ item.icon }}
-              </v-icon>
               <span>
                 {{ item.text }}
               </span>
