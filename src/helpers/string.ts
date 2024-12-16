@@ -34,3 +34,19 @@ export function acronym(str: string | null | undefined): string {
 
   return acronym.toUpperCase();
 }
+
+/**
+ * Cuts a text off at a certain length, ending it with three dots.
+ * @param {string} text - The text which should be cut off.
+ * @param {number} length - The length at which the text should be cut off.
+ * @return Ellipsed text.
+ */
+export function textEllipsis(text: string | null | undefined, length: number): string {
+  if (text) {
+    if (text.length <= length) {
+      return text;
+    }
+    return `${text.substring(0, length)}...`;
+  }
+  return "";
+}

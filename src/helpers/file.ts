@@ -130,31 +130,36 @@ export async function downloadFileFromUrl(url: string, fileName: string): Promis
  * @param {File} file - File.
  */
 export async function downloadFile(file: File) {
-  if ((window.navigator as any).msSaveOrOpenBlob) {
-    // IE11
-    (window.navigator as any).msSaveOrOpenBlob(file, file.name);
-  } else {
-    const fileURL = window.URL.createObjectURL(file);
-    const link = document.createElement("a");
-    link.href = fileURL;
-    link.setAttribute("download", file.name);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  }
+  const fileURL = window.URL.createObjectURL(file);
+  const link = document.createElement("a");
+  link.href = fileURL;
+  link.setAttribute("download", file.name);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
 }
 
 export function downloadBlob(response: { data: BlobPart }, fileName: string) {
-  if ((window.navigator as any).msSaveOrOpenBlob) {
-    // IE11
-    (window.navigator as any).msSaveOrOpenBlob(new Blob([response.data]), fileName);
-  } else {
-    const fileURL = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement("a");
-    link.href = fileURL;
-    link.setAttribute("download", fileName);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  }
+  const fileURL = window.URL.createObjectURL(new Blob([response.data]));
+  const link = document.createElement("a");
+  link.href = fileURL;
+  link.setAttribute("download", fileName);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
+export function fileToBase64DataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (reader.result) {
+        resolve(reader.result.toString());
+      } else {
+        reject(new Error("FileReader did not produce a result."));
+      }
+    };
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
 }

@@ -168,6 +168,27 @@
               v-model="description"
               placeholder="Description"
             />
+            <template v-if="attachments.length">
+              <div class="text-grey-lighten-1 text-subtitle-2 mt-3 mb-3">Attachments</div>
+              <div class="d-flex flex-wrap flex-gap">
+                <v-chip
+                  color="orange"
+                  density="compact"
+                  closable
+                  @click:close="deleteFile(file)"
+                  v-for="file in attachments"
+                  :key="file.name"
+                >
+                  <v-icon
+                    class="mr-1"
+                    size="14"
+                  >
+                    mdi-paperclip
+                  </v-icon>
+                  {{ textEllipsis(file.name, 10) }}
+                </v-chip>
+              </div>
+            </template>
           </v-col>
           <v-col
             cols="4"
@@ -175,13 +196,13 @@
           >
             <div class="d-flex items-center align-center">
               <v-btn
+                :disabled="coverUrl !== null"
                 size="small"
                 color="orange"
                 rounded="8"
                 variant="tonal"
                 class="flex-grow-1"
               >
-                <v-icon class="mr-2"> mdi-credit-card </v-icon>
                 <span> Cover </span>
                 <v-menu
                   :close-on-content-click="false"
@@ -202,6 +223,7 @@
                       class="elevation-0 pa-0"
                     />
                     <v-btn
+                      :disabled="coverUrl !== null"
                       class="w-fit-content"
                       color="orange-darken-1"
                       size="small"
@@ -223,13 +245,30 @@
                 @click="clearCover"
               />
             </div>
+            <div class="d-flex items-center align-center">
+              <v-btn
+                size="small"
+                color="blue"
+                rounded="8"
+                variant="tonal"
+                class="flex-grow-1"
+                text="Cover image"
+                @click="openCoverFileDialog"
+              />
+              <v-btn
+                color="blue"
+                variant="text"
+                density="compact"
+                icon="mdi-close-circle"
+                class="ml-2 mr-1"
+              />
+            </div>
             <v-btn
               v-if="!isNewCard"
               size="small"
               :loading="saving"
               color="green"
               rounded="8"
-              prepend-icon="mdi-card-multiple-outline"
               variant="tonal"
               text="Copy"
               @click="copyCard"
@@ -239,16 +278,15 @@
               color="purple"
               rounded="8"
               variant="tonal"
-              prepend-icon="mdi-paperclip"
               text="Attachment"
+              @click="openAttachmentDialog"
             />
             <v-btn
-              v-if="!kanbanStore.activeCard?.rating"
+              v-if="!kanbanStore.activeCard?.rating && !isNewCard"
               size="small"
               color="blue"
               rounded="8"
               variant="tonal"
-              prepend-icon="mdi-circle"
               text="Add rating"
             />
           </v-col>
@@ -279,11 +317,13 @@
 <script lang="ts" setup>
 import { useNotifications } from "@/composables/useNotifications";
 import { colorSwatches, ratingColor } from "@/constants/kanban";
+import { fileToBase64DataUrl } from "@/helpers/file";
+import { textEllipsis } from "@/helpers/string";
 import { IForm } from "@/models/common";
 import { TagModel } from "@/models/tag";
 import { useKanbanStore } from "@/store/kanban";
 import { useMemoStore } from "@/store/memos";
-import { useDebounceFn } from "@vueuse/core";
+import { useDebounceFn, useFileDialog } from "@vueuse/core";
 import { format } from "date-fns";
 import type { CSSProperties } from "vue";
 import { computed, ref, watch } from "vue";
@@ -298,6 +338,7 @@ const { alert } = useNotifications();
 
 const title = ref("");
 const coverColor = ref<string | null>(null);
+const coverUrl = ref<string | null>(null);
 const description = ref("");
 const cardMenu = ref(false);
 const saving = ref(false);
@@ -305,8 +346,19 @@ const cardForm = ref<IForm | null>(null);
 
 const tags = ref<TagModel[]>([]);
 const selectedTags = ref<TagModel[]>([]);
+const attachments = ref<File[]>([]);
 
 const isNewCard = computed(() => !kanbanStore.activeCard);
+
+const { open: openAttachmentDialog, onChange: onAttachmentChange } = useFileDialog();
+
+const {
+  files: coverFiles,
+  open: openCoverFileDialog,
+  onChange: onCoverFileDialogChange
+} = useFileDialog({
+  accept: "image/*"
+});
 
 const close = () => {
   kanbanStore.kanbanCardDialog = false;
@@ -436,6 +488,25 @@ const updateCoverColor = async (value: string | null) => {
   }
 };
 
+onCoverFileDialogChange(async (files: FileList | null) => {
+  if (isNewCard) {
+    const imgUrl = await fileToBase64DataUrl(files![0]);
+    coverUrl.value = imgUrl;
+  }
+});
+
+onAttachmentChange(async (files: FileList | null) => {
+  if (isNewCard) {
+    attachments.value.push(...files!);
+  }
+});
+
+const deleteFile = (file: File) => {
+  if (isNewCard.value) {
+    attachments.value = attachments.value.filter((f) => f.name !== file.name);
+  }
+};
+
 const availableTags = computed(() => {
   const tagIds = tags.value.map((t) => t.id);
   return memoStore.tags.filter((t) => !tagIds.includes(t.id));
@@ -446,11 +517,18 @@ const titleStyle = computed(() => {
 
   styleObj.backgroundColor = coverColor.value || undefined;
 
-  if (kanbanStore.activeCard?.coverUrl) {
-    styleObj.background = `url(${kanbanStore.activeCard.coverUrl})`;
+  if (isNewCard.value && coverUrl.value) {
+    styleObj.background = `url(${coverUrl.value})`;
     styleObj.height = "170px";
     styleObj.backgroundSize = "cover";
     styleObj.backgroundPosition = "center";
+  } else {
+    if (kanbanStore.activeCard?.coverUrl) {
+      styleObj.background = `url(${kanbanStore.activeCard.coverUrl})`;
+      styleObj.height = "170px";
+      styleObj.backgroundSize = "cover";
+      styleObj.backgroundPosition = "center";
+    }
   }
 
   return styleObj;
