@@ -352,11 +352,7 @@ const isNewCard = computed(() => !kanbanStore.activeCard);
 
 const { open: openAttachmentDialog, onChange: onAttachmentChange } = useFileDialog();
 
-const {
-  files: coverFiles,
-  open: openCoverFileDialog,
-  onChange: onCoverFileDialogChange
-} = useFileDialog({
+const { open: openCoverFileDialog, onChange: onCoverFileDialogChange } = useFileDialog({
   accept: "image/*"
 });
 
