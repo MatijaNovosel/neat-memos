@@ -158,7 +158,8 @@ export const useMemoStore = defineStore(
               createdAt: new Date().toISOString(),
               name: files[i].name,
               size: files[i].size,
-              memoId: id
+              memoId: id,
+              cardId: null
             });
           }
         }

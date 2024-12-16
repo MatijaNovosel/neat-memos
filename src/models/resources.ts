@@ -9,8 +9,8 @@ export interface ResourceFile {
   size: number;
   url: string;
   createdAt: string;
-  memoId: number;
-  cardId: number;
+  memoId: number | null;
+  cardId: number | null;
 }
 
 export interface ResourceFileDetailed extends ResourceFile {

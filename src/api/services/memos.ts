@@ -107,7 +107,8 @@ export class MemoService implements IMemoService {
         id: response?.id as string,
         memoId: data.id,
         name: file.name,
-        url: response?.url as string
+        url: response?.url as string,
+        cardId: null
       });
     }
 
