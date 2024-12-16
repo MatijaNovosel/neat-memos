@@ -128,7 +128,7 @@ import { useNotifications } from "@/composables/useNotifications";
 import { MEMO_ACTIONS } from "@/constants/memo";
 import { downloadFileFromUrl, fileSizeReadable } from "@/helpers/file";
 import { capitalize } from "@/helpers/string";
-import { MemoFile, MemoModel } from "@/models/memo";
+import { MemoModel, ResourceFile } from "@/models/memo";
 import ROUTE_NAMES from "@/router/routeNames";
 import { useMemoStore } from "@/store/memos";
 import { format, formatRelative, isToday } from "date-fns";
@@ -260,12 +260,12 @@ const updatedAtFormatted = computed(() => {
   return dateFormatFn(date);
 });
 
-const downloadFile = (file: File | MemoFile) => {
+const downloadFile = (file: File | ResourceFile) => {
   if ("id" in file) downloadFileFromUrl(file.url, file.name);
   // else downloadFile(file);
 };
 
-const deleteFile = async (file: File | MemoFile) => {
+const deleteFile = async (file: File | ResourceFile) => {
   if ("id" in file) await memoStore.deleteFile(props.data.id, file.id);
 };
 </script>

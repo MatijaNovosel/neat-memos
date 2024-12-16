@@ -1,11 +1,10 @@
 import { generateRandomString } from "@/helpers/misc";
 import supabase from "@/helpers/supabase";
-import { MemoFile } from "@/models/memo";
-import { ResourceUploadReturnDto } from "@/models/resources";
+import { ResourceFile, ResourceUploadReturnDto } from "@/models/resources";
 import { IResourcesService } from "../interfaces/resources";
 
 export class ResourcesService implements IResourcesService {
-  async getFiles(userId: string): Promise<MemoFile[]> {
+  async getFiles(userId: string): Promise<ResourceFile[]> {
     const { data, error } = await supabase.from("resources").select("*").eq("userId", userId);
     if (error) throw error;
     return data;

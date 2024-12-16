@@ -61,6 +61,7 @@ export interface CreateCardModel {
   coverUrl: string | null;
   position: number;
   coverColor: string | null;
+  attachments: File[];
 }
 
 export interface EditCardModel {

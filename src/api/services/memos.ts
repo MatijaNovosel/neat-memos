@@ -1,5 +1,6 @@
 import supabase from "@/helpers/supabase";
-import { CreateMemoModel, MemoFile, MemoModel, UpdateMemoModel } from "@/models/memo";
+import { CreateMemoModel, MemoModel, UpdateMemoModel } from "@/models/memo";
+import { ResourceFile } from "@/models/resources";
 import { IMemoService } from "../interfaces/memos";
 import { IResourcesService } from "../interfaces/resources";
 import { ResourcesService } from "./resources";
@@ -52,7 +53,7 @@ export class MemoService implements IMemoService {
     }))[0];
   }
 
-  async editMemo(data: UpdateMemoModel): Promise<MemoFile[]> {
+  async editMemo(data: UpdateMemoModel): Promise<ResourceFile[]> {
     const { error } = await supabase
       .from("memos")
       .update([
@@ -90,9 +91,9 @@ export class MemoService implements IMemoService {
     }
 
     // File updating
-    const newFiles: MemoFile[] = [];
+    const newFiles: ResourceFile[] = [];
     const filesToAdd = data.files.filter((f) => !("id" in f)) as File[];
-    const oldFiles = data.files.filter((f) => "id" in f) as MemoFile[];
+    const oldFiles = data.files.filter((f) => "id" in f) as ResourceFile[];
 
     const filesToRemove = data.initialFiles.filter(
       (x) => !oldFiles.map((x) => x.id).includes(x.id)

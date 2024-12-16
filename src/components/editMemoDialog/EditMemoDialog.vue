@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import MemoEntry from "@/components/memoEntry/MemoEntry.vue";
-import { MemoFile } from "@/models/memo";
+import { ResourceFile } from "@/models/resources";
 import { TagModel } from "@/models/tag";
 import { useMemoStore } from "@/store/memos";
 import { ref, watch } from "vue";
@@ -39,7 +39,7 @@ import { useDisplay, useTheme } from "vuetify";
 const memoStore = useMemoStore();
 const initialContent = ref<string | null | undefined>(null);
 const initialTags = ref<TagModel[]>([]);
-const initialFiles = ref<MemoFile[]>([]);
+const initialFiles = ref<ResourceFile[]>([]);
 const { smAndDown } = useDisplay();
 const theme = useTheme();
 
@@ -54,7 +54,7 @@ watch(
     if (val) {
       initialContent.value = memoStore.activeMemo?.content;
       initialTags.value = memoStore.activeMemo?.tags || [];
-      initialFiles.value = [...(memoStore.activeMemo?.files as MemoFile[])] || [];
+      initialFiles.value = [...(memoStore.activeMemo?.files as ResourceFile[])];
     }
   }
 );

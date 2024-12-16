@@ -231,7 +231,7 @@ import {
 } from "@/constants/memo";
 import { fileSizeReadable } from "@/helpers/file";
 import { IForm } from "@/models/common";
-import { MemoFile } from "@/models/memo";
+import { ResourceFile } from "@/models/resources";
 import { TagModel } from "@/models/tag";
 import { useMemoStore } from "@/store/memos";
 import { useFileDialog } from "@vueuse/core";
@@ -242,7 +242,7 @@ import { useTheme } from "vuetify";
 interface Props {
   initialContent?: string | null;
   initialTags?: TagModel[];
-  initialFiles?: MemoFile[];
+  initialFiles?: ResourceFile[];
   readonly?: boolean;
   disabled?: boolean;
 }
@@ -265,8 +265,8 @@ const tagMenuExpanded = ref(true);
 const content = ref<string>(props.initialContent || "");
 const memoVisibility = ref<number>(MEMO_VISIBILITY.PRIVATE);
 const selectedTags = ref<TagModel[]>([...(props.initialTags || [])]);
-const files = ref<Array<MemoFile | File>>(
-  props.initialFiles ? (props.initialFiles as MemoFile[]) : []
+const files = ref<Array<ResourceFile | File>>(
+  props.initialFiles ? (props.initialFiles as ResourceFile[]) : []
 );
 
 const {

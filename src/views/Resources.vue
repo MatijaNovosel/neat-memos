@@ -136,7 +136,7 @@ import {
   getIconFromExtension
 } from "@/helpers/file";
 import { capitalize } from "@/helpers/string";
-import { MemoFileDetailed } from "@/models/memo";
+import { ResourceFileDetailed } from "@/models/resources";
 import ROUTE_NAMES from "@/router/routeNames";
 import { useUserStore } from "@/store/user";
 import { format, formatRelative, isToday } from "date-fns";
@@ -149,7 +149,7 @@ const userStore = useUserStore();
 const i18n = useI18n();
 const theme = useTheme();
 
-const files = ref<MemoFileDetailed[]>([]);
+const files = ref<ResourceFileDetailed[]>([]);
 const loading = ref<boolean>(false);
 const searchText = ref<string>("");
 const filterExtensions = ref<string[]>([]);
@@ -158,8 +158,8 @@ const extensions = computed(() => {
   return new Set(files.value.map((f) => getExtensionFromFileName(f.name)));
 });
 
-const groupedFiles = computed<Record<string, MemoFileDetailed[]>>(() => {
-  const groups: Record<string, MemoFileDetailed[]> = {};
+const groupedFiles = computed<Record<string, ResourceFileDetailed[]>>(() => {
+  const groups: Record<string, ResourceFileDetailed[]> = {};
   const extensions = new Set(files.value.map((f) => getExtensionFromFileName(f.name)));
 
   for (const extension of extensions) {
@@ -192,7 +192,7 @@ const formatDate = (date: string) => {
   }
 };
 
-const downloadFile = async (file: MemoFileDetailed) => {
+const downloadFile = async (file: ResourceFileDetailed) => {
   file.downloading = true;
   await downloadFileFromUrl(file.url, file.name);
   file.downloading = false;

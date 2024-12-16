@@ -421,7 +421,8 @@ const save = useDebounceFn(async (copy: boolean = false) => {
       name: title.value,
       tags: tags.value,
       position: maxPosition + 1,
-      projectId: kanbanStore.selectedProject!
+      projectId: kanbanStore.selectedProject!,
+      attachments: attachments.value
     });
   } else if (!isNewCard.value) {
     await kanbanStore.editKanbanCard({
@@ -461,7 +462,8 @@ const save = useDebounceFn(async (copy: boolean = false) => {
       name: title.value,
       tags: tags.value,
       position: maxPosition + 1,
-      projectId: kanbanStore.selectedProject!
+      projectId: kanbanStore.selectedProject!,
+      attachments: attachments.value
     });
     close();
     alert({

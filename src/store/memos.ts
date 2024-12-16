@@ -4,7 +4,8 @@ import { TagService } from "@/api/services/tag";
 import { useNotifications } from "@/composables/useNotifications";
 import { MEMO_FILTERS, MEMO_REFRESH_LIMIT, TAG_REFRESH_LIMIT } from "@/constants/memo";
 import i18n from "@/i18n";
-import { MemoFile, MemoModel } from "@/models/memo";
+import { MemoModel } from "@/models/memo";
+import { ResourceFile } from "@/models/resources";
 import { TagModel } from "@/models/tag";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -102,7 +103,11 @@ export const useMemoStore = defineStore(
       }
     };
 
-    const editMemo = async (content: string, tags: TagModel[], files: Array<MemoFile | File>) => {
+    const editMemo = async (
+      content: string,
+      tags: TagModel[],
+      files: Array<ResourceFile | File>
+    ) => {
       try {
         const userId = userStore.user?.id as string;
         const id = activeMemo.value!.id;
@@ -114,7 +119,7 @@ export const useMemoStore = defineStore(
             userId,
             initialTagIds: memo.tags?.map((x) => x.id) || [],
             tagIds: tags.map((x) => x.id),
-            initialFiles: memo.files ? (memo.files as MemoFile[]) : [],
+            initialFiles: memo.files ? (memo.files as ResourceFile[]) : [],
             files
           });
           memo.content = content;
@@ -142,7 +147,7 @@ export const useMemoStore = defineStore(
           userId,
           tagIds: tags.map((x) => x.id)
         });
-        const uploadedFiles: MemoFile[] = [];
+        const uploadedFiles: ResourceFile[] = [];
 
         for (let i = 0; i < files.length; i++) {
           const uploadedFile = await resourcesService.uploadFile(files[i], id, userStore.user!.id);
@@ -188,7 +193,7 @@ export const useMemoStore = defineStore(
         const fileIds: string[] = [];
         const memo = memos.value.find((m) => m.id === id);
         if (memo) {
-          (memo.files as MemoFile[]).forEach((f) => fileIds.push(f.id));
+          (memo.files as ResourceFile[]).forEach((f) => fileIds.push(f.id));
         }
         await memoService.deleteMemo(id, fileIds);
         memos.value = memos.value.filter((m) => m.id !== id);
@@ -207,7 +212,7 @@ export const useMemoStore = defineStore(
         await resourcesService.deleteFile(id);
         const memo = memos.value.find((m) => m.id === memoId);
         if (memo && memo.files) {
-          memo.files = (memo.files as MemoFile[]).filter((f) => f.id !== id);
+          memo.files = (memo.files as ResourceFile[]).filter((f) => f.id !== id);
         }
         alert({
           text: "File deleted!"

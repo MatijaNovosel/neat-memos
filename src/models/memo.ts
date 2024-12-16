@@ -1,3 +1,4 @@
+import { ResourceFile } from "./resources";
 import { TagModel } from "./tag";
 
 export interface MemoModel {
@@ -10,7 +11,7 @@ export interface MemoModel {
   private: boolean;
   archived: boolean;
   tags?: TagModel[];
-  files?: File[] | MemoFile[];
+  files?: File[] | ResourceFile[];
 }
 
 export interface UpdateMemoModel {
@@ -19,25 +20,12 @@ export interface UpdateMemoModel {
   content: string;
   tagIds: number[];
   initialTagIds: number[];
-  initialFiles: MemoFile[];
-  files: Array<MemoFile | File>;
+  initialFiles: ResourceFile[];
+  files: Array<ResourceFile | File>;
 }
 
 export interface CreateMemoModel {
   content: string;
   userId: string;
   tagIds: number[];
-}
-
-export interface MemoFile {
-  id: string;
-  name: string;
-  size: number;
-  url: string;
-  createdAt: string;
-  memoId: number;
-}
-
-export interface MemoFileDetailed extends MemoFile {
-  downloading: boolean;
 }
