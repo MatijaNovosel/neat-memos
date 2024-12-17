@@ -26,6 +26,16 @@ export class KanbanService implements IKanbanService {
     if (error) throw error;
   }
 
+  async removeRating(cardId: number): Promise<void> {
+    const { error } = await supabase
+      .from("cards")
+      .update({
+        rating: null
+      })
+      .eq("id", cardId);
+    if (error) throw error;
+  }
+
   async markAsUrgent(cardId: number, status: boolean): Promise<void> {
     const { error } = await supabase
       .from("cards")

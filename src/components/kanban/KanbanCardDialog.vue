@@ -282,12 +282,22 @@
               @click="openAttachmentDialog"
             />
             <v-btn
-              v-if="!kanbanStore.activeCard?.rating && !isNewCard"
+              v-if="!kanbanStore.activeCard?.rating"
               size="small"
               color="blue"
               rounded="8"
               variant="tonal"
               text="Add rating"
+              @click="addRating"
+            />
+            <v-btn
+              v-if="kanbanStore.activeCard?.rating"
+              size="small"
+              color="blue"
+              rounded="8"
+              variant="tonal"
+              text="Remove rating"
+              @click="removeRating"
             />
           </v-col>
           <template v-if="isNewCard">
@@ -343,6 +353,7 @@ const description = ref("");
 const cardMenu = ref(false);
 const saving = ref(false);
 const cardForm = ref<IForm | null>(null);
+const rating = ref<number | null>(null);
 
 const tags = ref<TagModel[]>([]);
 const selectedTags = ref<TagModel[]>([]);
@@ -502,6 +513,32 @@ onAttachmentChange(async (files: FileList | null) => {
 const deleteFile = (file: File) => {
   if (isNewCard.value) {
     attachments.value = attachments.value.filter((f) => f.name !== file.name);
+  }
+};
+
+const removeRating = async () => {
+  if (isNewCard.value) {
+    rating.value = null;
+  } else {
+    await kanbanStore.removeRating(kanbanStore.activeCard!.id);
+    kanbanStore.activeCard!.rating = undefined;
+    const project = kanbanStore.projects.find((p) => p.id === kanbanStore.selectedProject);
+    const column = project?.columns.find((c) => c.id === kanbanStore.activeCard?.columnId);
+    const card = column!.cards.find((card) => card.id === kanbanStore.activeCard?.id);
+    card!.rating = undefined;
+  }
+};
+
+const addRating = async () => {
+  if (isNewCard.value) {
+    rating.value = 1;
+  } else {
+    await kanbanStore.addRating(kanbanStore.activeCard!.id);
+    kanbanStore.activeCard!.rating = 1;
+    const project = kanbanStore.projects.find((p) => p.id === kanbanStore.selectedProject);
+    const column = project?.columns.find((c) => c.id === kanbanStore.activeCard?.columnId);
+    const card = column!.cards.find((card) => card.id === kanbanStore.activeCard?.id);
+    card!.rating = 1;
   }
 };
 

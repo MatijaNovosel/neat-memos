@@ -273,7 +273,7 @@ const updateColumnName = useDebounceFn(async (columnId: number, value: string) =
 const handleCardAction = async (action: string, card: CardModel, columnId: number) => {
   switch (action) {
     case CARD_ACTIONS.ADD_RATING:
-      await kanbanStore.addRating(card);
+      await kanbanStore.addRating(card.id);
       card.rating = 1;
       break;
     case CARD_ACTIONS.MARK_URGENT:

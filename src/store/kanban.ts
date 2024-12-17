@@ -141,9 +141,15 @@ export const useKanbanStore = defineStore("kanban", () => {
     loading.value = false;
   };
 
-  const addRating = async (card: CardModel) => {
+  const addRating = async (id: number) => {
     loading.value = true;
-    await kanbanService.addRating(card.id);
+    await kanbanService.addRating(id);
+    loading.value = false;
+  };
+
+  const removeRating = async (id: number) => {
+    loading.value = true;
+    await kanbanService.removeRating(id);
     loading.value = false;
   };
 
@@ -207,6 +213,7 @@ export const useKanbanStore = defineStore("kanban", () => {
     searchText,
     filteredProjects,
     interactionsDisabled,
+    removeRating,
     markAsUrgent,
     addRating,
     deleteProject,
