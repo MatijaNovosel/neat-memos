@@ -60,6 +60,7 @@ export interface CreateCardModel {
   description: string | null;
   coverUrl: string | null;
   position: number;
+  rating?: number;
   coverColor: string | null;
   attachments: File[];
 }

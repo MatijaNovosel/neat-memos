@@ -123,6 +123,7 @@ export const useKanbanStore = defineStore("kanban", () => {
         name: data.name,
         position: data.position,
         tags: data.tags,
+        rating: data.rating,
         urgent: false,
         createdAt: new Date().toISOString()
       });

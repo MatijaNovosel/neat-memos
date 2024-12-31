@@ -64,7 +64,7 @@
               <span class="ml-1"> Created </span>
               {{ format(new Date(kanbanStore.activeCard!.createdAt), "dd.MM.yyyy. HH:mm") }}
             </div>
-            <template v-if="kanbanStore.activeCard?.rating">
+            <template v-if="kanbanStore.activeCard?.rating || (rating !== 0 && !!rating)">
               <div class="text-grey-lighten-1 text-subtitle-2 mt-2">Rating</div>
               <div class="pl-1">
                 <v-rating
@@ -77,7 +77,7 @@
                   empty-icon="mdi-circle"
                   full-icon="mdi-circle"
                   half-icon="mdi-circle-half"
-                  v-model="kanbanStore.activeCard.rating"
+                  :model-value="isNewCard ? rating : kanbanStore.activeCard!.rating"
                   @update:modelValue="updateRating"
                   :length="5"
                 />
@@ -377,6 +377,7 @@ const close = () => {
     description.value = "";
     tags.value = [];
     coverColor.value = null;
+    rating.value = null;
     cardForm.value?.resetForm();
   }, 300);
 };
@@ -433,7 +434,8 @@ const save = useDebounceFn(async (copy: boolean = false) => {
       tags: tags.value,
       position: maxPosition + 1,
       projectId: kanbanStore.selectedProject!,
-      attachments: attachments.value
+      attachments: attachments.value,
+      rating: rating.value || undefined
     });
   } else if (!isNewCard.value) {
     await kanbanStore.editKanbanCard({
@@ -472,6 +474,7 @@ const save = useDebounceFn(async (copy: boolean = false) => {
       description: description.value,
       name: title.value,
       tags: tags.value,
+      rating: rating.value || undefined,
       position: maxPosition + 1,
       projectId: kanbanStore.selectedProject!,
       attachments: attachments.value
@@ -484,7 +487,12 @@ const save = useDebounceFn(async (copy: boolean = false) => {
   saving.value = false;
 }, 500);
 
-const updateRating = async () => {
+const updateRating = async (value: number) => {
+  if (isNewCard.value) {
+    rating.value = value;
+  } else {
+    kanbanStore.activeCard!.rating = value;
+  }
   if (!isNewCard.value) {
     await save();
   }

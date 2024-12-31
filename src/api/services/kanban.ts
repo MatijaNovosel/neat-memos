@@ -110,7 +110,8 @@ export class KanbanService implements IKanbanService {
           coverUrl: data.coverUrl,
           description: data.description,
           name: data.name,
-          position: data.position
+          position: data.position,
+          rating: data.rating
         }
       ])
       .select();
