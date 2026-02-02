@@ -130,10 +130,6 @@ import KanbanCardDialog from "@/components/kanban/KanbanCardDialog.vue";
 import KanbanProject from "@/components/kanban/KanbanProject.vue";
 import ProjectDialog from "@/components/projectDialog/ProjectDialog.vue";
 import { useConfirmationDialog } from "@/composables/useConfirmationDialog";
-import { realtimeClientId } from "@/helpers/misc";
-import supabase from "@/helpers/supabase";
-import { CardModel } from "@/models/kanban";
-import { TagModel } from "@/models/tag";
 import { useKanbanStore } from "@/store/kanban";
 import { useMemoStore } from "@/store/memos";
 import { useUserStore } from "@/store/user";
@@ -166,6 +162,7 @@ const isPublicProjectCheckboxDisabled = computed(() => {
   );
 });
 
+/*
 const cards = supabase
   .channel("custom-all-channel")
   .on("postgres_changes", { event: "*", schema: "public", table: "cards" }, async (payload) => {
@@ -198,6 +195,7 @@ const cards = supabase
     }
   })
   .subscribe();
+*/
 
 watch(
   () => kanbanStore.selectedProject,
@@ -223,7 +221,7 @@ watch(
 );
 
 onUnmounted(() => {
-  supabase.removeChannel(cards);
+  // supabase.removeChannel(cards);
 });
 
 onMounted(async () => {
