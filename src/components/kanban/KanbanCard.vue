@@ -44,13 +44,14 @@
           v-for="label in props.data.tags"
           :key="label.id"
           size="x-small"
+          class="kanban-card-tag"
           :color="label.color"
         >
           {{ label.content }}
         </v-chip>
       </v-card-title>
       <v-card-text
-        class="pb-0"
+        class="pb-0 kanban-card-title"
         :class="{
           'pt-1': props.data.tags.length,
           'pt-2': !props.data.tags.length
@@ -132,6 +133,8 @@ const matchesSearch = computed(() => {
 <style scoped lang="scss">
 .labels {
   gap: 8px;
+  padding-top: 10px;
+  padding-bottom: 4px;
   flex-wrap: wrap;
 }
 
@@ -144,6 +147,17 @@ const matchesSearch = computed(() => {
   cursor: pointer;
   box-sizing: border-box;
   transition: border-color 0.2s ease-in;
+
+  &-title {
+    font-size: 12px;
+  }
+
+  &-tag {
+    font-size: 8px;
+    padding-left: 4px;
+    padding-right: 4px;
+    height: 14px;
+  }
 
   &-badge {
     position: absolute;
