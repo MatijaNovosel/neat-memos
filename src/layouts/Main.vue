@@ -1,9 +1,9 @@
 <template>
   <v-layout>
     <alerts />
-    <template v-if="isAuthenticated">
+    <template v-if="userStore.isAuthenticated">
       <left-drawer />
-      <right-drawer />
+      <right-drawer v-if="shouldShowRightDrawer" />
     </template>
     <v-main
       class="main"
@@ -18,8 +18,10 @@
 </template>
 
 <script setup lang="ts">
+import ROUTE_NAMES from "@/router/routeNames";
 import { useUserStore } from "@/store/user";
-import { storeToRefs } from "pinia";
+import { computed } from "vue";
+import { useRouter } from "vue-router";
 import { useTheme } from "vuetify";
 import EditMemoDialog from "../components/editMemoDialog/EditMemoDialog.vue";
 import LeftDrawer from "../components/navigation/LeftDrawer.vue";
@@ -29,8 +31,12 @@ import Alerts from "../components/notifications/Alerts.vue";
 import PreviewMemoDialog from "../components/previewMemoDialog/PreviewMemoDialog.vue";
 
 const userStore = useUserStore();
-const { isAuthenticated } = storeToRefs(userStore);
 const theme = useTheme();
+const router = useRouter();
+
+const shouldShowRightDrawer = computed(() => {
+  return router.currentRoute.value.name !== ROUTE_NAMES.KANBAN;
+});
 </script>
 
 <style scoped lang="scss">
